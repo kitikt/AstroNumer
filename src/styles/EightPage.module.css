@@ -1,0 +1,154 @@
+.sevenSection {
+    display: flex;
+    flex-shrink: 1;
+    flex-direction: column;
+    padding: 2rem;
+    color: white;
+    text-align: center;
+}
+
+.heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    line-height: 1.2;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.slider {
+    position: relative;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+    margin-top: 9px;
+}
+
+.sliderItem {
+    position: absolute;
+    width: 40%;
+    height: 50vh;
+    border-radius: 40px;
+
+}
+
+.sliderItem:hover {
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.675);
+
+}
+
+.sliderImage {
+    border-radius: 40px;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    /* Overlay mờ màu đen */
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlayContent {
+    text-align: center;
+    color: white;
+}
+
+.overlayTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.overlayDescription {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.readMoreButton {
+    background: transparent;
+    border: none;
+    color: #ece7ff;
+
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+
+
+.readMoreText {
+    position: relative;
+    /* Định vị gạch dưới so với chữ */
+    color: #e0dee7;
+    /* Màu tím ban đầu */
+    transition: color 0.3s ease;
+    /* Chuyển đổi màu chữ mượt mà */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.readMoreText:hover {
+    color: #ffffff;
+    /* Khi hover, màu chữ thành trắng */
+}
+
+.readMoreText::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    /* Gạch dưới cách chữ 2px */
+    left: 0;
+    width: 0;
+    /* Ban đầu chiều rộng là 0 */
+    height: 2px;
+    /* Độ dày gạch dưới */
+    background-color: #ffffff;
+    /* Màu gạch dưới là trắng */
+    transition: width 0.3s ease;
+    /* Hiệu ứng mở rộng mượt mà */
+}
+
+.readMoreText:hover::before {
+    width: 100%;
+    /* Khi hover, gạch dưới mở rộng 100% theo chiều rộng của chữ */
+}
+
+.buttonWrapper {
+    text-align: center;
+    margin-top: 60vh;
+    position: relative;
+    z-index: 10;
+}
+
+.prevButton,
+.nextButton {
+    width: 120px;
+    height: 45px;
+    border: none;
+    margin: 0 50px;
+    border-radius: 50px;
+    background-color: #631ea4;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.prevButton:hover,
+.nextButton:hover {
+    background-color: #a64dff;
+}

@@ -1,0 +1,57 @@
+/* src/styles/FirstSection.module.css */
+.fifthSection {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 100px;
+    width: 100%;
+    text-align: center;
+    min-height: 80vh;
+
+}
+
+.heading {
+    font-size: 3rem;
+    font-weight: bold;
+    z-index: 2;
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* .cosmicImage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: auto;
+    z-index: 1;
+    opacity: 0.7;
+} */
+
+
+
+.buttonWrapper {
+    text-align: center;
+    z-index: 2;
+    position: relative;
+}
+
+.buttonWrapper button {
+    width: 150px;
+    height: 50px;
+    border: none;
+    border-radius: 50px;
+    background-color: #631ea4 !important;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.buttonWrapper button:hover {
+    background-color: #a64dff;
+}

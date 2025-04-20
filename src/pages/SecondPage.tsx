@@ -25,12 +25,12 @@ const SecondPage = () => {
                     bản thân sâu sắc hơn. Hãy để chúng tôi giúp bạn tìm ra
                     hướng đi và khám mở tiềm năng ẩn giấu!</Text>
             </Stack>
-            <Stack flex={1} gap={5}>
+            <Stack flex={1} gap={5} align={'center'}>
                 <HStack gap={10} >
                     <Image src={'/images/testimage.png'} alt={data.imageAlt} width={'40%'} flex={1} />
                     <Image src={'/images/testimage.png'} alt={data.imageAlt} width={'40%'} flex={1} />
                 </HStack>
-                <Heading >ASTRONUMER</Heading>
+                <Heading fontSize={60} lineHeight={1.6} >ASTRONUMER</Heading>
 
 
             </Stack>

@@ -4,6 +4,7 @@
   flex-direction: row;
   position: sticky;
   backdrop-filter: blur(5px);
+  scroll-behavior: auto;
   top: 0px;
   justify-content: space-between;
   align-items: center;

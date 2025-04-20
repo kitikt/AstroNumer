@@ -50,7 +50,7 @@
     height: 50px;
     border: none;
     border-radius: 50px;
-    background-color: #631ea4;
+    background-color: #631ea4 !important;
     color: white;
     font-weight: 600;
     cursor: pointer;

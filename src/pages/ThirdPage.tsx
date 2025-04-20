@@ -106,7 +106,7 @@ const ThirdPage = () => {
                     TẠI SAO BẠN NÊN CHỌN ASTRONUMER?
                 </Heading>
             </Stack>
-            <HStack gap={30}>
+            <HStack gap={40} textAlign={'center'}>
                 <Stack align={'center'}>
                     <Image src="/images/arrow.png" width={'30%'} />
                     <Heading>

@@ -1,0 +1,44 @@
+.autoRotate {
+    animation: fadeInOut;
+    animation-timeline: view();
+}
+
+.buttonWrapper button {
+    width: 150px;
+    height: 50px;
+    border: none;
+    border-radius: 50px;
+    background-color: #631ea4;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.buttonWrapper button:hover {
+    background-color: #a64dff;
+}
+
+/* @keyframes autoRotateAnimation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+} */
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}

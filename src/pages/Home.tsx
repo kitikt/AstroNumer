@@ -1,12 +1,15 @@
 import React, { ReactNode } from "react";
 
-import { Link } from "react-router-dom";
-import Button from "@/components/Button";
+
 import styles from "@/styles/Home.module.css"
 import SecondPage from "@/pages/SecondPage";
 import ThirdPage from "@/pages/ThirdPage";
 import FourthPage from "@/pages/FourthPage";
 import FirstSection from "@/pages/FirstPage";
+import SixPage from "@/pages/SixPage";
+import FifthPage from "@/pages/FifthPage";
+import SevenPage from "@/pages/SevenPage";
+import EightPage from "@/pages/EightPage";
 
 const HomePage = ({ children }: { children?: ReactNode }) => {
     return (
@@ -27,8 +30,20 @@ const HomePage = ({ children }: { children?: ReactNode }) => {
             <section className={`${styles.threeSection}`} >
                 <ThirdPage />
             </section>
-            <section className={`${styles.FourthSection}`} >
+            <section className={`${styles.fourthSection}`} >
                 <FourthPage />
+            </section>
+            <section className={`${styles.fifthSection}`} >
+                <FifthPage />
+            </section>
+            <section className={`${styles.sixSection}`} >
+                <SixPage />
+            </section>
+            <section className={`${styles.sevenSection}`} >
+                <SevenPage />
+            </section>
+            <section className={`${styles.eightSection}`} >
+                <EightPage />
             </section>
         </main>
 
