@@ -1,63 +1,38 @@
+import React, { ReactNode } from "react";
 
-export default function Home() {
+import { Link } from "react-router-dom";
+import Button from "@/components/Button";
+import styles from "@/styles/Home.module.css"
+import SecondPage from "@/pages/SecondPage";
+import ThirdPage from "@/pages/ThirdPage";
+import FourthPage from "@/pages/FourthPage";
+import FirstSection from "@/pages/FirstPage";
+
+const HomePage = ({ children }: { children?: ReactNode }) => {
     return (
-        <div className="container">
-            {/* Hình nền */}
+        <main className={styles.main}>
+            <section className={`${styles.section} ${styles.FirstSection}`}>
+                <FirstSection />
+            </section>
+            {/* <h1 className={styles.heading}>BẠN LÀ AI TRONG VŨ TRỤ NÀY</h1>
+            <p className={styles.subheading}>
+                Hãy khám phá hành trình của bạn giữa các vì sao và những con số cùng với Astronumer nhé
+            </p> */}
+            {/* <Link to="/login" className={styles.buttonWrapper}>
+                <Button label="ĐĂNG NHẬP" />
+            </Link> */}
+            <section className={`${styles.section} ${styles.secondSection}`}>
+                <SecondPage />
+            </section>
+            <section className={`${styles.threeSection}`} >
+                <ThirdPage />
+            </section>
+            <section className={`${styles.FourthSection}`} >
+                <FourthPage />
+            </section>
+        </main>
 
-
-            {/* Nội dung */}
-            <div className="content">
-                {/* Thanh điều hướng */}
-                <header className="header">
-                    <nav className="nav">
-                        <div className="logo-container">
-                            <div className="text-white">
-                                <div className="relative w-[60px] h-[60px]">
-                                    {/* Code vẽ logo, hoặc dùng thẻ img cho đơn giản */}
-                                    <img src="/images/logo.png" alt="Logo" style={{ width: "100%", height: "100%" }} />
-                                </div>
-                            </div>
-                            <span className="brand-text">ASTRONUMER</span>
-                        </div>
-
-                        <div className="menu">
-                            <a href="#" className="link">Trang chủ</a>
-                            <a href="#" className="link">Về chúng tôi</a>
-                            <a href="#" className="link">Dịch vụ</a>
-                            <a href="#" className="link">Blog</a>
-                            <a href="#" className="link">Liên hệ</a>
-                        </div>
-                    </nav>
-                </header>
-
-                {/* Nội dung chính */}
-                <main className="main">
-                    {/* Mặt trăng phát sáng */}
-                    <div className="moon-container">
-                        {/* <div className="glow"></div>
-                        <img
-                            src="/images/moon.png"
-                            alt="Glowing moon"
-                            style={{ objectFit: "cover", borderRadius: "50%", width: "100%", height: "100%" }}
-                        /> */}
-                    </div>
-
-                    {/* Tiêu đề */}
-                    <h1 className="heading">
-                        BẠN LÀ AI TRONG
-                        <br />
-                        VŨ TRỤ NÀY
-                    </h1>
-
-                    {/* Phụ đề */}
-                    <p className="subheading">
-                        Hãy khám phá hành trình của bạn giữa các vì sao và những con số cùng với Astronumer nhé
-                    </p>
-
-                    {/* Nút đăng nhập */}
-                    <button className="button">ĐĂNG NHẬP</button>
-                </main>
-            </div>
-        </div>
     );
-}
+};
+
+export default HomePage;

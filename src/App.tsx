@@ -1,12 +1,14 @@
 
-import ThemeProvider from "./context/ThemeContext";
 import DefaultLayout from "./layouts/DefaultLayout";
-
 function App() {
   return (
-    <ThemeProvider>
-      <DefaultLayout />
-    </ThemeProvider>
+    <>
+      <div style={{ backgroundImage: `url(/images/background.png)`, backgroundSize: 'cover', minHeight: '100vh', position: 'relative' }}>
+        <DefaultLayout />
+
+      </div>
+    </>
+
   );
 }
 

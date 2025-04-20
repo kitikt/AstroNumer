@@ -1,0 +1,20 @@
+.secondSection {
+    position: relative;
+    background: url('/images/backgroundmoon.png') no-repeat center center;
+    background-size: cover;
+    width: 100%;
+}
+
+.secondSection::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    /* Đen 40% */
+    z-index: 1;
+}
+
+.secondSection>* {
+    position: relative;
+    z-index: 2;
+}
