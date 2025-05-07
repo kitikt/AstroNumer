@@ -1,8 +1,7 @@
-import { Button, Image } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
 import styles from "@/styles/SevenPage.module.css";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { PositionType } from "@/utils/Enum";
 
 const SevenPage = () => {
     const [positionIndex, setPositionIndex] = useState([0, 1, 2, 3, 4]);
@@ -20,7 +19,7 @@ const SevenPage = () => {
         });
     };
 
-    const images = [
+    const images: string[] = [
         "/images/image1.png",
         "/images/image2.png",
         "/images/image3.png",
@@ -28,7 +27,7 @@ const SevenPage = () => {
         "/images/image5.png"
     ];
 
-    const positions = ["center", "left", "left1", "right", "right1"];
+    const positions: PositionType[] = ["center", "left", "left1", "right", "right1"];
 
     const imageVariants = {
         center: { x: "0%", scale: 1, zIndex: 5 },

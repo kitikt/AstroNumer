@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, {  } from "react";
 
 
 import styles from "@/styles/Home.module.css"
@@ -11,7 +11,7 @@ import FifthPage from "@/pages/FifthPage";
 import SevenPage from "@/pages/SevenPage";
 import EightPage from "@/pages/EightPage";
 
-const HomePage = ({ children }: { children?: ReactNode }) => {
+const HomePage = () => {
     return (
         <main className={styles.main}>
             <section className={`${styles.section} ${styles.FirstSection}`}>

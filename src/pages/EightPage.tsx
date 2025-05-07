@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 const EightPage = () => {
     const [positionIndex, setPositionIndex] = useState([0, 1, 2, 3, 4]);
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); // Trạng thái hover
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const handleNext = () => {
         setPositionIndex((prevIndexes) => {
