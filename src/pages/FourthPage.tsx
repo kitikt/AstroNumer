@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Heading, HStack, Icon, Image, Stack, Text } from "@chakra-ui/react"
+import {   Button, Heading, HStack,  Image, Stack, Text } from "@chakra-ui/react"
 import styles from '@/styles/FourthPage.module.css';
 import { Link } from "react-router-dom";
 

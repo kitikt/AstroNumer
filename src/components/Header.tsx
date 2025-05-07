@@ -38,7 +38,7 @@ const Header: React.FC = () => {
 
       <nav className={styles.nav}>
         <Link to='/' className={styles.link}>Trang chủ</Link>
-        <Link to="#" className={styles.link}>Về chúng tôi</Link>
+        <Link to="/about" className={styles.link}>Về chúng tôi</Link>
         <Link to="#" className={styles.link}>Dịch vụ</Link>
         <Link to="#" className={styles.link}>Blog</Link>
         <Link to="#" className={styles.link}>Liên hệ</Link>

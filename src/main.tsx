@@ -2,17 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/global.css";
 
-import {
-
-  RouterProvider,
-} from "react-router-dom";
-import { ChakraProvider, defaultSystem } from "@chakra-ui/react";
+import { RouterProvider } from "react-router-dom";
 import { router } from "@/components/router/router";
+import { Provider } from "./components/ui/provider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ChakraProvider value={defaultSystem}>
+    <Provider>
       <RouterProvider router={router} />
-    </ChakraProvider>
+    </Provider>
   </React.StrictMode>
 );

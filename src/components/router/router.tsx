@@ -1,9 +1,7 @@
-import App from "@/App";
 import DefaultLayout from "@/layouts/DefaultLayout";
+import AboutUs from "@/pages/AboutUs";
 import HomePage from "@/pages/Home";
 import LoginPage from "@/pages/LoginPage";
-import SecondPage from "@/pages/SecondPage";
-import UserPage from "@/pages/UserPage";
 import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
@@ -13,6 +11,7 @@ export const router = createBrowserRouter([
         element: <DefaultLayout />,
         children: [
             { index: true, element: <HomePage /> },
+                 {path: "about" , element:<AboutUs/>}
             // Có thể bật thêm các route bên dưới nếu cần:
             // { path: "user", element: <UserPage /> },
             // { path: "login", element: <LoginPage /> },
