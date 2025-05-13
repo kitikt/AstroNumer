@@ -5,9 +5,9 @@ import VerticalDivider from "@/components/VerticalDivider";
 
 const AboutUs = () => {
   return (
-    <Stack as="section" p={8} textAlign="center">
+    <Stack as="section" p={8} textAlign="center" width={"100%"}>
       <Heading fontSize={50} lineHeight={1.6} mt={10} mb={20}>
-        Về Chúng Tôi
+        VỀ CHÚNG TÔI
       </Heading>
       <Divider />
       <HStack justifyContent={"space-evenly"} mt={20}>
@@ -59,6 +59,24 @@ const AboutUs = () => {
           </Text>
         </VStack>
       </HStack>
+
+      <Stack mt={"20"}>
+        <Heading>
+          TẠI SAO LẠI CHỌN <br /> ASTRONUMER
+        </Heading>
+        <Stack align="flex-end">
+          <Image src="/images/head.png" width={"10%"} mr="20" />
+          <Heading>HỖ TRỢ KHÁCH HÀNG TỐT NHẤT</Heading>
+        </Stack>
+        <Stack align={"center"}>
+          <Image src="/images/eyehand.png" width={"10%"} />
+          <Heading>BẢO MẬT DỮ LIỆU KHÁCH HÀNG</Heading>
+        </Stack>
+        <Stack align={"flex-start"}>
+          <Image src="/images/arrow.png" width={"10%"} ml="20" />
+          <Heading>MANG ĐẾN SỰ TRẢI NGHIỆM MỚI LẠ</Heading>
+        </Stack>
+      </Stack>
     </Stack>
   );
 };
