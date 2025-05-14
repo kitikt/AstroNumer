@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { PositionType } from "@/utils/Enum";
 
-const SevenPage = () => {
+const SevenSection = () => {
   const [positionIndex, setPositionIndex] = useState([0, 1, 2, 3, 4]);
 
   const handleNext = () => {
@@ -11,11 +11,7 @@ const SevenPage = () => {
       const updatedIndexes = prevIndexes.map(
         (prevIndex) => (prevIndex + 1) % 5
       );
-      console.log("New positionIndex:", updatedIndexes);
-      console.log(
-        "New positions:",
-        updatedIndexes.map((i) => positions[i])
-      );
+
       return updatedIndexes;
     });
   };
@@ -86,4 +82,4 @@ const SevenPage = () => {
   );
 };
 
-export default SevenPage;
+export default SevenSection;

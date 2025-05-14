@@ -93,38 +93,28 @@
 
 .readMoreText {
     position: relative;
-    /* Định vị gạch dưới so với chữ */
     color: #e0dee7;
-    /* Màu tím ban đầu */
     transition: color 0.3s ease;
-    /* Chuyển đổi màu chữ mượt mà */
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .readMoreText:hover {
     color: #ffffff;
-    /* Khi hover, màu chữ thành trắng */
 }
 
 .readMoreText::before {
     content: '';
     position: absolute;
     bottom: -2px;
-    /* Gạch dưới cách chữ 2px */
     left: 0;
     width: 0;
-    /* Ban đầu chiều rộng là 0 */
     height: 2px;
-    /* Độ dày gạch dưới */
     background-color: #ffffff;
-    /* Màu gạch dưới là trắng */
     transition: width 0.3s ease;
-    /* Hiệu ứng mở rộng mượt mà */
 }
 
 .readMoreText:hover::before {
     width: 100%;
-    /* Khi hover, gạch dưới mở rộng 100% theo chiều rộng của chữ */
 }
 
 .buttonWrapper {

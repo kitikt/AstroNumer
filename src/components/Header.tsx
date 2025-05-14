@@ -35,13 +35,22 @@ const Header: React.FC = () => {
         <Heading className={styles.brandText}>ASTRONUMER</Heading>
       </div>
 
-
       <nav className={styles.nav}>
-        <Link to='/' className={styles.link}>Trang chủ</Link>
-        <Link to="/about" className={styles.link}>Về chúng tôi</Link>
-        <Link to="#" className={styles.link}>Dịch vụ</Link>
-        <Link to="#" className={styles.link}>Blog</Link>
-        <Link to="#" className={styles.link}>Liên hệ</Link>
+        <Link to="/" className={styles.link}>
+          Trang chủ
+        </Link>
+        <Link to="/about" className={styles.link}>
+          Về chúng tôi
+        </Link>
+        <Link to="/service" className={styles.link}>
+          Dịch vụ
+        </Link>
+        <Link to="#" className={styles.link}>
+          Blog
+        </Link>
+        <Link to="#" className={styles.link}>
+          Liên hệ
+        </Link>
       </nav>
     </header>
   );
