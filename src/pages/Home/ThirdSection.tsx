@@ -1,6 +1,6 @@
 import { Heading, HStack, Image, Stack, Text } from "@chakra-ui/react";
 
-const ThirdPage = () => {
+const ThirdSection = () => {
   return (
     <Stack gap={20} align={"center"} mt={20}>
       <HStack gap={20} mx={64} bg="transparent">
@@ -137,4 +137,4 @@ const ThirdPage = () => {
   );
 };
 
-export default ThirdPage;
+export default ThirdSection;
