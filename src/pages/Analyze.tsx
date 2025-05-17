@@ -1,4 +1,5 @@
 import Divider from "@/components/Divider";
+import PersonalityChart from "@/components/PersonalityChart";
 import { Heading, Image, Stack, Text } from "@chakra-ui/react";
 import {
   AreaChart,
@@ -10,6 +11,7 @@ import {
 } from "recharts";
 
 const Analyze = () => {
+  const personalityData = [80, 20, 90, 40, 70];
   const data = [
     {
       name: "Page A",
@@ -116,6 +118,7 @@ const Analyze = () => {
               fill="url(#colorPv)"
             />
           </AreaChart>
+          <PersonalityChart data={personalityData} />
         </Stack>
       </Stack>
     </Stack>
