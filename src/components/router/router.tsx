@@ -1,5 +1,6 @@
 import DefaultLayout from "@/layouts/DefaultLayout";
 import AboutUs from "@/pages/AboutUs";
+import Analyze from "@/pages/Analyze";
 import HomePage from "@/pages/Home/Home";
 import LoginPage from "@/pages/LoginPage";
 import MemberShip from "@/pages/MemberShip";
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
       { path: "service", element: <Service /> },
       { path: "membership", element: <MemberShip /> },
       { path: "profile", element: <Profile /> },
+      { path: "analyze", element: <Analyze /> },
 
       // Có thể bật thêm các route bên dưới nếu cần:
       // { path: "user", element: <UserPage /> },
