@@ -1,5 +1,5 @@
 import { Heading, HStack, Image, Stack, Text } from "@chakra-ui/react";
-import styles from "@/styles/SecondPage.module.css";
+import styles from "@/styles/Home/SecondSection.module.css";
 
 const SecondSection = () => {
   const data = {

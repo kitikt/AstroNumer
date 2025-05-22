@@ -1,4 +1,4 @@
-import styles from "@/styles/SevenPage.module.css";
+import styles from "@/styles/Home/SevenSection.module.css";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { PositionType } from "@/utils/Enum";

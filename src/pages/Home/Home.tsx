@@ -1,14 +1,12 @@
-import React from "react";
-
-import styles from "@/styles/Home.module.css";
-import SecondPage from "@/pages/Home/SecondSection";
-import ThirdPage from "@/pages/Home/ThirdSection";
+import styles from "@/styles/Home/Home.module.css";
+import SecondSection from "@/pages/Home/SecondSection";
+import ThirdSection from "@/pages/Home/ThirdSection";
 import FourthSection from "@/pages/Home/FourthSection";
 import FirstSection from "@/pages/Home/FirstSection";
-import SixPage from "@/pages/Home/SixSection";
-import FifthPage from "@/pages/Home/FifthPage";
-import SevenPage from "@/pages/Home/SevenSection";
-import EightPage from "@/pages/Home/EightSection";
+import SixSection from "@/pages/Home/SixSection";
+import FifthSection from "@/pages/Home/FifthSection";
+import SevenSection from "@/pages/Home/SevenSection";
+import EightSection from "@/pages/Home/EightSection";
 
 const HomePage = () => {
   return (
@@ -24,25 +22,25 @@ const HomePage = () => {
                 <Button label="ĐĂNG NHẬP" />
             </Link> */}
       <section className={`${styles.section} ${styles.secondSection}`}>
-        <SecondPage />
+        <SecondSection />
       </section>
       <section className={`${styles.threeSection}`}>
-        <ThirdPage />
+        <ThirdSection />
       </section>
       <section className={`${styles.fourthSection}`}>
         <FourthSection />
       </section>
       <section className={`${styles.fifthSection}`}>
-        <FifthPage />
+        <FifthSection />
       </section>
       <section className={`${styles.sixSection}`}>
-        <SixPage />
+        <SixSection />
       </section>
       <section className={`${styles.sevenSection}`}>
-        <SevenPage />
+        <SevenSection />
       </section>
       <section className={`${styles.eightSection}`}>
-        <EightPage />
+        <EightSection />
       </section>
     </main>
   );

@@ -1,7 +1,7 @@
 // src/components/FirstSection.tsx
 import { Button, } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import styles from "@/styles/FirstSection.module.css";
+import styles from "@/styles/Home/FirstSection.module.css";
 
 const FirstSection = () => {
     return (
