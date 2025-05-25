@@ -1,5 +1,5 @@
 import { Button, Heading, HStack, Stack, Text } from "@chakra-ui/react";
-import styles from "@/styles/SixPage.module.css";
+import styles from "@/styles/Home/SixSection.module.css";
 import { Link } from "react-router-dom";
 
 const SixSection = () => {

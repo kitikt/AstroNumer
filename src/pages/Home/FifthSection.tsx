@@ -1,9 +1,9 @@
 // src/components/FirstSection.tsx
 import { Button, } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import styles from "@/styles/FifthPage.module.css";
+import styles from "@/styles/Home/FifthSection.module.css";
 
-const FifthPage = () => {
+const FifthSection = () => {
     return (
         <section className={styles.fifthSection}>
             {/* <img
@@ -20,4 +20,4 @@ const FifthPage = () => {
     );
 };
 
-export default FifthPage;
+export default FifthSection;

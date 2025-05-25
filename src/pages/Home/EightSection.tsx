@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import styles from "@/styles/EightPage.module.css";
+import styles from "@/styles/Home/EightSection.module.css";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { PositionType } from "@/utils/Enum";

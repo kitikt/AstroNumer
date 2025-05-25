@@ -1,5 +1,5 @@
 import { Button, Heading, HStack, Image, Stack, Text } from "@chakra-ui/react";
-import styles from "@/styles/FourthPage.module.css";
+import styles from "@/styles/Home/FourthSection.module.css";
 import { Link } from "react-router-dom";
 
 const FourthSection = () => {
