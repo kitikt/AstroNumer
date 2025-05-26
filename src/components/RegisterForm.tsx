@@ -1,7 +1,9 @@
-import { Box, HStack, Image, Link, Text } from "@chakra-ui/react";
+import { Box, HStack, Image, Text, chakra } from "@chakra-ui/react";
 import { useState } from "react";
 import styles from "@/styles/LoginForm.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+
+const ChakraRouterLink = chakra(RouterLink);
 
 export default function RegisterForm() {
   const [firstName, setFirstName] = useState("");
@@ -53,16 +55,14 @@ export default function RegisterForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Đăng ký thất bại 😭");
+        throw new Error(data.message || "Đăng ký thất bại 😢");
       }
 
-      console.log("✅ Đăng ký thành công:", data);
-      alert("Đăng ký thành công! Đăng nhập ngay nào! 🚀");
-      navigate("/login");
+      alert("✅ Đăng ký thành công, mời đăng nhập lại!");
+      navigate("/");
     } catch (error) {
       if (error instanceof Error) {
-        console.error("❌ Lỗi đăng ký:", error.message);
-        alert("Lỗi: " + error.message);
+        alert("❌ Lỗi đăng ký: " + error.message);
       }
     } finally {
       setLoading(false);
@@ -72,87 +72,107 @@ export default function RegisterForm() {
   return (
     <Box className={styles.form}>
       <Image src="/images/logo.png" alt="Logo" width="80px" height="80px" />
-
-      <Box className={styles.inputGroup}>
-        <label className={styles.label}>First Name</label>
-        <input
-          type="text"
-          placeholder="First Name"
-          className={styles.input}
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-      </Box>
-
-      <Box className={styles.inputGroup}>
-        <label className={styles.label}>Last Name</label>
-        <input
-          type="text"
-          placeholder="Last Name"
-          className={styles.input}
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-      </Box>
-
-      <Box className={styles.inputGroup}>
-        <label className={styles.label}>Phone Number</label>
-        <input
-          type="tel"
-          placeholder="Số điện thoại"
-          className={styles.input}
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-        />
-      </Box>
-
-      <Box className={styles.inputGroup}>
-        <label className={styles.label}>Email</label>
-        <input
-          type="email"
-          placeholder="Email"
-          className={styles.input}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </Box>
-
-      <Box className={styles.inputGroup}>
-        <label className={styles.label}>Password</label>
-        <input
-          type="password"
-          placeholder="Password"
-          className={styles.input}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Box>
-
-      <Box className={styles.inputGroup}>
-        <label className={styles.label}>Nhập lại Password</label>
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          className={styles.input}
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-      </Box>
-
-      <button
-        type="button"
-        className={styles.loginButton}
-        onClick={handleRegister}
-        disabled={loading}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleRegister();
+        }}
+        style={{ width: "100%" }}
       >
-        {loading ? "Đang xử lý..." : "Đăng ký"}
-      </button>
+        <Box className={styles.inputGroup}>
+          <label htmlFor="firstName" className={styles.label}>
+            First Name
+          </label>
+          <input
+            id="firstName"
+            type="text"
+            placeholder="First Name"
+            className={styles.input}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </Box>
+
+        <Box className={styles.inputGroup}>
+          <label htmlFor="lastName" className={styles.label}>
+            Last Name
+          </label>
+          <input
+            id="lastName"
+            type="text"
+            placeholder="Last Name"
+            className={styles.input}
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </Box>
+
+        <Box className={styles.inputGroup}>
+          <label htmlFor="phoneNumber" className={styles.label}>
+            Phone Number
+          </label>
+          <input
+            id="phoneNumber"
+            type="text"
+            placeholder="Phone Number"
+            className={styles.input}
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+          />
+        </Box>
+
+        <Box className={styles.inputGroup}>
+          <label htmlFor="email" className={styles.label}>
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Email"
+            className={styles.input}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Box>
+
+        <Box className={styles.inputGroup}>
+          <label htmlFor="password" className={styles.label}>
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Password"
+            className={styles.input}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Box>
+
+        <Box className={styles.inputGroup}>
+          <label htmlFor="confirmPassword" className={styles.label}>
+            Confirm Password
+          </label>
+          <input
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm Password"
+            className={styles.input}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </Box>
+
+        <button type="submit" disabled={loading} className={styles.loginButton}>
+          {loading ? "Đang đăng ký..." : "Đăng ký"}
+        </button>
+      </form>
 
       <HStack fontSize="sm" mt={4}>
-        <Text>Đã có tài khoản?</Text>
-        <Link href="/login" color="blue.500">
+        <Text>Đã có tài khoản? </Text>
+        <ChakraRouterLink to="/" color="blue.500">
           Đăng nhập
-        </Link>
+        </ChakraRouterLink>
       </HStack>
     </Box>
   );

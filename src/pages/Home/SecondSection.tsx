@@ -32,12 +32,6 @@ const SecondSection = () => {
             width={"40%"}
             flex={1}
           />
-          <Image
-            src={"/images/testimage.png"}
-            alt={data.imageAlt}
-            width={"40%"}
-            flex={1}
-          />
         </HStack>
         <Heading fontSize={60} lineHeight={1.6}>
           ASTRONUMER

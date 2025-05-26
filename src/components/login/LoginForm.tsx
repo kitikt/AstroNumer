@@ -1,8 +1,11 @@
-import { Box, HStack, Image, Link, Text } from "@chakra-ui/react";
+import { Box, HStack, Image, Text, chakra } from "@chakra-ui/react";
 import { useState } from "react";
 import styles from "@/styles/LoginForm.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+
+// Tạo Chakra Link từ React Router Link để vừa xịn vừa tiện style
+const ChakraRouterLink = chakra(RouterLink);
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
@@ -10,6 +13,7 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { setIsLoggedIn } = useAuth();
+
   const handleLogin = async () => {
     if (!username || !password) {
       alert("Nhập đầy đủ Username và Password vào cha nội 😤");
@@ -17,7 +21,6 @@ export default function LoginForm() {
     }
 
     setLoading(true);
-
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/v1/auth/login`,
@@ -31,7 +34,6 @@ export default function LoginForm() {
       );
 
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.message || "Login thất bại 😭");
       }
@@ -57,47 +59,61 @@ export default function LoginForm() {
     <Box className={styles.form}>
       <Image src="/images/logo.png" alt="Logo" width="80px" height="80px" />
 
-      <Box className={styles.inputGroup}>
-        <label htmlFor="username" className={styles.label}>
-          Username
-        </label>
-        <input
-          id="username"
-          type="text"
-          placeholder="Username"
-          className={styles.input}
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </Box>
-
-      <Box className={styles.inputGroup}>
-        <label htmlFor="password" className={styles.label}>
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Password"
-          className={styles.input}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </Box>
-
-      <button
-        type="button"
-        className={styles.loginButton}
-        onClick={handleLogin}
-        disabled={loading}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
+        style={{ width: "100%" }}
       >
-        {loading ? "Đang xử lý..." : "Đăng nhập"}
-      </button>
+        <Box className={styles.inputGroup}>
+          <label htmlFor="username" className={styles.label}>
+            Username
+          </label>
+          <input
+            id="username"
+            type="text"
+            placeholder="Username"
+            className={styles.input}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </Box>
+
+        <Box className={styles.inputGroup}>
+          <label htmlFor="password" className={styles.label}>
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Password"
+            className={styles.input}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Box>
+
+        <button type="submit" className={styles.loginButton} disabled={loading}>
+          {loading ? "Đang xử lý..." : "Đăng nhập"}
+        </button>
+      </form>
+
+      <ChakraRouterLink
+        to="/forgot-password"
+        mt={2}
+        fontSize="sm"
+        color="blue.400"
+        display="inline-block"
+      >
+        Quên mật khẩu?
+      </ChakraRouterLink>
+
       <HStack fontSize="sm" mt={4}>
         <Text>Chưa có tài khoản? </Text>
-        <Link href="/register" color="blue.500">
+        <ChakraRouterLink to="/register" color="blue.500">
           Đăng ký ngay
-        </Link>
+        </ChakraRouterLink>
       </HStack>
     </Box>
   );
