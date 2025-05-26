@@ -1,5 +1,7 @@
 import { Box, HStack, Image, Text, chakra } from "@chakra-ui/react";
 import { useState } from "react";
+import { Toaster, toaster } from "@/components/ui/toaster";
+
 import styles from "@/styles/LoginForm.module.css";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 
@@ -13,6 +15,7 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleRegister = async () => {
@@ -24,12 +27,22 @@ export default function RegisterForm() {
       !password ||
       !confirmPassword
     ) {
-      alert("Điền đầy đủ thông tin vào nghen! 😤");
+      toaster.create({
+        title: "Thiếu thông tin",
+        description: "Điền đầy đủ thông tin vào bạn ơi! 😅",
+        type: "warning",
+        duration: 4000,
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Password nhập lại không khớp! 😵");
+      toaster.create({
+        title: "Sai mật khẩu",
+        description: "Password nhập lại không khớp! 😵",
+        type: "error",
+        duration: 4000,
+      });
       return;
     }
 
@@ -62,6 +75,7 @@ export default function RegisterForm() {
       navigate("/");
     } catch (error) {
       if (error instanceof Error) {
+        console.error("Lỗi đăng ký:", error);
         alert("❌ Lỗi đăng ký: " + error.message);
       }
     } finally {
@@ -71,6 +85,7 @@ export default function RegisterForm() {
 
   return (
     <Box className={styles.form}>
+      <Toaster />
       <Image src="/images/logo.png" alt="Logo" width="80px" height="80px" />
       <form
         onSubmit={(e) => {
@@ -163,7 +178,18 @@ export default function RegisterForm() {
           />
         </Box>
 
-        <button type="submit" disabled={loading} className={styles.loginButton}>
+        <button
+          type="submit"
+          disabled={loading}
+          className={styles.loginButton}
+          style={{
+            display: "block",
+            marginLeft: "auto",
+            marginTop: "20px",
+            marginRight: "auto",
+            width: "150px",
+          }}
+        >
           {loading ? "Đang đăng ký..." : "Đăng ký"}
         </button>
       </form>

@@ -1,16 +1,19 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import { Button, Heading, HStack, Stack, Text } from "@chakra-ui/react";
-import { Select } from "@chakra-ui/select";
-import { Input } from "@chakra-ui/input";
-
-import { Textarea } from "@chakra-ui/textarea";
 import {
+  Button,
+  Heading,
+  HStack,
+  Stack,
+  Text,
+  Select,
+  Input,
+  Textarea,
   FormControl,
   FormLabel,
   FormErrorMessage,
-} from "@chakra-ui/form-control";
+} from "@chakra-ui/react";
 
 type Inputs = {
   ho: string;

@@ -31,7 +31,6 @@ const Header: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Logout handler
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
@@ -66,8 +65,12 @@ const Header: React.FC = () => {
           <Button
             className={styles.link}
             onClick={handleLogout}
-            ml={4}
-            background={"transparent"}
+            background="transparent"
+            padding="0 1rem" // Đồng bộ padding với .nav .link
+            height="21.6px" // Đồng bộ chiều cao với .nav .link
+            display="flex" // Căn giữa nội dung
+            alignItems="center"
+            lineHeight="21.6px" // Đảm bảo nội dung không làm tăng chiều cao
           >
             Logout
           </Button>
