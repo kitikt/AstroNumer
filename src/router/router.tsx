@@ -6,6 +6,7 @@ import AccountManagementPage from "@/pages/AccountManagementPage";
 import Analyze from "@/pages/Analyze";
 import DailyDestiny from "@/pages/DailyDestiny";
 import DashboardPage from "@/pages/DashboardPage";
+import ForgotPassword from "@/pages/ForgotPassword";
 import HomePage from "@/pages/Home/Home";
 import LoginPage from "@/pages/LoginPage";
 import MemberShip from "@/pages/MemberShip";
@@ -29,6 +30,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedAuthRoute>
         <RegisterPage />
+      </ProtectedAuthRoute>
+    ),
+  },
+  {
+    path: "/forgot-password",
+    element: (
+      <ProtectedAuthRoute>
+        <ForgotPassword />
       </ProtectedAuthRoute>
     ),
   },
