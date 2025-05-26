@@ -1,14 +1,18 @@
-import { Box, Stack, Image } from "@chakra-ui/react";
+import { Box, Stack, Image, Text, Input, Button } from "@chakra-ui/react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { Toaster, toaster } from "@/components/ui/toaster";
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleForgotPassword = async () => {
     if (!email) {
-      alert("Nhập email vào đi");
+      toaster.create({
+        title: "Thiếu email",
+        description: "Nhập email vào cái đã 🫠",
+      });
       return;
     }
 
@@ -25,13 +29,23 @@ export default function ForgotPassword() {
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || "Lỗi gửi email 😢");
+        throw new Error(data.message || "Gửi email thất bại");
       }
 
-      alert("✅ Đã gửi email khôi phục. Check mail liền tay Sếp nhé 📬");
+      toaster.create({
+        title: "Gửi email thành công 📩",
+        description: "Vào mail để đổi mật khẩu nha bạn ơi",
+      });
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error) {
       if (error instanceof Error) {
-        alert("❌ Gửi thất bại: " + error.message);
+        toaster.create({
+          title: "Lỗi gửi email 😓",
+          description: error.message,
+        });
       }
     } finally {
       setLoading(false);
@@ -45,72 +59,41 @@ export default function ForgotPassword() {
       height="100vh"
       backgroundImage={`url('/images/background.png')`}
     >
+      <Toaster />
       <Box
-        style={{
-          display: "flex",
-          width: "40%",
-          flexDirection: "column",
-          backgroundColor: "#0707077a",
-          gap: "24px",
-          padding: "40px",
-          borderRadius: "50px",
-          alignItems: "center",
-        }}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        width="30%"
+        backgroundColor="#0707077a"
+        padding="40px"
+        borderRadius="32px"
+        gap="24px"
       >
         <Image src="/images/logo.png" alt="Logo" width="80px" height="80px" />
+        <Text fontSize="lg" color="white">
+          Quên mật khẩu?
+        </Text>
 
-        <Link
-          to="/"
-          style={{
-            color: "#4299e1", // blue.400
-            fontSize: "14px",
-            alignSelf: "flex-start",
-            textDecoration: "underline",
-          }}
-        >
-          ← Quay lại trang đăng nhập
-        </Link>
-
-        <input
+        <Input
           type="email"
           placeholder="Nhập email của bạn"
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            backgroundColor: "white",
-            color: "#070707",
-            border: "none",
-            borderRadius: "4px",
-            fontSize: "16px",
-          }}
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
+          backgroundColor="white"
         />
 
-        <button
-          type="button"
+        <Button
+          colorScheme="purple"
+          hoverColor="purple.600"
           onClick={handleForgotPassword}
-          disabled={loading}
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: "#552954",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            fontSize: "16px",
-            cursor: "pointer",
-            transition: "background-color 0.2s",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = "#7c587c";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = "#552954";
-          }}
+          isLoading={loading as boolean}
+          width="100%"
         >
-          {loading ? "Đang gửi..." : "Gửi Email Khôi Phục"}
-        </button>
+          {loading ? "Đang xử lí..." : "Gửi yêu cầu đặt lại mật khẩu"}
+        </Button>
       </Box>
     </Stack>
   );

@@ -10,8 +10,9 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import HomePage from "@/pages/Home/Home";
 import LoginPage from "@/pages/LoginPage";
 import MemberShip from "@/pages/MemberShip";
-import Profile from "@/pages/Profile";
+// import Profile from "@/pages/Profile";
 import RegisterPage from "@/pages/Register";
+import ResetPassword from "@/pages/ResetPassword";
 import Result from "@/pages/Result";
 import Service from "@/pages/Service";
 import { createBrowserRouter, Navigate } from "react-router-dom";
@@ -41,7 +42,14 @@ export const router = createBrowserRouter([
       </ProtectedAuthRoute>
     ),
   },
-
+  {
+    path: "/reset-password",
+    element: (
+      <ProtectedAuthRoute>
+        <ResetPassword />
+      </ProtectedAuthRoute>
+    ),
+  },
   {
     path: "/",
     element: <DefaultLayout />,
@@ -50,7 +58,7 @@ export const router = createBrowserRouter([
       { path: "about", element: <AboutUs /> },
       { path: "service", element: <Service /> },
       { path: "membership", element: <MemberShip /> },
-      { path: "profile", element: <Profile /> },
+      // { path: "profile", element: <Profile /> },
       { path: "analyze", element: <Analyze /> },
       { path: "daily-destiny", element: <DailyDestiny /> },
       { path: "result", element: <Result /> },

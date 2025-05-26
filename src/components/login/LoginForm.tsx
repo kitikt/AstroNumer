@@ -1,26 +1,36 @@
+"use client";
+
 import { Box, HStack, Image, Text, chakra } from "@chakra-ui/react";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import styles from "@/styles/LoginForm.module.css";
+import { Toaster, toaster } from "@/components/ui/toaster";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
-// Tạo Chakra Link từ React Router Link để vừa xịn vừa tiện style
 const ChakraRouterLink = chakra(RouterLink);
 
+const loginSchema = z.object({
+  username: z.string().min(1, "Username không được để trống"),
+  password: z.string().min(1, "Password không được để trống"),
+});
+
+type LoginFormInputs = z.infer<typeof loginSchema>;
+
 export default function LoginForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { setIsLoggedIn } = useAuth();
 
-  const handleLogin = async () => {
-    if (!username || !password) {
-      alert("Nhập đầy đủ Username và Password vào cha nội 😤");
-      return;
-    }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
+  });
 
-    setLoading(true);
+  const onSubmit = async (data: LoginFormInputs) => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/v1/auth/login`,
@@ -29,44 +39,54 @@ export default function LoginForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify(data),
         }
       );
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Login thất bại 😭");
-      }
+      const resData = await response.json();
+      if (!response.ok) throw new Error(resData.message || "Login thất bại 😭");
 
-      console.log("✅ Login thành công:", data);
-      if (data.Data.Token) {
-        localStorage.setItem("token", data.Data.Token);
+      if (resData.Data.Token) {
+        localStorage.setItem("token", resData.Data.Token);
         setIsLoggedIn(true);
-        alert("Đăng nhập thành công! 🚀");
-        navigate("/");
+
+        toaster.create({
+          title: "Đăng nhập thành công",
+          description: "Bạn đã đăng nhập thành công! 🚀",
+          type: "success",
+          duration: 4000,
+        });
+
+        setTimeout(() => {
+          navigate("/");
+        }, 1200);
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.error("❌ Lỗi login:", error.message);
-        alert("Login thất bại: " + error.message);
+        toaster.create({
+          title: "Lỗi đăng nhập",
+          description: error.message,
+          type: "error",
+          duration: 4000,
+        });
       }
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <Box className={styles.form}>
+      <Toaster />
+
       <Image src="/images/logo.png" alt="Logo" width="80px" height="80px" />
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleLogin();
-        }}
-        style={{ width: "100%" }}
-      >
-        <Box className={styles.inputGroup}>
+      <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
+        <Box
+          className={styles.inputGroup}
+          display="flex"
+          flexDirection="column"
+          gap="4px"
+          mb="4"
+        >
           <label htmlFor="username" className={styles.label}>
             Username
           </label>
@@ -75,12 +95,26 @@ export default function LoginForm() {
             type="text"
             placeholder="Username"
             className={styles.input}
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            {...register("username")}
           />
+          <Text
+            color="red.500"
+            fontSize="sm"
+            minH="20px"
+            mt={1}
+            aria-live="polite"
+          >
+            {errors.username ? errors.username.message : "\u00A0"}
+          </Text>
         </Box>
 
-        <Box className={styles.inputGroup}>
+        <Box
+          className={styles.inputGroup}
+          display="flex"
+          flexDirection="column"
+          gap="4px"
+          mb="4"
+        >
           <label htmlFor="password" className={styles.label}>
             Password
           </label>
@@ -89,13 +123,31 @@ export default function LoginForm() {
             type="password"
             placeholder="Password"
             className={styles.input}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register("password")}
           />
-        </Box>
 
-        <button type="submit" className={styles.loginButton} disabled={loading}>
-          {loading ? "Đang xử lý..." : "Đăng nhập"}
+          <Text
+            color="red.500"
+            fontSize="sm"
+            minH="20px"
+            mt={1}
+            aria-live="polite"
+          >
+            {errors.password ? errors.password.message : "\u00A0"}
+          </Text>
+        </Box>
+        <button
+          type="submit"
+          className={styles.loginButton}
+          disabled={isSubmitting}
+          style={{
+            display: "block",
+            marginLeft: "auto",
+            marginRight: "auto",
+            width: "150px",
+          }}
+        >
+          {isSubmitting ? "Đang xử lý..." : "Đăng nhập"}
         </button>
       </form>
 
