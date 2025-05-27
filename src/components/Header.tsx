@@ -73,42 +73,36 @@ const Header: React.FC = () => {
           {/* Dropdown menu */}
           <div className="absolute hidden group-hover:block mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
             <div className="py-2 text-gray-700 text-sm">
-              <a
-                href="#"
+              <Link to="numerology"
                 className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
               >
                 Thần số học
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link to="#"
                 className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
               >
                 Thần số học cho con
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link to="#"
                 className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
               >
                 Trắc nghiệm DISC
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link to="#"
                 className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
               >
                 Trắc nghiệm MBTI
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link to="#"
                 className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
               >
                 Tra cứu tử vi
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link to="#"
                 className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
               >
                 Tra cứu bản đồ sao
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -116,7 +110,7 @@ const Header: React.FC = () => {
           Về chúng tôi
         </Link>
         <Link to="/service" className={styles.link}>
-          Dịch vụ
+          Gói VIP
         </Link>
         <Link to="#" className={styles.link}>
           Blog
