@@ -68,11 +68,69 @@ const Header: React.FC = () => {
         <Link to="/" className={styles.link}>
           Trang chủ
         </Link>
+        <div className="relative group inline-block text-left">
+          {/* Nút chính */}
+          <button
+            className="flex items-center gap-1 font-medium"
+            style={{ color: "#fdecfbb5" }}
+          >
+            Tra cứu
+            <svg
+              className="w-4 h-4 ml-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          {/* Dropdown menu */}
+          <div className="absolute hidden group-hover:block mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+            <div className="py-2 text-gray-700 text-sm">
+              <Link to="numerology"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+              >
+                Thần số học
+              </Link>
+              <Link to="#"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+              >
+                Thần số học cho con
+              </Link>
+              <Link to="#"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+              >
+                Trắc nghiệm DISC
+              </Link>
+              <Link to="#"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+              >
+                Trắc nghiệm MBTI
+              </Link>
+              <Link to="#"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+              >
+                Tra cứu tử vi
+              </Link>
+              <Link to="#"
+                className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
+              >
+                Tra cứu bản đồ sao
+              </Link>
+            </div>
+          </div>
+        </div>
         <Link to="/about" className={styles.link}>
           Về chúng tôi
         </Link>
         <Link to="/service" className={styles.link}>
-          Dịch vụ
+          Gói VIP
         </Link>
 
         {/* Dropdown */}
