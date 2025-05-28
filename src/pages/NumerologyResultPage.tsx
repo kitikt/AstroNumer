@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Divider from "@/components/Divider";
 
 interface NumerologyResult {
@@ -7,62 +7,69 @@ interface NumerologyResult {
   value: string | number;
 }
 
-const numerologyData: NumerologyResult[] = [
-  {
-    title: "Số Đường Đời (Life Path Number)",
-    value: 7,
-    description:
-      "Mục đích sống và bài học chính trong cuộc đời. Đây là con số nền tảng tiết lộ con đường bạn nên đi và những bài học bạn cần trải qua.",
-  },
-  {
-    title: "Số Định Mệnh (Destiny Number)",
-    value: 5,
-    description:
-      "Tiềm năng, khả năng và con đường phát triển trong cuộc đời. Con số này cho thấy bạn có thể trở thành ai và bạn cần phát triển điều gì.",
-  },
-  {
-    title: "Số Linh Hồn (Soul Urge Number)",
-    value: 9,
-    description:
-      "Mong muốn sâu thẳm, động lực nội tâm. Đây là tiếng gọi từ trái tim bạn, điều bạn thật sự khao khát.",
-  },
-  {
-    title: "Số Nhân Cách (Personality Number)",
-    value: 3,
-    description:
-      "Cách bạn được người khác nhìn nhận, hình ảnh bạn thể hiện ra bên ngoài.",
-  },
-  {
-    title: "Số Ngày Sinh (Birthday Number)",
-    value: 11,
-    description:
-      "Tài năng và điểm mạnh bẩm sinh, những gì bạn mang theo từ lúc mới sinh.",
-  },
-  {
-    title: "Số Trưởng Thành (Maturity Number)",
-    value: 8,
-    description:
-      "Thành tựu và sự phát triển khi trưởng thành. Đây là những gì bạn sẽ đạt được khi trải nghiệm đủ các bài học cuộc sống.",
-  },
-  {
-    title: "Số Thử Thách (Challenge Numbers)",
-    value: "1 - 2 - 4",
-    description:
-      "Những khó khăn chính trong các giai đoạn cuộc đời, cho thấy những bài học khó nhằn bạn cần vượt qua.",
-  },
-];
-
 const NumerologyResultPage = () => {
+  const [numerologyData, setNumerologyData] = useState<NumerologyResult[]>([]);
   const [selectedItem, setSelectedItem] = useState<NumerologyResult | null>(
     null
   );
 
+  // Lấy dữ liệu từ localStorage khi component mount
+  useEffect(() => {
+    const storedData = localStorage.getItem("numerologyData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      const updatedNumerologyData: NumerologyResult[] = [
+        {
+          title: "Số Đường Đời (Life Path Number)",
+          value: parsedData.LifePathNumber || 0,
+          description:
+            "Mục đích sống và bài học chính trong cuộc đời. Đây là con số nền tảng tiết lộ con đường bạn nên đi và những bài học bạn cần trải qua.",
+        },
+        {
+          title: "Số Định Mệnh (Destiny Number)",
+          value: parsedData.DestinyNumber || 0,
+          description:
+            "Tiềm năng, khả năng và con đường phát triển trong cuộc đời. Con số này cho thấy bạn có thể trở thành ai và bạn cần phát triển điều gì.",
+        },
+        {
+          title: "Số Linh Hồn (Soul Urge Number)",
+          value: parsedData.SoulUrgeNumber || 0,
+          description:
+            "Mong muốn sâu thẳm, động lực nội tâm. Đây là tiếng gọi từ trái tim bạn, điều bạn thật sự khao khát.",
+        },
+        {
+          title: "Số Nhân Cách (Personality Number)",
+          value: parsedData.PersonalityNumber || 0,
+          description:
+            "Cách bạn được người khác nhìn nhận, hình ảnh bạn thể hiện ra bên ngoài.",
+        },
+        {
+          title: "Số Ngày Sinh (Birthday Number)",
+          value: parsedData.BirthdayNumber || 0,
+          description:
+            "Tài năng và điểm mạnh bẩm sinh, những gì bạn mang theo từ lúc mới sinh.",
+        },
+        {
+          title: "Số Trưởng Thành (Maturity Number)",
+          value: parsedData.MaturityNumber || 0,
+          description:
+            "Thành tựu và sự phát triển khi trưởng thành. Đây là những gì bạn sẽ đạt được khi trải nghiệm đủ các bài học cuộc sống.",
+        },
+        {
+          title: "Số Thử Thách (Challenge Numbers)",
+          value: parsedData.ChallengeNumbers || "N/A",
+          description:
+            "Những khó khăn chính trong các giai đoạn cuộc đời, cho thấy những bài học khó nhằn bạn cần vượt qua.",
+        },
+      ];
+      setNumerologyData(updatedNumerologyData);
+    }
+  }, []);
+
   return (
     <div className="!w-full !px-6 !py-10 !text-center">
       <div className="!mb-12">
-        <h2 className="!text-4xl !font-bold !text-indigo-700">
-          KẾT QUẢ THẦN SỐ HỌC
-        </h2>
+        <h2 className="!text-4xl !text-indigo-700">KẾT QUẢ THẦN SỐ HỌC</h2>
         <p className="!mt-6 !text-white !max-w-2xl !mx-auto">
           Đây là phân tích chuyên sâu dựa trên thông tin cá nhân của bạn. Mỗi
           con số tiết lộ một khía cạnh quan trọng trong cuộc sống và hành trình
