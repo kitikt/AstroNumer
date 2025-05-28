@@ -1,15 +1,23 @@
 import { Box, Stack, Image } from "@chakra-ui/react";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
-  const { token, email } = useParams();
 
-  const decodedToken = token ? decodeURIComponent(token) : "";
-  const decodedEmail = email ? decodeURIComponent(email) : "";
+  const { search } = useLocation();
+const params = new URLSearchParams(search);
 
-  const [inputEmail, setInputEmail] = useState(decodedEmail);
+const queryParams: Record<string, string> = {};
+  for (const [key, value] of params.entries()) {
+    queryParams[key] = value.replace(/ /g, "+");
+  }
+
+  const token = decodeURIComponent(queryParams["token"] || "");
+  const email = decodeURIComponent(queryParams["email"] || "");
+console.log(token);
+
+  const [inputEmail, ] = useState(email);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,7 +33,7 @@ export default function ResetPassword() {
       return;
     }
 
-    if (!decodedToken) {
+    if (!token) {
       alert("Token không hợp lệ hoặc hết hạn 😵‍💫");
       return;
     }
@@ -39,7 +47,7 @@ export default function ResetPassword() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             Email: inputEmail,
-            Token: decodedToken,
+            Token: token,
             NewPassword: newPassword,
           }),
         }
@@ -82,13 +90,7 @@ export default function ResetPassword() {
       >
         <Image src="/images/logo.png" alt="Logo" width="80px" height="80px" />
 
-        <input
-          type="email"
-          placeholder="Nhập lại email"
-          value={inputEmail}
-          onChange={(e) => setInputEmail(e.target.value)}
-          style={inputStyle}
-        />
+        
         <input
           type="password"
           placeholder="Mật khẩu mới"
