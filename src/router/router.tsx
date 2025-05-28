@@ -10,6 +10,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import HomePage from "@/pages/Home/Home";
 import LoginPage from "@/pages/LoginPage";
 import MemberShip from "@/pages/MemberShip";
+import NumerologyResultPage from "@/pages/NumerologyResultPage";
 // import Profile from "@/pages/Profile";
 import RegisterPage from "@/pages/Register";
 import ResetPassword from "@/pages/ResetPassword";
@@ -55,6 +56,7 @@ export const router = createBrowserRouter([
     element: <DefaultLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: "numerology", element: <NumerologyResultPage /> },
       { path: "about", element: <AboutUs /> },
       { path: "service", element: <Service /> },
       { path: "membership", element: <MemberShip /> },
