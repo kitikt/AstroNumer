@@ -3,8 +3,10 @@ import Divider from "@/components/Divider";
 
 interface NumerologyResult {
   title: string;
-  description: string;
+  keyword: string;
+  fullDescription?: string;
   value: string | number;
+  apiEndpoint: string;
 }
 
 const NumerologyResultPage = () => {
@@ -12,62 +14,172 @@ const NumerologyResultPage = () => {
   const [selectedItem, setSelectedItem] = useState<NumerologyResult | null>(
     null
   );
+  const [error, setError] = useState<string | null>(null);
 
-  // Lấy dữ liệu từ localStorage khi component mount
   useEffect(() => {
     const storedData = localStorage.getItem("numerologyData");
     if (storedData) {
       const parsedData = JSON.parse(storedData);
-      const updatedNumerologyData: NumerologyResult[] = [
+
+      const initialNumerologyData: NumerologyResult[] = [
         {
           title: "Số Đường Đời (Life Path Number)",
           value: parsedData.LifePathNumber || 0,
-          description:
-            "Mục đích sống và bài học chính trong cuộc đời. Đây là con số nền tảng tiết lộ con đường bạn nên đi và những bài học bạn cần trải qua.",
+          keyword: "",
+          apiEndpoint: `/api/v1/numerology/core-numbers/free/${
+            parsedData.LifePathNumber || 0
+          }`,
         },
         {
           title: "Số Định Mệnh (Destiny Number)",
           value: parsedData.DestinyNumber || 0,
-          description:
-            "Tiềm năng, khả năng và con đường phát triển trong cuộc đời. Con số này cho thấy bạn có thể trở thành ai và bạn cần phát triển điều gì.",
+          keyword: "",
+          apiEndpoint: `/api/v1/numerology/destiny-numbers/${
+            parsedData.DestinyNumber || 0
+          }`,
         },
         {
           title: "Số Linh Hồn (Soul Urge Number)",
           value: parsedData.SoulUrgeNumber || 0,
-          description:
-            "Mong muốn sâu thẳm, động lực nội tâm. Đây là tiếng gọi từ trái tim bạn, điều bạn thật sự khao khát.",
+          keyword: "",
+          apiEndpoint: `/api/v1/numerology/soul-urge-numbers/${
+            parsedData.SoulUrgeNumber || 0
+          }`,
         },
         {
           title: "Số Nhân Cách (Personality Number)",
           value: parsedData.PersonalityNumber || 0,
-          description:
-            "Cách bạn được người khác nhìn nhận, hình ảnh bạn thể hiện ra bên ngoài.",
+          keyword: "",
+          apiEndpoint: `/api/v1/numerology/core-numbers/free/${
+            parsedData.PersonalityNumber || 0
+          }`,
         },
         {
           title: "Số Ngày Sinh (Birthday Number)",
           value: parsedData.BirthdayNumber || 0,
-          description:
-            "Tài năng và điểm mạnh bẩm sinh, những gì bạn mang theo từ lúc mới sinh.",
+          keyword: "",
+          apiEndpoint: `/api/v1/numerology/core-numbers/free/${
+            parsedData.BirthdayNumber || 0
+          }`,
         },
         {
           title: "Số Trưởng Thành (Maturity Number)",
           value: parsedData.MaturityNumber || 0,
-          description:
-            "Thành tựu và sự phát triển khi trưởng thành. Đây là những gì bạn sẽ đạt được khi trải nghiệm đủ các bài học cuộc sống.",
+          keyword: "",
+          apiEndpoint: `/api/v1/numerology/core-numbers/free/${
+            parsedData.MaturityNumber || 0
+          }`,
         },
         {
           title: "Số Thử Thách (Challenge Numbers)",
           value: parsedData.ChallengeNumbers || "N/A",
-          description:
-            "Những khó khăn chính trong các giai đoạn cuộc đời, cho thấy những bài học khó nhằn bạn cần vượt qua.",
+          keyword: "",
+          apiEndpoint:
+            parsedData.ChallengeNumbers && parsedData.ChallengeNumbers !== "N/A"
+              ? `/api/v1/numerology/destiny-numbers/${parsedData.ChallengeNumbers}`
+              : "",
         },
       ];
-      setNumerologyData(updatedNumerologyData);
+
+      // Fetch keywords for each number
+      const fetchKeywords = async () => {
+        try {
+          const updatedData = await Promise.all(
+            initialNumerologyData.map(async (item) => {
+              if (!item.apiEndpoint || item.value === "N/A") {
+                return { ...item, keyword: "Không có dữ liệu" };
+              }
+              try {
+                const response = await fetch(
+                  `${import.meta.env.VITE_API_URL}${item.apiEndpoint}`
+                );
+                if (!response.ok) {
+                  throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+                }
+                const result = await response.json();
+                if (result.StatusCode === 200 && result.Success) {
+                  return {
+                    ...item,
+                    keyword: result.Data?.keyword || result.Data?.Keyword,
+                  };
+                }
+                return { ...item, keyword: "Lỗi khi tải dữ liệu" };
+              } catch (error) {
+                console.error(`Lỗi khi lấy từ khóa cho ${item.title}:`, error);
+                return { ...item, keyword: "Lỗi khi tải dữ liệu" };
+              }
+            })
+          );
+          setNumerologyData(updatedData);
+        } catch (error) {
+          console.error("Lỗi tổng quát khi lấy dữ liệu:", error);
+          setError("Không thể tải dữ liệu thần số học. Vui lòng thử lại sau.");
+        }
+      };
+
+      fetchKeywords();
     }
   }, []);
 
+  const handleOpenModal = async (item: NumerologyResult) => {
+    if (!item.fullDescription) {
+      try {
+        if (!item.apiEndpoint || item.value === "N/A") {
+          setSelectedItem({
+            ...item,
+            fullDescription: "Không có dữ liệu chi tiết",
+          });
+          return;
+        }
+
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}${item.apiEndpoint}`
+        );
+        if (!response.ok) {
+          throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+        }
+        const result = await response.json();
+        if (result.StatusCode === 200 && result.Success) {
+          // Lấy dữ liệu từ free_version
+          const summary =
+            result.Data?.free_version?.summary || "Không có tóm tắt";
+          const highlight =
+            result.Data?.free_version?.highlight || "Không có điểm nổi bật";
+          const fullDescription = `${summary}\n\nĐiểm nổi bật: ${highlight}`; // Kết hợp summary và highlight
+
+          const updatedItem = {
+            ...item,
+            fullDescription,
+          };
+          setSelectedItem(updatedItem);
+
+          // Cập nhật numerologyData để lưu fullDescription
+          setNumerologyData((prevData) =>
+            prevData.map((dataItem) =>
+              dataItem.title === item.title ? updatedItem : dataItem
+            )
+          );
+        } else {
+          setSelectedItem({
+            ...item,
+            fullDescription: "Lỗi khi tải mô tả chi tiết",
+          });
+        }
+      } catch (error) {
+        console.error(`Lỗi khi lấy mô tả chi tiết cho ${item.title}:`, error);
+        setSelectedItem({
+          ...item,
+          fullDescription: "Lỗi khi tải mô tả chi tiết",
+        });
+      }
+    } else {
+      setSelectedItem(item); // Nếu đã có mô tả, sử dụng nó
+    }
+  };
+
   return (
     <div className="!w-full !px-6 !py-10 !text-center">
+      {error && <div className="!text-red-600 !mb-4">{error}</div>}
       <div className="!mb-12">
         <h2 className="!text-4xl !text-indigo-700">KẾT QUẢ THẦN SỐ HỌC</h2>
         <p className="!mt-6 !text-white !max-w-2xl !mx-auto">
@@ -92,11 +204,11 @@ const NumerologyResultPage = () => {
               {item.value}
             </p>
             <p className="!text-sm !text-gray-700 !text-center">
-              {item.description}
+              {item.keyword}
             </p>
 
             <button
-              onClick={() => setSelectedItem(item)}
+              onClick={() => handleOpenModal(item)}
               className="!mt-4 !text-indigo-600 !text-sm hover:!underline"
             >
               Nhấn để xem chi tiết
@@ -105,7 +217,6 @@ const NumerologyResultPage = () => {
         ))}
       </div>
 
-      {/* Modal hiển thị chi tiết */}
       {selectedItem && (
         <div className="!fixed !inset-0 !bg-black !bg-opacity-50 !flex !items-center !justify-center !z-50">
           <div className="!bg-white !p-6 !rounded-xl !max-w-md !w-full !text-left">
@@ -116,7 +227,7 @@ const NumerologyResultPage = () => {
               {selectedItem.value}
             </p>
             <p className="!text-gray-700 !text-sm">
-              {selectedItem.description}
+              {selectedItem.fullDescription || "Đang tải..."}
             </p>
             <button
               onClick={() => setSelectedItem(null)}

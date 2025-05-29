@@ -5,6 +5,7 @@
       "ESNext",
       "DOM"
     ],
+    "noImplicitAny": false,
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
