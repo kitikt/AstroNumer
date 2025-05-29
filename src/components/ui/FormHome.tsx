@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface FormHomeProps {
   onClose: () => void;
@@ -7,15 +8,16 @@ interface FormHomeProps {
 
 const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    month: "MM",
     day: "DD",
+    month: "MM",
     year: "YYYY",
     fullName: "",
   });
 
   const months = [
-    "MM",
+    "Tháng",
     "01",
     "02",
     "03",
@@ -31,13 +33,13 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
   ];
 
   const days = [
-    "DD",
+    "Ngày",
     ...Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0")),
   ];
 
   const currentYear = new Date().getFullYear();
   const years = [
-    "YYYY",
+    "Năm",
     ...Array.from({ length: 100 }, (_, i) => String(currentYear - i)),
   ];
 
@@ -70,7 +72,6 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
       setCurrentPage(2);
     } else if (currentPage === 2 && canContinueFromPage2) {
       try {
-        // Gọi API
         const response = await fetch(
           `${import.meta.env.VITE_API_URL}/api/v1/numerology/calculate`,
           {
@@ -89,16 +90,13 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
 
         const result = await response.json();
 
-        // Kiểm tra nếu API trả về thành công
         if (result.StatusCode === 200 && result.Success) {
-          // Lưu dữ liệu từ API vào localStorage
           localStorage.setItem("numerologyData", JSON.stringify(result.Data));
           console.log("Numerology data saved successfully!", result.Data);
 
-          // Gọi onSubmit để đóng form
           onSubmit();
+          navigate("/numerology");
         } else {
-          // Xử lý lỗi nếu API thất bại
           console.error("API call failed:", result.Message);
           alert("Có lỗi xảy ra khi tính toán số học. Vui lòng thử lại!");
         }
@@ -112,6 +110,17 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
   const handleBack = () => {
     if (currentPage === 2) {
       setCurrentPage(1);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent any default behavior (e.g., form submission if wrapped in a form)
+      if (currentPage === 1 && canContinueFromPage1) {
+        handleContinue();
+      } else if (currentPage === 2 && canContinueFromPage2) {
+        handleContinue();
+      }
     }
   };
 
@@ -199,30 +208,20 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
   };
 
   return (
-    <div style={cardStyle}>
+    <div style={cardStyle} onKeyDown={handleKeyDown} tabIndex={0}>
       {/* Page 1: Birthday */}
       {currentPage === 1 && (
         <div>
-          <h1 style={titleStyle}>When's your birthday</h1>
+          <h1 style={titleStyle}>
+            Cho Chúng Tớ Xin Ngày Tháng Năm Sinh Của Bạn !
+          </h1>
           <p style={descriptionStyle}>
-            We use this information for age verification and to personalize your
-            experience. We won't share your birthday publicly without your
-            permission.
+            Chúng tớ sử dụng thông tin này để xác minh độ tuổi và cá nhân hóa
+            trải nghiệm của bạn. Chúng tớ cam kết không chia sẻ ngày sinh của
+            bạn công khai nếu không có sự cho phép từ bạn.
           </p>
 
           <div style={{ display: "flex", gap: "12px", marginBottom: "32px" }}>
-            <select
-              value={formData.month}
-              onChange={(e) => handleSelectChange("month", e.target.value)}
-              style={selectStyle}
-            >
-              {months.map((month) => (
-                <option key={month} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
-
             <select
               value={formData.day}
               onChange={(e) => handleSelectChange("day", e.target.value)}
@@ -231,6 +230,18 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
               {days.map((day) => (
                 <option key={day} value={day}>
                   {day}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={formData.month}
+              onChange={(e) => handleSelectChange("month", e.target.value)}
+              style={selectStyle}
+            >
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
                 </option>
               ))}
             </select>
@@ -265,30 +276,29 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
               }
             }}
           >
-            Continue
+            Tiếp Tục
           </button>
 
           <div style={{ textAlign: "center" }}>
             <button onClick={onClose} style={linkButtonStyle}>
-              Cancel
+              Hủy bỏ
             </button>
           </div>
         </div>
       )}
 
-      {/* Page 2: Full Name */}
       {currentPage === 2 && (
         <div>
-          <h1 style={titleStyle}>What's your full name</h1>
+          <h1 style={titleStyle}>Cho Chúng Tớ Xin Tên Đầy Đủ Của Bạn</h1>
           <p style={descriptionStyle}>
-            Please enter your full name as it appears on your official
-            documents. This helps us verify your identity and personalize your
-            experience.
+            Nhập đầy đủ họ tên của bạn (giống trên giấy tờ tùy thân nhé!) Thông
+            tin này giúp tụi mình xác minh danh tính và mang đến trải nghiệm phù
+            hợp hơn cho bạn.
           </p>
 
           <input
             type="text"
-            placeholder="Enter your full name"
+            placeholder="Nhập tên đầy đủ của bạn"
             value={formData.fullName}
             onChange={handleInputChange}
             style={inputStyle}
@@ -315,11 +325,11 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
               }
             }}
           >
-            Continue
+            Tiếp Tục
           </button>
 
           <button onClick={handleBack} style={secondaryButtonStyle}>
-            Back
+            Quay Lại
           </button>
 
           <div style={{ textAlign: "center" }}>

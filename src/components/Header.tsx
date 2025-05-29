@@ -90,7 +90,7 @@ const Header: React.FC = () => {
           </button>
           {isDropdownOpen && (
             <div className={styles.dropdownMenu}>
-              <Link to="/lookup/astrology" className={styles.dropdownItem}>
+              <Link to="/form" className={styles.dropdownItem}>
                 Thần Số Học
               </Link>
               <Link to="/lookup/numerology" className={styles.dropdownItem}>

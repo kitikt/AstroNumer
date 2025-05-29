@@ -1,6 +1,6 @@
-import { Box, BoxProps } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 
-export interface DividerProps extends BoxProps {
+export interface DividerProps {
   width?: string;
 
   height?: string;

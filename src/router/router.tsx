@@ -1,4 +1,5 @@
 import ProtectedAuthRoute from "@/components/ProtectedAuthRoute";
+import ProtectedFormRoute from "@/components/ProtectedRouteForm";
 import AdminLayout from "@/layouts/AdminLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import AboutUs from "@/pages/AboutUs";
@@ -7,6 +8,7 @@ import Analyze from "@/pages/Analyze";
 import DailyDestiny from "@/pages/DailyDestiny";
 import DashboardPage from "@/pages/DashboardPage";
 import ForgotPassword from "@/pages/ForgotPassword";
+import FormPage from "@/pages/FormPage";
 import HomePage from "@/pages/Home/Home";
 import LoginPage from "@/pages/LoginPage";
 import MemberShip from "@/pages/MemberShip";
@@ -51,6 +53,7 @@ export const router = createBrowserRouter([
       </ProtectedAuthRoute>
     ),
   },
+
   {
     path: "/",
     element: <DefaultLayout />,
@@ -64,6 +67,14 @@ export const router = createBrowserRouter([
       { path: "analyze", element: <Analyze /> },
       { path: "daily-destiny", element: <DailyDestiny /> },
       { path: "result", element: <Result /> },
+      {
+        path: "/form/",
+        element: (
+          <ProtectedFormRoute>
+            <FormPage />
+          </ProtectedFormRoute>
+        ),
+      },
     ],
   },
   {
