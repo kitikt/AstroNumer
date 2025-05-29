@@ -196,7 +196,7 @@ export default function RegisterForm() {
 
       <HStack fontSize="sm" mt={4}>
         <Text>Đã có tài khoản? </Text>
-        <ChakraRouterLink to="/" color="blue.500">
+        <ChakraRouterLink to="/login" color="blue.500">
           Đăng nhập
         </ChakraRouterLink>
       </HStack>

@@ -166,7 +166,6 @@ const EightSection = () => {
           </button>
         </div>
       </div>
-      ``
     </section>
   );
 };

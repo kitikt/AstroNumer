@@ -1,7 +1,6 @@
-import { Box, BoxProps } from "@chakra-ui/react";
-interface DividerProps extends BoxProps {
-  className?: string;
-}
+import { Box } from "@chakra-ui/react";
+import { DividerProps } from "./VerticalDivider";
+
 const Divider: React.FC<DividerProps> = () => {
   return (
     <Box
