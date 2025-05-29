@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.14.0",
     "@hookform/resolvers": "^5.0.1",
     "framer-motion": "^12.15.0",
+    "lucide-react": "^0.511.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.4",
