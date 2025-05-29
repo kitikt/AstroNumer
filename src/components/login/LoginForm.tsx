@@ -48,6 +48,9 @@ export default function LoginForm() {
 
       if (resData.Data.Token) {
         localStorage.setItem("token", resData.Data.Token);
+        console.log(resData.Data.Id);
+        
+        localStorage.setItem("user", JSON.stringify(resData.Data.Id));
         setIsLoggedIn(true);
 
         toaster.create({
