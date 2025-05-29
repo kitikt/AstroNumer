@@ -5,6 +5,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import AboutUs from "@/pages/AboutUs";
 import AccountManagementPage from "@/pages/AccountManagementPage";
 import Analyze from "@/pages/Analyze";
+import PaymentCancelPage from "@/pages/Cancel";
 import DailyDestiny from "@/pages/DailyDestiny";
 import DashboardPage from "@/pages/DashboardPage";
 import ForgotPassword from "@/pages/ForgotPassword";
@@ -17,6 +18,7 @@ import NumerologyResultPage from "@/pages/NumerologyResultPage";
 import RegisterPage from "@/pages/Register";
 import ResetPassword from "@/pages/ResetPassword";
 import Result from "@/pages/Result";
+import PaymentReturnPage from "@/pages/Return";
 import Service from "@/pages/Service";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
@@ -67,6 +69,9 @@ export const router = createBrowserRouter([
       { path: "analyze", element: <Analyze /> },
       { path: "daily-destiny", element: <DailyDestiny /> },
       { path: "result", element: <Result /> },
+      { path: "/payment/cancel", element: <PaymentCancelPage /> },
+      { path: "/payment/success", element: <PaymentReturnPage /> },
+
       {
         path: "/form/",
         element: (
