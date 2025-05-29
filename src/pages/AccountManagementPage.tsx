@@ -13,7 +13,7 @@ import {
 import { FaArrowRightArrowLeft, FaChevronRight } from "react-icons/fa6";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AddIcon } from "@chakra-ui/icons";
+import { FaPlus } from "react-icons/fa";
 
 interface Account {
   id: number;
@@ -76,7 +76,7 @@ const AccountManagementPage = () => {
           <Card.Header py={3} border={"1px solid gainsboro"}>
             <HStack w={"full"} justify={"flex-end"} gap={5}>
               <Button colorPalette="blue">
-                <AddIcon /> Tạo
+                <FaPlus /> Tạo
               </Button>
             </HStack>
           </Card.Header>
