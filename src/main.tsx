@@ -3,8 +3,8 @@ import ReactDOM from "react-dom/client";
 import "./styles/global.css";
 import { RouterProvider } from "react-router-dom";
 import { router } from "@/router/router";
-import { AuthProvider } from "./context/AuthProvider";
-import { Provider } from "./components/ui/Provider";
+import { Provider } from "@/components/ui/Provider";
+import { AuthProvider } from "@/context/AuthProvider";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
