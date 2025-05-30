@@ -15,6 +15,8 @@ interface ServicePackage {
 const Service = () => {
   const [premiumPackages, setPremiumPackages] = useState<ServicePackage[]>([]);
   const [addonPackages, setAddonPackages] = useState<ServicePackage[]>([]);
+  console.log(addonPackages);
+  
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState<number | null>(
@@ -47,8 +49,10 @@ const Service = () => {
 
   const handleBuy = async (serviceId: number, quantity: number) => {
     try {
-      const Id = localStorage.getItem("user");
+      const Id = JSON.parse(localStorage.getItem("user") || "null");
 
+      console.log(Id);
+      
       if (!Id) {
     alert("Vui lòng đăng nhập để tiếp tục.");
     return;
