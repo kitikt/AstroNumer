@@ -70,13 +70,13 @@ class ApiClient<T> {
             .then((res) => res.data)
     }
 
-    getDetailUnauthen = (id: number, config?: AxiosRequestConfig) => {
+    getDetailUnauthen = (id: string, config?: AxiosRequestConfig) => {
         return axiosInstance
             .get<T>(this.endpoint + '/' + id, config)
             .then((res) => res.data)
     }
 
-    getDetail = (id: number, config?: AxiosRequestConfig) => {
+    getDetail = (id: string, config?: AxiosRequestConfig) => {
         return axiosInstance
             .get<T>(this.endpoint + '/' + id, this.setAuthHeader(config))
             .then((res) => res.data)
@@ -88,13 +88,13 @@ class ApiClient<T> {
             .then((res) => res.data)
     }
 
-    createWithId = (id: number, config?: AxiosRequestConfig) => {
+    createWithId = (id: string, config?: AxiosRequestConfig) => {
         return axiosInstance
             .post<T>(this.endpoint + '/' + id, {}, this.setAuthHeader(config))
             .then((res) => res.data)
     }
 
-    createWithIdAndData = (id: number, data: T, config?: AxiosRequestConfig) => {
+    createWithIdAndData = (id: string, data: T, config?: AxiosRequestConfig) => {
         return axiosInstance
             .post<T>(this.endpoint + '/' + id, data, this.setAuthHeader(config))
             .then((res) => res.data)
@@ -106,22 +106,28 @@ class ApiClient<T> {
             .then((res) => res.data)
     }
 
-    updateWithId = (id: number, config?: AxiosRequestConfig) => {
+    updateWithId = (id: string, config?: AxiosRequestConfig) => {
         return axiosInstance
             .put<T>(this.endpoint + '/' + id, {}, this.setAuthHeader(config))
             .then((res) => res.data)
     }
 
-    updateWithIdAndData = (id: number, data: T, config?: AxiosRequestConfig) => {
+    updateWithIdAndData = (id: string, data: T, config?: AxiosRequestConfig) => {
         return axiosInstance
             .put<T>(this.endpoint + '/' + id, data, this.setAuthHeader(config))
             .then((res) => res.data)
     }
 
-    delete = (id: number, config?: AxiosRequestConfig) => {
+    delete = (id: string, config?: AxiosRequestConfig) => {
         return axiosInstance
             .delete<T>(this.endpoint + '/' + id, this.setAuthHeader(config))
             .then((res) => res.data)
+    }
+
+    patchStatus = (id: string, status: string, config?: AxiosRequestConfig) => {
+        return axiosInstance
+            .patch<T>(this.endpoint + '/' + id + '/' + status, this.setAuthHeader(config))
+            .then((res) => res.data);
     }
 }
 

@@ -10,11 +10,12 @@ import {
 import { FaChevronRight, FaLock, FaLockOpen } from "react-icons/fa6";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaPlus } from "react-icons/fa";
 import ApiClient from "@/services/apiClient";
+import CreateAccountDialog from "./CreateAccountDialog";
+import ChangeStatusDialog from "@/components/ChangeStatusDialog";
 
 interface Account {
-    Id: number;
+    Id: string;
     FullName: string
     Email: string;
     PhoneNumber: string;
@@ -90,9 +91,7 @@ const AccountManagementPage = () => {
                 <Card.Root bg={"black"}>
                     <Card.Header py={3} border={"1px solid gainsboro"}>
                         <HStack w={"full"} justify={"flex-end"} gap={5}>
-                            <Button colorPalette="blue">
-                                <FaPlus /> Tạo
-                            </Button>
+                            <CreateAccountDialog />
                         </HStack>
                     </Card.Header>
                     <Table.Root w="full" overflowY="auto" whiteSpace="normal">
@@ -158,7 +157,7 @@ const AccountManagementPage = () => {
                                             </Tag.Root>
                                         </Table.Cell>
                                         <Table.Cell textAlign="center">
-                                            <Button
+                                            {/* <Button
                                                 borderRadius="full"
                                                 px={1}
                                                 colorPalette={
@@ -173,12 +172,16 @@ const AccountManagementPage = () => {
                                                         setStatus(true);
                                                     }
                                                 }}
-                                            >{account.IsActive ? <FaLock /> : <FaLockOpen />}</Button>
+                                            >{account.IsActive ? <FaLock /> : <FaLockOpen />}</Button> */}
+                                            <ChangeStatusDialog
+                                                isActive={account.IsActive}
+                                                userId={account.Id}
+                                            />
                                         </Table.Cell>
                                         <Table.Cell
                                             textAlign="center"
                                             cursor="pointer"
-                                            onClick={() => navigate(account.Id.toString())}
+                                            onClick={() => navigate(account.Id)}
                                         >
                                             <Icon as={FaChevronRight} color={"white"} />
                                         </Table.Cell>
@@ -186,7 +189,7 @@ const AccountManagementPage = () => {
                                 ))
                             ) : (
                                 <Table.Row bg={"black"}>
-                                    <Table.Cell colSpan={6} color={"white"} textAlign="center">
+                                    <Table.Cell colSpan={8} color={"white"} textAlign="center">
                                         Không có tài khoản nào
                                     </Table.Cell>
                                 </Table.Row>
