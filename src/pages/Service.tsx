@@ -16,7 +16,7 @@ const Service = () => {
   const [premiumPackages, setPremiumPackages] = useState<ServicePackage[]>([]);
   const [addonPackages, setAddonPackages] = useState<ServicePackage[]>([]);
   console.log(addonPackages);
-  
+
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState<number | null>(
@@ -27,7 +27,7 @@ const Service = () => {
     const fetchServices = async () => {
       try {
         const response = await fetch(
-          "http://160.191.51.56:8081/api/v1/service-package?page-size=100"
+          `${import.meta.env.VITE_API_URL}/api/v1/service-package?page-size=100`
         );
         const result = await response.json();
         const services: ServicePackage[] = result.Data.Data;
@@ -52,13 +52,13 @@ const Service = () => {
       const Id = JSON.parse(localStorage.getItem("user") || "null");
 
       console.log(Id);
-      
+
       if (!Id) {
-    alert("Vui lòng đăng nhập để tiếp tục.");
-    return;
-  } 
-  console.log(serviceId, quantity);
-  
+        alert("Vui lòng đăng nhập để tiếp tục.");
+        return;
+      }
+      console.log(serviceId, quantity);
+
       const response = await fetch(
         "http://160.191.51.56:8081/api/v1/payment/create-link",
         {
@@ -68,10 +68,10 @@ const Service = () => {
           },
 
           body: JSON.stringify({
-        Id: Id, // string
-        ServiceId: serviceId, // number
-        quantity: quantity, // number
-      }),
+            Id: Id, // string
+            ServiceId: serviceId, // number
+            quantity: quantity, // number
+          }),
         }
       );
 
