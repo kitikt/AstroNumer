@@ -1,12 +1,23 @@
-import { Navigate } from "react-router-dom";
-
+import { Navigate, useLocation } from "react-router-dom";
 import { ReactNode } from "react";
 
-const ProtectedFormRoute = ({ children }: { children: ReactNode }) => {
-  const numerologyData = localStorage.getItem("numerologyData");
+interface ProtectedFormRouteProps {
+  children: ReactNode;
+  dataKey: string;
+  redirectPath: string;
+}
 
-  if (numerologyData) {
-    return <Navigate to="/numerology" replace />;
+const ProtectedFormRoute = ({
+  children,
+  dataKey,
+  redirectPath,
+}: ProtectedFormRouteProps) => {
+  const formData = localStorage.getItem(dataKey);
+  const location = useLocation();
+
+  // Chỉ điều hướng nếu không phải đang ở redirectPath
+  if (formData && location.pathname !== redirectPath) {
+    return <Navigate to={redirectPath} replace />;
   }
 
   return children;

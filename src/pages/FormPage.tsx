@@ -1,24 +1,20 @@
-import FormHome from "@/components/ui/FormHome";
 import { Stack } from "@chakra-ui/react";
+import { ComponentType } from "react";
 
-const FormPage = () => {
-  const handleClose = () => {
-    console.log("Form closed");
-  };
+interface FormPageProps {
+  FormComponent: ComponentType;
+}
 
-  const handleSubmit = () => {
-    console.log("Form submitted");
-  };
-
+const FormPage = ({ FormComponent }: FormPageProps) => {
   return (
     <Stack
       spacing={4}
       padding={4}
       height="81.2vh"
-      overflowY="hidden" // This should hide the scrollbar for Stack
-      align="center" // Center the FormHome component
+      overflowY="hidden"
+      align="center"
     >
-      <FormHome onClose={handleClose} onSubmit={handleSubmit} />
+      <FormComponent />
     </Stack>
   );
 };

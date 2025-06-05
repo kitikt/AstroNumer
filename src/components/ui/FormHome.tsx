@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-interface FormHomeProps {
-  onClose: () => void;
-  onSubmit: () => void;
-}
-
-const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
+const FormHome: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -94,7 +89,6 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
           localStorage.setItem("numerologyData", JSON.stringify(result.Data));
           console.log("Numerology data saved successfully!", result.Data);
 
-          onSubmit();
           navigate("/numerology");
         } else {
           console.error("API call failed:", result.Message);
@@ -198,15 +192,6 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
     marginBottom: "24px",
   };
 
-  const linkButtonStyle = {
-    background: "none",
-    border: "none",
-    fontSize: "16px",
-    fontWeight: "500",
-    cursor: "pointer",
-    textDecoration: "underline",
-  };
-
   return (
     <div style={cardStyle} onKeyDown={handleKeyDown} tabIndex={0}>
       {/* Page 1: Birthday */}
@@ -278,12 +263,6 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
           >
             Tiếp Tục
           </button>
-
-          <div style={{ textAlign: "center" }}>
-            <button onClick={onClose} style={linkButtonStyle}>
-              Hủy bỏ
-            </button>
-          </div>
         </div>
       )}
 
@@ -331,12 +310,6 @@ const FormHome: React.FC<FormHomeProps> = ({ onClose, onSubmit }) => {
           <button onClick={handleBack} style={secondaryButtonStyle}>
             Quay Lại
           </button>
-
-          <div style={{ textAlign: "center" }}>
-            <button onClick={onClose} style={linkButtonStyle}>
-              Cancel
-            </button>
-          </div>
         </div>
       )}
     </div>
