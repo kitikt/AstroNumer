@@ -81,9 +81,8 @@ const Header: React.FC = () => {
           <button onClick={toggleDropdown} className={styles.link}>
             Tra cứu
             <span
-              className={`${styles.arrow} ${
-                isDropdownOpen ? styles.arrowOpen : ""
-              }`}
+              className={`${styles.arrow} ${isDropdownOpen ? styles.arrowOpen : ""
+                }`}
             >
               ▲
             </span>
@@ -113,7 +112,7 @@ const Header: React.FC = () => {
         </div>
 
         <Link to="#" className={styles.link}>
-          Blog
+          Bài viết
         </Link>
         <Link to="#" className={styles.link}>
           Liên hệ
@@ -130,7 +129,7 @@ const Header: React.FC = () => {
             alignItems="center"
             lineHeight="21.6px"
           >
-            Logout
+            Đăng xuất
           </Button>
         ) : (
           <Link
