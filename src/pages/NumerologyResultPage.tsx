@@ -3,6 +3,25 @@ import { Box, Text, Grid, Button } from "@chakra-ui/react";
 import Divider from "@/components/Divider";
 import "@/styles/NumerologyResultPage.css";
 
+// Mock API response for Destiny Number 1
+const mockApiResponse = {
+  StatusCode: 200,
+  Success: true,
+  Message: "Lấy thông tin số định mệnh 1 thành công",
+  Data: {
+    Number: 1,
+    Keyword: "Lãnh đạo",
+    Career: "Doanh nhân, nhà cải cách, quản lý cấp cao, sáng lập startup",
+    Mission: "Dẫn dắt, truyền cảm hứng và khơi nguồn sáng tạo mới",
+    Traits: "Quyết đoán, có ý chí mạnh mẽ, định hướng rõ ràng",
+    Lesson: "Tin tưởng vào bản thân, biết cách lãnh đạo không độc đoán",
+    Challenges: "Cứng đầu, ích kỷ, ngại hợp tác",
+  },
+  Errors: [],
+  TraceId: "0HND2ADQH5RER:00000001",
+  Meta: null,
+};
+
 interface NumerologyResult {
   title: string;
   keyword: string;
@@ -44,7 +63,7 @@ const NumerologyResultPage = () => {
           title: "Số Linh Hồn (Soul Urge Number)",
           value: parsedData.SoulUrgeNumber || 0,
           keyword: "",
-          apiEndpoint: `/api/v1/numerology/core-numbers/free/${
+          apiEndpoint: `/api/v1/numerology/soul-urge-numbers/${
             parsedData.SoulUrgeNumber || 0
           }`,
         },
@@ -60,7 +79,7 @@ const NumerologyResultPage = () => {
           title: "Số Ngày Sinh (Birthday Number)",
           value: parsedData.BirthdayNumber || 0,
           keyword: "",
-          apiEndpoint: `/api/v1/numerology/core-numbers/free/${
+          apiEndpoint: `/api/v1/numerology/birthday-numbers/${
             parsedData.BirthdayNumber || 0
           }`,
         },
@@ -68,7 +87,7 @@ const NumerologyResultPage = () => {
           title: "Số Trưởng Thành (Maturity Number)",
           value: parsedData.MaturityNumber || 0,
           keyword: "",
-          apiEndpoint: `/api/v1/numerology/core-numbers/free/${
+          apiEndpoint: `/api/v1/numerology/maturity-numbers/${
             parsedData.MaturityNumber || 0
           }`,
         },
@@ -91,6 +110,16 @@ const NumerologyResultPage = () => {
                 return { ...item, keyword: "Không có dữ liệu" };
               }
               try {
+                // Simulate API call for Destiny Number 1
+                if (
+                  item.title === "Số Định Mệnh (Destiny Number)" &&
+                  item.value === 1
+                ) {
+                  return {
+                    ...item,
+                    keyword: mockApiResponse.Data.Keyword || "Không có từ khóa",
+                  };
+                }
                 const response = await fetch(
                   `${import.meta.env.VITE_API_URL}${item.apiEndpoint}`
                 );
@@ -101,7 +130,10 @@ const NumerologyResultPage = () => {
                 if (result.StatusCode === 200 && result.Success) {
                   return {
                     ...item,
-                    keyword: result.Data?.keyword || result.Data?.Keyword,
+                    keyword:
+                      result.Data?.keyword ||
+                      result.Data?.Keyword ||
+                      "Không có từ khóa",
                   };
                 }
                 return { ...item, keyword: "Lỗi khi tải dữ liệu" };
@@ -133,23 +165,49 @@ const NumerologyResultPage = () => {
           return;
         }
 
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}${item.apiEndpoint}`
-        );
-        if (!response.ok) {
-          throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+        let result;
+        // Use mock API response for Destiny Number 1
+        if (
+          item.title === "Số Định Mệnh (Destiny Number)" &&
+          item.value === 1
+        ) {
+          result = mockApiResponse;
+        } else {
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}${item.apiEndpoint}`
+          );
+          if (!response.ok) {
+            throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+          }
+          result = await response.json();
         }
-        const result = await response.json();
+
         if (result.StatusCode === 200 && result.Success) {
-          const summary =
-            result.Data?.free_version?.summary || "Không có tóm tắt";
-          const highlight =
-            result.Data?.free_version?.highlight || "Không có điểm nổi bật";
-          const fullDescription = `${summary}\n\nĐiểm nổi bật: ${highlight}`;
+          let fullDescription = "";
+
+          if (item.title === "Số Định Mệnh (Destiny Number)") {
+            const { Mission, Traits, Lesson, Challenges } = result.Data;
+            fullDescription = `Nhiệm vụ: ${Mission}\n\nĐặc điểm: ${Traits}\n\nBài học: ${Lesson}\n\nThách thức: ${Challenges}`;
+          } else if (item.title === "Số Linh Hồn (Soul Urge Number)") {
+            const { Description, inner_motivation, Challenges, deep_analysis } =
+              result.Data;
+            fullDescription = `${Description}\n\nĐộng lực bên trong: ${inner_motivation}\n\nThách thức: ${Challenges}\n\nPhân tích sâu: ${deep_analysis}`;
+          } else if (item.title === "Số Ngày Sinh (Birthday Number)") {
+            const { Description, Challenge } = result.Data;
+            fullDescription = `${Description}\n\nThách thức: ${Challenge}`;
+          } else if (item.title === "Số Trưởng Thành (Maturity Number)") {
+            const { Description } = result.Data;
+            fullDescription = Description;
+          } else {
+            const summary =
+              result.Data?.free_version?.summary || "Không có tóm tắt";
+            const highlight =
+              result.Data?.free_version?.highlight || "Không có điểm nổi bật";
+            fullDescription = `${summary}\n\nĐiểm nổi bật: ${highlight}`;
+          }
 
           const updatedItem = { ...item, fullDescription };
           setSelectedItem(updatedItem);
-
           setNumerologyData((prevData) =>
             prevData.map((dataItem) =>
               dataItem.title === item.title ? updatedItem : dataItem

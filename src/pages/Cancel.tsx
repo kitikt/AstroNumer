@@ -43,24 +43,21 @@ const PaymentCancelPage = () => {
     cancelReason: "",
     expiryTime: null,
   });
-  const [timeRemaining, setTimeRemaining] = useState(900); // 15 minutes in seconds
+  const [timeRemaining, setTimeRemaining] = useState(900);
 
   useEffect(() => {
     const loadOrderData = () => {
       try {
-        // Get data from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const cancel = urlParams.get("cancel");
         const orderCode = urlParams.get("orderCode");
         const id = urlParams.get("id");
 
-        // Get stored order data from memory
         const storedData = JSON.parse(
           localStorage.getItem("pendingOrder") || "{}"
         );
         const cartData = JSON.parse(localStorage.getItem("cartItems") || "[]");
 
-        // Merge URL params with stored data
         const finalOrderData = {
           orderId:
             orderCode ||
@@ -84,12 +81,11 @@ const PaymentCancelPage = () => {
             ],
           timestamp: new Date().toLocaleString("vi-VN"),
           cancelReason: cancel === "true" ? "Người dùng hủy" : "Lỗi hệ thống",
-          expiryTime: storedData.expiryTime || Date.now() + 15 * 60 * 1000, // 15 minutes from now
+          expiryTime: storedData.expiryTime || Date.now() + 15 * 60 * 1000,
         };
 
         setOrderData(finalOrderData);
 
-        // Calculate remaining time
         const remaining = Math.max(
           0,
           Math.floor((finalOrderData.expiryTime - Date.now()) / 1000)
@@ -97,7 +93,6 @@ const PaymentCancelPage = () => {
         setTimeRemaining(remaining);
       } catch (error) {
         console.error("Error loading order data:", error);
-        // Fallback data
         setOrderData({
           orderId: "ERROR-" + Date.now(),
           amount: "0",
@@ -113,7 +108,6 @@ const PaymentCancelPage = () => {
 
     loadOrderData();
 
-    // Countdown timer for order expiration
     const timer = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
@@ -134,17 +128,15 @@ const PaymentCancelPage = () => {
   };
 
   const handleRetryPayment = () => {
-    // Save current order data and redirect to payment
     const paymentData = {
       ...orderData,
-      expiryTime: Date.now() + 15 * 60 * 1000, // Reset expiry time
+      expiryTime: Date.now() + 15 * 60 * 1000,
     };
     localStorage.setItem("pendingOrder", JSON.stringify(paymentData));
     window.location.href = `/payment/checkout?orderId=${orderData.orderId}&amount=${orderData.amount}`;
   };
 
   const handleBackToCart = () => {
-    // Save items back to cart
     if (orderData.items.length > 0) {
       localStorage.setItem("cartItems", JSON.stringify(orderData.items));
     }
@@ -152,16 +144,14 @@ const PaymentCancelPage = () => {
   };
 
   const handleBackToHome = () => {
-    // Clear any stored order data
     localStorage.removeItem("pendingOrder");
     window.location.href = "/";
   };
 
   const handleSaveForLater = () => {
-    // Extend expiry time and save order
     const extendedOrder = {
       ...orderData,
-      expiryTime: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
+      expiryTime: Date.now() + 24 * 60 * 60 * 1000,
       savedForLater: true,
     };
     localStorage.setItem("savedOrder", JSON.stringify(extendedOrder));
