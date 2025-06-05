@@ -3,6 +3,7 @@ import styles from "@/styles/Header.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Heading, Button } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
+import NotificationBell from "./notification/NotificationRealtime";
 
 const Header: React.FC = () => {
   const navbarRef = useRef<HTMLElement>(null);
@@ -63,6 +64,7 @@ const Header: React.FC = () => {
         <img src="/images/logo.png" alt="Logo" className={styles.logo} />
         <Heading className={styles.brandText}>ASTRONUMER</Heading>
       </div>
+      <NotificationBell />
 
       <nav className={styles.nav}>
         <Link to="/" className={styles.link}>
