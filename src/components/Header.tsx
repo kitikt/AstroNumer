@@ -83,16 +83,15 @@ const Header: React.FC = () => {
           <button onClick={toggleDropdown} className={styles.link}>
             Tra cứu
             <span
-              className={`${styles.arrow} ${
-                isDropdownOpen ? styles.arrowOpen : ""
-              }`}
+              className={`${styles.arrow} ${isDropdownOpen ? styles.arrowOpen : ""
+                }`}
             >
               ▲
             </span>
           </button>
           {isDropdownOpen && (
             <div className={styles.dropdownMenu}>
-              <Link to="/form" className={styles.dropdownItem}>
+              <Link to="/form/numerology" className={styles.dropdownItem}>
                 Thần Số Học
               </Link>
               <Link to="/lookup/numerology" className={styles.dropdownItem}>
@@ -107,7 +106,7 @@ const Header: React.FC = () => {
               <Link to="/lookup/forecast" className={styles.dropdownItem}>
                 Tra Cứu Tử Vi
               </Link>
-              <Link to="/lookup/forecast" className={styles.dropdownItem}>
+              <Link to="/form/starmap" className={styles.dropdownItem}>
                 Tra Cứu Bản Đồ Sao
               </Link>
             </div>
@@ -115,7 +114,7 @@ const Header: React.FC = () => {
         </div>
 
         <Link to="#" className={styles.link}>
-          Blog
+          Bài viết
         </Link>
         <Link to="#" className={styles.link}>
           Liên hệ
@@ -132,7 +131,7 @@ const Header: React.FC = () => {
             alignItems="center"
             lineHeight="21.6px"
           >
-            Logout
+            Đăng xuất
           </Button>
         ) : (
           <Link

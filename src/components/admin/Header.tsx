@@ -12,10 +12,20 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FiLogOut, FiUser } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const AdminHeader: React.FC = () => {
   const navbarRef = useRef<HTMLHeadElement>(null);
+  const navigate = useNavigate();
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
 
   return (
     <header
@@ -57,10 +67,10 @@ const AdminHeader: React.FC = () => {
                       <Box>
                         <Icon as={FiUser} boxSize={5} color="black" />
                       </Box>
-                      <Text color={"black"}>Profile</Text>
+                      <Text color={"black"}>Hồ sơ cá nhân</Text>
                     </HStack>
                   </Button>
-                  <Button bg={"none"} p={0} w={"full"} border={0} h={50}>
+                  <Button bg={"none"} p={0} w={"full"} border={0} h={50} onClick={handleLogout}>
                     <HStack
                       position="relative"
                       _hover={{ bg: "gainsboro" }}
@@ -74,7 +84,7 @@ const AdminHeader: React.FC = () => {
                       <Box>
                         <Icon as={FiLogOut} boxSize={5} color="black" />
                       </Box>
-                      <Text color={"black"}>Logout</Text>
+                      <Text color={"black"}>Đăng xuất</Text>
                     </HStack>
                   </Button>
                 </Popover.Body>
