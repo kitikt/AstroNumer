@@ -60,7 +60,7 @@ const Service = () => {
       console.log(serviceId, quantity);
 
       const response = await fetch(
-        "http://160.191.51.56:8081/api/v1/payment/create-link",
+        `${import.meta.env.VITE_API_URL}/api/v1/payment/create-link`,
         {
           method: "POST",
           headers: {
