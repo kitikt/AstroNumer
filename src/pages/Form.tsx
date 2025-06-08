@@ -25,7 +25,7 @@ type Inputs = {
   noiSinh?: string;
 };
 
-export default function Profile() {
+export default function Form() {
   const {
     register,
     handleSubmit,

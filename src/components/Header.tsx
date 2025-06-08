@@ -1,17 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "@/styles/Header.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import { Heading, Button } from "@chakra-ui/react";
+import { Heading } from "@chakra-ui/react";
+// import NotificationBell from "./notification/NotificationRealtime";
 import { useAuth } from "@/hooks/useAuth";
-import NotificationBell from "./notification/NotificationRealtime";
 
 const Header: React.FC = () => {
   const navbarRef = useRef<HTMLElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
   const lastScrollPosRef = useRef(0);
   const { isLoggedIn, setIsLoggedIn } = useAuth();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,6 +39,12 @@ const Header: React.FC = () => {
       ) {
         setIsDropdownOpen(false);
       }
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileDropdownOpen(false);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -58,13 +66,17 @@ const Header: React.FC = () => {
     setIsDropdownOpen((prev) => !prev);
   };
 
+  const toggleProfileDropdown = () => {
+    setIsProfileDropdownOpen((prev) => !prev);
+  };
+
   return (
     <header ref={navbarRef} className={styles.header}>
       <div className={styles.imageContainer}>
         <img src="/images/logo.png" alt="Logo" className={styles.logo} />
         <Heading className={styles.brandText}>ASTRONUMER</Heading>
       </div>
-      <NotificationBell />
+      {/* <NotificationBell /> */}
 
       <nav className={styles.nav}>
         <Link to="/" className={styles.link}>
@@ -78,13 +90,14 @@ const Header: React.FC = () => {
           Gói VIP
         </Link>
 
-        {/* Dropdown */}
+        {/* Tra cứu Dropdown */}
         <div className={styles.dropdown} ref={dropdownRef}>
           <button onClick={toggleDropdown} className={styles.link}>
             Tra cứu
             <span
-              className={`${styles.arrow} ${isDropdownOpen ? styles.arrowOpen : ""
-                }`}
+              className={`${styles.arrow} ${
+                isDropdownOpen ? styles.arrowOpen : ""
+              }`}
             >
               ▲
             </span>
@@ -121,18 +134,43 @@ const Header: React.FC = () => {
         </Link>
 
         {isLoggedIn ? (
-          <Button
-            className={styles.link}
-            onClick={handleLogout}
-            background="transparent"
-            padding="0 1rem"
-            height="21.6px"
-            display="flex"
-            alignItems="center"
-            lineHeight="21.6px"
-          >
-            Đăng xuất
-          </Button>
+          <div className={styles.dropdown} ref={profileDropdownRef}>
+            <button onClick={toggleProfileDropdown} className={styles.link}>
+              <img
+                src="/images/avatar.png"
+                alt="Avatar"
+                className={styles.avatar}
+              />
+              <span
+                className={`${styles.arrow} ${
+                  isProfileDropdownOpen ? styles.arrowOpen : ""
+                }`}
+              >
+                ▲
+              </span>
+            </button>
+            {isProfileDropdownOpen && (
+              <div className={styles.profileDropdownMenu}>
+                <Link to="/profile/transaction" className={styles.dropdownItem}>
+                  Tra cứu giao dịch tài khoản
+                </Link>
+                <Link to="/profile/edit" className={styles.dropdownItem}>
+                  Đổi thông tin
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className={styles.dropdownItem}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
           <Link
             to="/login"
