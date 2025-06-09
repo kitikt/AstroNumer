@@ -1,35 +1,46 @@
 import { Box, Stack, Image } from "@chakra-ui/react";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Toaster, toaster } from "@/components/ui/toaster";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
-
   const { search } = useLocation();
-const params = new URLSearchParams(search);
+  const params = new URLSearchParams(search);
 
-const queryParams: Record<string, string> = {};
+  const queryParams: Record<string, string> = {};
   for (const [key, value] of params.entries()) {
     queryParams[key] = value.replace(/ /g, "+");
   }
 
   const token = decodeURIComponent(queryParams["token"] || "");
   const email = decodeURIComponent(queryParams["email"] || "");
-console.log(token);
+  console.log(token);
 
-  const [inputEmail, ] = useState(email);
+  const [inputEmail] = useState(email);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleResetPassword = async () => {
     if (!inputEmail || !newPassword || !confirmPassword) {
-      alert("Điền đầy đủ thông tin đi bạn ơi 😤");
+      toaster.create({
+        title: "Thiếu thông tin",
+        description: "Điền đầy đủ email và mật khẩu mới nha 🫠",
+        type: "warning",
+        duration: 3000,
+      });
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      alert("Mật khẩu không khớp kìa 😭");
+      toaster.create({
+        title: "Mật khẩu không khớp",
+        description:
+          "Hãy chắc chắn rằng mật khẩu mới và xác nhận mật khẩu khớp nhau.",
+        type: "error",
+        duration: 3000,
+      });
       return;
     }
 
@@ -58,7 +69,13 @@ console.log(token);
         throw new Error(data.message || "Đổi mật khẩu thất bại 😢");
       }
 
-      alert("✅ Đổi mật khẩu thành công, quay lại đăng nhập nha bạn!");
+      toaster.create({
+        title: "Đổi mật khẩu thành công 🎉",
+        description: "Bạn có thể đăng nhập lại ngay bây giờ.",
+        type: "success",
+        duration: 3000,
+      });
+
       navigate("/login");
     } catch (error) {
       if (error instanceof Error) {
@@ -76,6 +93,7 @@ console.log(token);
       height="100vh"
       backgroundImage={`url('/images/background.png')`}
     >
+      <Toaster />
       <Box
         style={{
           display: "flex",
@@ -89,37 +107,41 @@ console.log(token);
         }}
       >
         <Image src="/images/logo.png" alt="Logo" width="80px" height="80px" />
-
-        
-        <input
-          type="password"
-          placeholder="Mật khẩu mới"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          style={inputStyle}
-        />
-        <input
-          type="password"
-          placeholder="Nhập lại mật khẩu"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          style={inputStyle}
-        />
-
-        <button
-          type="button"
-          onClick={handleResetPassword}
-          disabled={loading}
-          style={buttonStyle}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.backgroundColor = "#7c587c")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.backgroundColor = "#552954")
-          }
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleResetPassword();
+          }}
+          style={{ width: "100%" }}
         >
-          {loading ? "Đang xử lý..." : "Xác nhận đổi mật khẩu"}
-        </button>
+          <input
+            type="password"
+            placeholder="Mật khẩu mới"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            style={inputStyle}
+          />
+          <input
+            type="password"
+            placeholder="Nhập lại mật khẩu"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            style={inputStyle}
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            style={buttonStyle}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.backgroundColor = "#7c587c")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.backgroundColor = "#552954")
+            }
+          >
+            {loading ? "Đang xử lý..." : "Xác nhận đổi mật khẩu"}
+          </button>
+        </form>
       </Box>
     </Stack>
   );
@@ -133,6 +155,7 @@ const inputStyle = {
   border: "none",
   borderRadius: "4px",
   fontSize: "16px",
+  marginBottom: "16px",
 };
 
 const buttonStyle = {

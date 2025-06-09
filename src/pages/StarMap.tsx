@@ -86,8 +86,8 @@ const StarMapPage: React.FC = () => {
   const renderZodiacSigns = () => {
     return zodiacSigns.map((sign, index) => {
       const angle = index * 30 + 15;
-      const position = angleToCoordinates(angle, 280); // Giảm từ 335 xuống 280 để nằm trong hình tròn
-      const symbolPosition = angleToCoordinates(angle, 240); // Giảm từ 290 xuống 240 để tạo khoảng cách hợp lý
+      const position = angleToCoordinates(angle, 280);
+      const symbolPosition = angleToCoordinates(angle, 240);
 
       return (
         <g key={sign}>
@@ -96,7 +96,7 @@ const StarMapPage: React.FC = () => {
             y={position.y}
             style={{
               fill: "#ffffff",
-              fontSize: "10px", // Giảm từ 12px xuống 10px để tránh chồng lấn
+              fontSize: "10px",
               fontWeight: "600",
               textAnchor: "middle",
               dominantBaseline: "middle",
