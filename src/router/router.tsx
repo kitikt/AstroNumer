@@ -1,5 +1,8 @@
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import ProtectedAuthRoute from "@/components/ProtectedAuthRoute";
 import ProtectedFormRoute from "@/components/ProtectedRouteForm";
+import StarMapForm from "@/components/StarMapForm";
+import FormHome from "@/components/ui/FormHome";
 import AdminLayout from "@/layouts/AdminLayout";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import AboutUs from "@/pages/AboutUs";
@@ -14,13 +17,29 @@ import HomePage from "@/pages/Home/Home";
 import LoginPage from "@/pages/LoginPage";
 import MemberShip from "@/pages/MemberShip";
 import NumerologyResultPage from "@/pages/NumerologyResultPage";
-// import Profile from "@/pages/Profile";
 import RegisterPage from "@/pages/Register";
 import ResetPassword from "@/pages/ResetPassword";
 import Result from "@/pages/Result";
 import PaymentReturnPage from "@/pages/Return";
 import Service from "@/pages/Service";
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import StarMapPage from "@/pages/StarMap";
+
+// Cấu hình các form
+const formConfigs = [
+  {
+    path: "/form/numerology",
+    dataKey: "numerologyData",
+    redirectPath: "/numerology",
+    component: FormHome,
+  },
+  // Đã loại bỏ StarMapForm khỏi formConfigs
+  // {
+  //   path: "/form/starmap",
+  //   dataKey: "starMapData",
+  //   redirectPath: "/starmap-result",
+  //   component: StarMapForm,
+  // },
+];
 
 export const router = createBrowserRouter([
   {
@@ -55,38 +74,41 @@ export const router = createBrowserRouter([
       </ProtectedAuthRoute>
     ),
   },
-
   {
     path: "/",
     element: <DefaultLayout />,
     children: [
       { index: true, element: <HomePage /> },
       { path: "numerology", element: <NumerologyResultPage /> },
+      { path: "starmap-result", element: <StarMapPage /> },
       { path: "about", element: <AboutUs /> },
       { path: "service", element: <Service /> },
       { path: "membership", element: <MemberShip /> },
-      // { path: "profile", element: <Profile /> },
       { path: "analyze", element: <Analyze /> },
       { path: "daily-destiny", element: <DailyDestiny /> },
       { path: "result", element: <Result /> },
       { path: "/payment/cancel", element: <PaymentCancelPage /> },
       { path: "/payment/success", element: <PaymentReturnPage /> },
-
+      // Thêm route cho StarMapForm trực tiếp, không bọc ProtectedFormRoute
       {
-        path: "/form/",
+        path: "/form/starmap",
+        element: <FormPage FormComponent={StarMapForm} />,
+      },
+      ...formConfigs.map(({ path, dataKey, redirectPath, component }) => ({
+        path,
         element: (
-          <ProtectedFormRoute>
-            <FormPage />
+          <ProtectedFormRoute dataKey={dataKey} redirectPath={redirectPath}>
+            <FormPage FormComponent={component} />
           </ProtectedFormRoute>
         ),
-      },
+      })),
     ],
   },
   {
     path: "/admin",
     element: <AdminLayout />,
     children: [
-      { index: true, element: <Navigate to={"dashboard"} /> },
+      { index: true, element: <Navigate to="dashboard" /> },
       { path: "dashboard", element: <DashboardPage /> },
       { path: "accounts", element: <AccountManagementPage /> },
     ],
