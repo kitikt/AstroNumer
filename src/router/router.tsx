@@ -23,6 +23,8 @@ import Result from "@/pages/Result";
 import PaymentReturnPage from "@/pages/Return";
 import Service from "@/pages/Service";
 import StarMapPage from "@/pages/StarMap";
+import PurchasedServices from "@/pages/User/PurchasedServices";
+import ProfilePage from "@/pages/User/Profile";
 
 // Cấu hình các form
 const formConfigs = [
@@ -32,13 +34,6 @@ const formConfigs = [
     redirectPath: "/numerology",
     component: FormHome,
   },
-  // Đã loại bỏ StarMapForm khỏi formConfigs
-  // {
-  //   path: "/form/starmap",
-  //   dataKey: "starMapData",
-  //   redirectPath: "/starmap-result",
-  //   component: StarMapForm,
-  // },
 ];
 
 export const router = createBrowserRouter([
@@ -73,6 +68,14 @@ export const router = createBrowserRouter([
         <ResetPassword />
       </ProtectedAuthRoute>
     ),
+  },
+  {
+    path: "//profile/transaction",
+    element: <PurchasedServices />,
+  },
+  {
+    path: "//profile/edit",
+    element: <ProfilePage />,
   },
   {
     path: "/",

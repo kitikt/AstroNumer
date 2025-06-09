@@ -218,7 +218,7 @@ const StarMapForm: React.FC = () => {
         });
 
         const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/v1/birth-chart/calculate`,
+          `${import.meta.env.VITE_API_URL}/api/v1/birth-chart/chart`,
           {
             method: "POST",
             headers: {
@@ -241,45 +241,46 @@ const StarMapForm: React.FC = () => {
         const result = await response.json();
         console.log("API response:", result);
 
-        const isValidStarMapData =
-          typeof result === "object" &&
-          result !== null &&
-          typeof result.AscendantSign === "string" &&
-          result.AscendantSign.length > 0 &&
-          typeof result.PlanetInSigns === "object" &&
-          result.PlanetInSigns !== null &&
-          Object.keys(result.PlanetInSigns).length > 0 &&
-          typeof result.PlanetInHouses === "object" &&
-          result.PlanetInHouses !== null &&
-          Object.keys(result.PlanetInHouses).length > 0;
+        // Kiểm tra cấu trúc API mới với Data
+        if (result.Success && result.Data) {
+          const starMapData = result.Data;
+          const isValidStarMapData =
+            typeof starMapData === "object" &&
+            starMapData !== null &&
+            typeof starMapData.AscendantSign === "string" &&
+            starMapData.AscendantSign.length > 0 &&
+            typeof starMapData.PlanetInSigns === "object" &&
+            starMapData.PlanetInSigns !== null &&
+            Object.keys(starMapData.PlanetInSigns).length > 0 &&
+            typeof starMapData.PlanetInHouses === "object" &&
+            starMapData.PlanetInHouses !== null &&
+            Object.keys(starMapData.PlanetInHouses).length > 0;
 
-        if (isValidStarMapData) {
-          // Lưu toàn bộ dữ liệu (formData + API response) vào localStorage
-          const starMapData = {
-            day: formData.day,
-            month: formData.month,
-            year: formData.year,
-            hour: formData.hour,
-            minute: formData.minute,
-            fullName: formData.fullName,
-            placeOfBirth: formData.placeOfBirth,
-            isCustomPlace: formData.isCustomPlace,
-            Ascendant: result.Ascendant,
-            AscendantSign: result.AscendantSign,
-            PlanetInSigns: result.PlanetInSigns,
-            PlanetInHouses: result.PlanetInHouses,
-          };
-          localStorage.setItem("starMapData", JSON.stringify(starMapData));
-          navigate("/starmap-result");
+          if (isValidStarMapData) {
+            // Lưu toàn bộ dữ liệu (formData + API response) vào localStorage
+            const combinedData = {
+              day: formData.day,
+              month: formData.month,
+              year: formData.year,
+              hour: formData.hour,
+              minute: formData.minute,
+              fullName: formData.fullName,
+              placeOfBirth: formData.placeOfBirth,
+              isCustomPlace: formData.isCustomPlace,
+              Ascendant: starMapData.Ascendant,
+              AscendantSign: starMapData.AscendantSign,
+              PlanetInSigns: starMapData.PlanetInSigns,
+              PlanetInHouses: starMapData.PlanetInHouses,
+            };
+            localStorage.setItem("starMapData", JSON.stringify(combinedData));
+            navigate("/starmap-result");
+          } else {
+            setError(
+              `Dữ liệu từ API không hợp lệ. Vui lòng kiểm tra lại thông tin!`
+            );
+          }
         } else {
-          const apiMessage =
-            result?.message || result?.Message || "Dữ liệu không hợp lệ";
-          setError(
-            `Lỗi từ API: ${
-              apiMessage ||
-              "Dữ liệu từ API không hợp lệ. Vui lòng kiểm tra lại thông tin!"
-            }`
-          );
+          setError(`Lỗi từ API: ${result.Message || "Dữ liệu không hợp lệ"}`);
         }
       } catch (error) {
         const errorMessage = (error as Error).message || "Lỗi không xác định";
