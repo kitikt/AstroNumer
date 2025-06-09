@@ -1,5 +1,5 @@
 import { Box, Button, Stack, HStack, Text, Icon } from "@chakra-ui/react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, memo, SetStateAction } from "react";
 import {
   FiHome,
   FiUsers,
@@ -89,4 +89,4 @@ const AdminSidebar = ({ isCollapse, setIsCollapse }: Prop) => {
   );
 };
 
-export default AdminSidebar;
+export default memo(AdminSidebar);

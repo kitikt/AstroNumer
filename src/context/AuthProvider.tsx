@@ -4,10 +4,10 @@ import { AuthContext } from "./AuthContext";
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const token = localStorage.getItem("token");
+  const [isLoggedIn, setIsLoggedIn] = useState(!!token);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
   }, []);
 

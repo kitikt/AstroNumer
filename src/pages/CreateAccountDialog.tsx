@@ -36,13 +36,16 @@ const CreateAccountDialog = () => {
 
     const [open, setOpen] = useState<boolean>(false);
 
-    const onSubmit = async (data: any) => {
+    const createAccount = async (data: any) => {
         const api = new ApiClient<any>("/users");
         try {
             const response = await api.create(data);
             console.log("Response:", response);
 
             if (response.Success) {
+                Object.keys(data).forEach((key) => {
+                    data[key] = "";
+                });
                 toaster.create({
                     title: "Tạo tài khoản thành công",
                     description: "Tài khoản đã được tạo thành công",
@@ -90,7 +93,7 @@ const CreateAccountDialog = () => {
                         <Dialog.Title textAlign="center" color="white">Tạo mới tài khoản</Dialog.Title>
                     </Dialog.Header>
                     <Dialog.Body mx={4}>
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form onSubmit={handleSubmit(createAccount)}>
                             <Stack gap={2}>
                                 <Field.Root invalid={!!errors.firstName}>
                                     <Field.Label color="white">

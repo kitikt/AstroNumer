@@ -7,12 +7,12 @@ import {
     Table,
     Tag,
 } from "@chakra-ui/react";
-import { FaChevronRight, FaLock, FaLockOpen } from "react-icons/fa6";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ApiClient from "@/services/apiClient";
 import CreateAccountDialog from "./CreateAccountDialog";
 import ChangeStatusDialog from "@/components/ChangeStatusDialog";
+import UpdateDetailAccountDialog from "./UpdateDetailAccountDialog";
 
 interface Account {
     Id: string;
@@ -30,9 +30,7 @@ export enum Status {
 
 const AccountManagementPage = () => {
     const ref = useRef<HTMLInputElement>(null);
-    const [id, setId] = useState<number>(0);
     const [keyword, setKeyword] = useState<string>("");
-    const [status, setStatus] = useState<boolean>(false);
     const [accounts, setAccounts] = useState<Account[]>([]);
     const navigate = useNavigate();
 
@@ -40,7 +38,6 @@ const AccountManagementPage = () => {
         const api = new ApiClient<any>("/users");
         try {
             const response = await api.getAuthen();
-            console.log("Response:", response);
             if (response.Success) {
                 setAccounts(response.Data.Data);
             } else {
@@ -51,27 +48,13 @@ const AccountManagementPage = () => {
         }
     }
 
-    // Tạo 7 dòng dummy dữ liệu tài khoản
-    // const generateDummyAccounts = (): Account[] => {
-    //     const roles = ["admin", "user", "manager"];
-    //     const statuses = ["ACTIVE", "INACTIVE"];
-
-    //     return Array.from({ length: 7 }, (_, i) => ({
-    //         id: i + 1,
-    //         email: `user${i + 1}@example.com`,
-    //         accountRole: roles[i % roles.length] as Account["accountRole"],
-    //         status: statuses[i % statuses.length] as Status,
-    //     }));
-    // };
-
     const filteredAccounts = accounts.filter((account) =>
         account.Email.toLowerCase().includes(keyword.toLowerCase())
     );
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         getAllUser();
-        // setAccounts(dummyData);
-    }, []);
+    }, [accounts]);
 
     return (
         <Stack w={"full"} align="center" mx="auto" my={5} gap={10}>
@@ -118,10 +101,6 @@ const AccountManagementPage = () => {
                                 <Table.ColumnHeader textAlign="center" color={"white"}>
                                     Hành Động
                                 </Table.ColumnHeader>
-                                <Table.ColumnHeader
-                                    textAlign="center"
-                                    color={"white"}
-                                ></Table.ColumnHeader>
                             </Table.Row>
                         </Table.Header>
                         <Table.Body bg={"black"}>
@@ -157,39 +136,26 @@ const AccountManagementPage = () => {
                                             </Tag.Root>
                                         </Table.Cell>
                                         <Table.Cell textAlign="center">
-                                            {/* <Button
-                                                borderRadius="full"
-                                                px={1}
-                                                colorPalette={
-                                                    account.IsActive ? "red" : "green"
-                                                }
-                                                variant="ghost"
-                                                onClick={() => {
-                                                    setId(account.Id);
-                                                    if (account.IsActive) {
-                                                        setStatus(false);
-                                                    } else {
-                                                        setStatus(true);
-                                                    }
-                                                }}
-                                            >{account.IsActive ? <FaLock /> : <FaLockOpen />}</Button> */}
                                             <ChangeStatusDialog
                                                 isActive={account.IsActive}
                                                 userId={account.Id}
                                             />
-                                        </Table.Cell>
-                                        <Table.Cell
-                                            textAlign="center"
-                                            cursor="pointer"
-                                            onClick={() => navigate(account.Id)}
-                                        >
-                                            <Icon as={FaChevronRight} color={"white"} />
+                                            <UpdateDetailAccountDialog
+                                                userId={account.Id}
+                                                type="detail"
+                                            />
+                                            {account.Roles[0] === "Admin" && (
+                                                <UpdateDetailAccountDialog
+                                                    userId={account.Id}
+                                                    type="update"
+                                                />
+                                            )}
                                         </Table.Cell>
                                     </Table.Row>
                                 ))
                             ) : (
                                 <Table.Row bg={"black"}>
-                                    <Table.Cell colSpan={8} color={"white"} textAlign="center">
+                                    <Table.Cell colSpan={7} color={"white"} textAlign="center">
                                         Không có tài khoản nào
                                     </Table.Cell>
                                 </Table.Row>
