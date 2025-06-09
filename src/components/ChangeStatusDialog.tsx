@@ -35,6 +35,7 @@ const ChangeStatusDialog = ({ isActive, userId }: ChangeStatusDialogProps) => {
                     type: "success",
                     duration: 4000,
                 });
+                window.location.reload();
                 console.log("Status changed successfully:", response);
                 // Optionally, you can update the UI or show a success message
             } else {
