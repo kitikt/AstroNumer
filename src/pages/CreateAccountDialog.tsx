@@ -8,12 +8,14 @@ import { useForm } from "react-hook-form";
 import { FaPlus } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toaster } from "@/components/ui/toaster";
+import { useState } from "react";
 
 const createAccountSchema = z.object({
     lastName: z.string().min(1, "Họ không được để trống"),
     firstName: z.string().min(1, "Tên không được để trống"),
     phone: z.string().min(1, "Số điện thoại không được để trống"),
     email: z.string().min(1, "Email không được để trống").email("Email không hợp lệ"),
+    roleId: z.string().min(1, "Vai trò không được để trống"),
 });
 
 type CreateAccountInputs = z.infer<typeof createAccountSchema>;
@@ -27,23 +29,30 @@ const CreateAccountDialog = () => {
                 firstName: "",
                 phone: "",
                 email: "",
+                roleId: "Admin",
             },
         }
     );
 
-    const onSubmit = async (data: any) => {
+    const [open, setOpen] = useState<boolean>(false);
+
+    const createAccount = async (data: any) => {
         const api = new ApiClient<any>("/users");
         try {
             const response = await api.create(data);
             console.log("Response:", response);
 
             if (response.Success) {
+                Object.keys(data).forEach((key) => {
+                    data[key] = "";
+                });
                 toaster.create({
                     title: "Tạo tài khoản thành công",
                     description: "Tài khoản đã được tạo thành công",
                     type: "success",
                     duration: 4000,
                 });
+                setOpen(false);
             } else {
                 toaster.create({
                     title: "Tạo tài khoản thất bại",
@@ -67,8 +76,9 @@ const CreateAccountDialog = () => {
             placement="center"
             motionPreset="slide-in-bottom"
             size="md"
+            open={open}
         >
-            <Dialog.Trigger asChild>
+            <Dialog.Trigger asChild onClick={() => setOpen(true)}>
                 <Button variant="ghost" color={"white"} _hover={{ bg: "#dcdcdc24" }}>
                     <FaPlus /> Tạo mới
                 </Button>
@@ -76,14 +86,14 @@ const CreateAccountDialog = () => {
             <Dialog.Backdrop />
             <Dialog.Positioner>
                 <Dialog.Content bg="black" color="white" borderRadius="md">
-                    <Dialog.CloseTrigger asChild>
+                    <Dialog.CloseTrigger asChild onClick={() => setOpen(false)}>
                         <CloseButton color={"white"} _hover={{ bg: "#dcdcdc24" }} borderRadius={'full'} />
                     </Dialog.CloseTrigger>
                     <Dialog.Header justifyContent="center" alignItems="center">
                         <Dialog.Title textAlign="center" color="white">Tạo mới tài khoản</Dialog.Title>
                     </Dialog.Header>
                     <Dialog.Body mx={4}>
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form onSubmit={handleSubmit(createAccount)}>
                             <Stack gap={2}>
                                 <Field.Root invalid={!!errors.firstName}>
                                     <Field.Label color="white">
@@ -130,13 +140,23 @@ const CreateAccountDialog = () => {
                                     />
                                     <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
                                 </Field.Root>
+                                <Field.Root>
+                                    <Field.Label color="white">
+                                        Vai trò
+                                        <Field.RequiredIndicator />
+                                    </Field.Label>
+                                    <Input
+                                        type="text"
+                                        readOnly
+                                        {...register("roleId")}
+                                    />
+                                </Field.Root>
                                 <Button colorScheme="teal" type="submit" mt={4} disabled={isSubmitting}>
                                     {isSubmitting ? "Đang xử lý..." : "Tạo tài khoản"}
                                 </Button>
                             </Stack>
                         </form>
                     </Dialog.Body>
-                    <Dialog.Footer />
                 </Dialog.Content>
             </Dialog.Positioner>
         </Dialog.Root>

@@ -126,7 +126,7 @@ class ApiClient<T> {
 
     patchStatus = (id: string, status: string, config?: AxiosRequestConfig) => {
         return axiosInstance
-            .patch<T>(this.endpoint + '/' + id + '/' + status, this.setAuthHeader(config))
+            .patch<T>(this.endpoint + '/' + id + '/' + status, {}, this.setAuthHeader(config))
             .then((res) => res.data);
     }
 }

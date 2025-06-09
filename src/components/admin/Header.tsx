@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { memo, useRef } from "react";
 import styles from "@/styles/Header.module.css";
 import {
   Avatar,
@@ -97,4 +97,4 @@ const AdminHeader: React.FC = () => {
   );
 };
 
-export default AdminHeader;
+export default memo(AdminHeader);

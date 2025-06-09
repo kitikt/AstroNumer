@@ -14,6 +14,7 @@ interface ChangeStatusDialogProps {
 const ChangeStatusDialog = ({ isActive, userId }: ChangeStatusDialogProps) => {
 
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
 
     const handleChangeStatus = async (isActive: boolean, userId: string) => {
         setIsSubmitting(true);
@@ -36,7 +37,7 @@ const ChangeStatusDialog = ({ isActive, userId }: ChangeStatusDialogProps) => {
                     duration: 4000,
                 });
                 console.log("Status changed successfully:", response);
-                // Optionally, you can update the UI or show a success message
+                setOpen(false);
             } else {
                 toaster.create({
                     title: "Error",
@@ -62,8 +63,8 @@ const ChangeStatusDialog = ({ isActive, userId }: ChangeStatusDialogProps) => {
     };
 
     return (
-        <Dialog.Root role="alertdialog" placement="center" size="sm">
-            <Dialog.Trigger asChild>
+        <Dialog.Root role="alertdialog" placement="center" size="sm" open={open}>
+            <Dialog.Trigger asChild onClick={() => setOpen(true)}>
                 <Button
                     borderRadius="full"
                     px={1}
@@ -92,7 +93,7 @@ const ChangeStatusDialog = ({ isActive, userId }: ChangeStatusDialogProps) => {
                             )}
                         </Dialog.Body>
                         <Dialog.Footer>
-                            <Dialog.ActionTrigger asChild>
+                            <Dialog.ActionTrigger asChild onClick={() => setOpen(false)}>
                                 <Button variant="outline" color={'white'} _hover={{ bg: "#dcdcdc24" }}>Đóng</Button>
                             </Dialog.ActionTrigger>
                             <Button
@@ -103,9 +104,6 @@ const ChangeStatusDialog = ({ isActive, userId }: ChangeStatusDialogProps) => {
                                 {isSubmitting ? 'Đang xử lí...' : isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}
                             </Button>
                         </Dialog.Footer>
-                        <Dialog.CloseTrigger asChild>
-                            <CloseButton color={"white"} _hover={{ bg: "#dcdcdc24" }} borderRadius={'full'} />
-                        </Dialog.CloseTrigger>
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Portal>

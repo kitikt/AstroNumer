@@ -1,11 +1,20 @@
 import AdminHeader from "@/components/admin/Header";
 import AdminSidebar from "@/components/admin/SideBar";
+import { useAuth } from "@/hooks/useAuth";
 import { Box, HStack, Stack } from "@chakra-ui/react";
-import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { memo, useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const AdminLayout = () => {
   const [isCollapse, setIsCollapse] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <Stack bg={"black"} minH={"100vh"}>
@@ -24,4 +33,4 @@ const AdminLayout = () => {
   );
 };
 
-export default AdminLayout;
+export default memo(AdminLayout);
