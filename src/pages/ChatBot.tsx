@@ -31,6 +31,7 @@ interface IChatBot {
 }
 
 interface IBotConversation {
+  Id: number;
   User1CoreNumber: number;
   User2CoreNumber: number;
   RelationshipType: number;
@@ -97,32 +98,28 @@ const ChatBot = () => {
         }
         const data = await response.json();
         if (data.Success) {
-          const bots: IChatBot[] = data.Data.filter(
-            (conv: IBotConversation) => conv.LatestMessage?.ConversationId
-          ).map((conv: IBotConversation, index: number) => {
-            const conversationId =
-              conv.LatestMessage!.ConversationId!.toString();
-            return {
-              id: conversationId,
-              name:
-                conv.Title && conv.Title !== "string"
-                  ? conv.Title
-                  : conv.RelationshipTypeDescription ||
-                    `Bot ${conv.User2CoreNumber}`,
-              avatar: "🤖",
-              description:
-                conv.RelationshipTypeDescription || "Trò chuyện với bot",
-              color: styles[`bgColor${(index % 4) + 1}`] || styles.bgBlue500,
-              isOnline: true,
-              lastMessage: conv.LatestMessage?.Message
-                ? conv.LatestMessage.Message.substring(0, 20) + "..."
-                : "",
-              lastMessageTime: conv.LatestMessage?.CreatedAt
-                ? new Date(conv.LatestMessage.CreatedAt)
-                : undefined,
-              unreadCount: 0,
-            };
-          });
+         const bots: IChatBot[] = data.Data.map((conv: IBotConversation, index: number) => {
+ const conversationId = conv.Id.toString();
+  return {
+    id: conversationId,
+    name:
+      conv.Title && conv.Title !== "string"
+        ? conv.Title
+        : conv.RelationshipTypeDescription || `Bot ${conv.User2CoreNumber}`,
+    avatar: "🤖",
+    description: conv.RelationshipTypeDescription || "Trò chuyện với bot",
+    color: styles[`bgColor${(index % 4) + 1}`] || styles.bgBlue500,
+    isOnline: true,
+    lastMessage: conv.LatestMessage?.Message
+      ? conv.LatestMessage.Message.substring(0, 20) + "..."
+      : "Chưa có tin nhắn",
+    lastMessageTime: conv.LatestMessage?.CreatedAt
+      ? new Date(conv.LatestMessage.CreatedAt)
+      : undefined,
+    unreadCount: 0,
+  };
+});
+
           setChatBots(bots);
         } else {
           console.error("Error fetching conversations:", data.Errors);
@@ -133,6 +130,23 @@ const ChatBot = () => {
     };
     fetchBotConversations();
   }, [USER_ID, TOKEN, API_URL]);
+
+function formatBotResponse(rawText: string): string {
+  const sections = ["Phân tích", "Nhận xét", "Lời khuyên", "Tóm tắt"];
+
+  // Bỏ dấu **
+  let formatted = rawText.replace(/\*\*/g, "");
+
+  // Thêm 2 dòng trắng trước mỗi tiêu đề
+  sections.forEach((section) => {
+    const regex = new RegExp(`${section}:`, "gi");
+    formatted = formatted.replace(regex, `\n\n${section}:`);
+  });
+
+  // Xóa khoảng trắng đầu cuối và return
+  return formatted.trim();
+}
+
 
   const createConversation = async (botId: string) => {
     const bot = chatBots.find((b) => b.id === botId);
@@ -170,58 +184,71 @@ const ChatBot = () => {
   };
 
   const sendMessageToBot = async (message: string) => {
-    try {
-      const response = await fetch(`${API_URL}/api/Chat/stream`, {
+  try {
+    const conversationId = chats[activeChatId!]?.conversationId;
+    if (!conversationId) {
+      console.error("Không tìm thấy conversationId.");
+      return;
+    }
+
+    const response = await fetch(
+      `${API_URL}/api/Chat/analyze-relationship/${conversationId}`,
+      {
         method: "POST",
         headers: {
-          accept: "*/*",
+          accept: "application/json",
           "Content-Type": "application/json",
           Authorization: `Bearer ${TOKEN}`,
         },
-        body: JSON.stringify(message),
-      });
-      const data = await response.json();
-      if (data.Success) {
-        const botResponse = data.Data.Response;
-        setChats((prev) => {
-          const currentChat = prev[activeChatId!] || {
-            botId: activeChatId!,
-            messages: [],
-            conversationId: prev[activeChatId!]?.conversationId,
-          };
-          const newMessages = [
-            ...currentChat.messages,
-            {
-              id: Date.now().toString(),
-              content: message,
-              sender: "user",
-              timestamp: new Date(),
-            },
-            {
-              id: (Date.now() + 1).toString(),
-              content: botResponse,
-              sender: "bot",
-              timestamp: new Date(),
-            },
-          ];
-          return {
-            ...prev,
-            [activeChatId!]: {
-              ...currentChat,
-              messages: newMessages,
-            },
-          };
-        });
-        if (chats[activeChatId!]?.conversationId) {
-          await fetchConversationHistory(chats[activeChatId!].conversationId);
-        }
-      } else {
-        console.error("Error sending message:", data.Errors);
+        body: JSON.stringify(message), // ✅ Gửi message là chuỗi JSON
       }
-    } catch (error) {
-      console.error("Network error:", error);
+    );
+
+    const data = await response.json();
+    if (data.Success) {
+      const botResponse = formatBotResponse(data.Data); // ✅ Data là chuỗi văn bản
+
+      setChats((prev) => {
+        const currentChat = prev[activeChatId!] || {
+          botId: activeChatId!,
+          messages: [],
+          conversationId,
+        };
+
+        const newMessages = [
+          ...currentChat.messages,
+          {
+            id: Date.now().toString(),
+            content: message,
+            sender: "user",
+            timestamp: new Date(),
+          },
+          {
+            id: (Date.now() + 1).toString(),
+            content: botResponse,
+            sender: "bot",
+            timestamp: new Date(),
+          },
+        ];
+
+        return {
+          ...prev,
+          [activeChatId!]: {
+            ...currentChat,
+            messages: newMessages,
+          },
+        };
+      });
+
+      await fetchConversationHistory(conversationId);
+    } else {
+      console.error("Lỗi phản hồi từ bot:", data.Errors);
     }
-  };
+  } catch (error) {
+    console.error("Lỗi mạng:", error);
+  }
+};
+
 
   const fetchConversationHistory = async (conversationId: string) => {
     try {
@@ -297,6 +324,8 @@ const ChatBot = () => {
       console.log("Active Chat ID:", activeChatId);
       const chat = chats[botId];
       if (chat.conversationId) {
+        console.log(`Fetching history for existing conversationId: ${chat.conversationId}`);
+        
         await fetchConversationHistory(chat.conversationId);
       } else {
         console.warn(`No conversationId found for botId: ${botId}`);
@@ -542,7 +571,12 @@ const ChatBot = () => {
                           : styles.messageContentBot
                       }`}
                     >
-                      <p className={styles.messageText}>{message.content}</p>
+            {message.sender === "bot"
+  ? formatBotResponse(message.content)
+      .split("\n")
+      .map((line, i) => <p key={i}>{line}</p>)
+  : <p>{message.content}</p>}
+
                       <p
                         className={`${styles.messageTime} ${
                           message.sender === "user"
