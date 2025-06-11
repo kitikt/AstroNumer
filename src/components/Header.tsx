@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Heading } from "@chakra-ui/react";
 // import NotificationBell from "./notification/NotificationRealtime";
 import { useAuth } from "@/hooks/useAuth";
+import NotificationBell from "./notification/NotificationRealtime";
 
 const Header: React.FC = () => {
   const navbarRef = useRef<HTMLElement>(null);
@@ -76,8 +77,7 @@ const Header: React.FC = () => {
         <img src="/images/logo.png" alt="Logo" className={styles.logo} />
         <Heading className={styles.brandText}>ASTRONUMER</Heading>
       </div>
-      {/* <NotificationBell /> */}
-
+     
       <nav className={styles.nav}>
         <Link to="/" className={styles.link}>
           Trang chủ
@@ -149,6 +149,7 @@ const Header: React.FC = () => {
                 ▲
               </span>
             </button>
+            <NotificationBell />
             {isProfileDropdownOpen && (
               <div className={styles.profileDropdownMenu}>
                 <Link to="/profile/transaction" className={styles.dropdownItem}>
@@ -157,6 +158,8 @@ const Header: React.FC = () => {
                 <Link to="/profile/edit" className={styles.dropdownItem}>
                   Đổi thông tin
                 </Link>
+                 
+
                 <button
                   onClick={handleLogout}
                   className={styles.dropdownItem}
