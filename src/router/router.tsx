@@ -25,6 +25,7 @@ import Service from "@/pages/Service";
 import StarMapPage from "@/pages/StarMap";
 import PurchasedServices from "@/pages/User/PurchasedServices";
 import ProfilePage from "@/pages/User/Profile";
+import ChatBot from "@/pages/ChatBot";
 
 // Cấu hình các form
 const formConfigs = [
@@ -77,6 +78,10 @@ export const router = createBrowserRouter([
     path: "//profile/edit",
     element: <ProfilePage />,
   },
+  { path: "/payment/cancel", element: <PaymentCancelPage /> },
+
+  { path: "/payment/success", element: <PaymentReturnPage /> },
+  { path: "/chat", element: <ChatBot /> },
   {
     path: "/",
     element: <DefaultLayout />,
@@ -90,8 +95,7 @@ export const router = createBrowserRouter([
       { path: "analyze", element: <Analyze /> },
       { path: "daily-destiny", element: <DailyDestiny /> },
       { path: "result", element: <Result /> },
-      { path: "/payment/cancel", element: <PaymentCancelPage /> },
-      { path: "/payment/success", element: <PaymentReturnPage /> },
+
       // Thêm route cho StarMapForm trực tiếp, không bọc ProtectedFormRoute
       {
         path: "/form/starmap",
