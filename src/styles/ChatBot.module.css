@@ -22,7 +22,7 @@
 }
 
 .header {
-  padding: 0.5rem; /* Giữ padding nhỏ để sát mép */
+  padding: 0.5rem;
   border-bottom: 1px solid #3a3a4a;
   display: flex;
   align-items: center;
@@ -30,15 +30,14 @@
   background-color: rgba(46, 46, 62, 0.9);
   width: 100%;
   box-sizing: border-box;
-  border-radius: 0; /* Đảm bảo không có bo góc */
+  border-radius: 0;
 }
 
 .headerTitle {
   font-size: 1.25rem;
   font-weight: 700;
   color: #c091e3;
-     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   margin: 0;
   padding: 0 0.5rem;
 }
@@ -196,7 +195,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  border-radius: 0; /* Loại bỏ bo góc từ mainChat để header không bị ảnh hưởng */
+  border-radius: 0;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -209,7 +208,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  border-radius: 0; /* Đảm bảo header không có bo góc */
+  border-radius: 0;
 }
 
 .chatAvatar {
@@ -223,16 +222,15 @@
 }
 
 .chatName {
-    font-weight: bold;
-    color: white;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .chatStatus {
   font-size: 0.875rem;
   color: rgb(190, 183, 183);
-     text-shadow: 0 0 10px rgba(68, 63, 63, 0.5);
+  text-shadow: 0 0 10px rgba(68, 63, 63, 0.5);
 }
 
 .messagesContainer {
@@ -257,7 +255,7 @@
   display: flex;
   align-items: flex-end;
   gap: 0.5rem;
-  max-width: 20rem;
+  max-width: 22rem;
 }
 
 .messageContentWrapperUser {
@@ -265,8 +263,8 @@
 }
 
 .messageAvatar {
-  width: 4rem;
-  height: 2.5rem;
+  width: 4rem !important;
+  height: 2.5rem !important;
   border-radius: 9999px;
   display: flex;
   align-items: center;
@@ -380,6 +378,120 @@
 
 .emptyChatText {
   color: #a1a1b2;
+}
+
+/* Enhanced Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContentEnhanced {
+  background: linear-gradient(135deg, #2e2e3e, #3a3a4a);
+  padding: 2rem;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border: 1px solid #4a4a5a;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modalTitleEnhanced {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #c091e3;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.modalFormEnhanced {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formGroupEnhanced {
+  display: flex;
+  flex-direction: column;
+}
+
+.labelEnhanced {
+  font-size: 0.9rem;
+  color: #d1d1e0;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.modalInputEnhanced {
+  padding: 0.75rem;
+  border: 1px solid #4a4a5a;
+  border-radius: 8px;
+  background-color: rgba(58, 58, 74, 0.8);
+  color: #d1d1e0;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+}
+
+.modalInputEnhanced:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+}
+
+.modalInputEnhanced::placeholder {
+  color: #a1a1b2;
+}
+
+.modalActionsEnhanced {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modalButtonEnhanced {
+  padding: 0.75rem 1.5rem;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modalButtonEnhanced:hover {
+  background-color: #2563eb;
+}
+
+.modalButtonCancelEnhanced {
+  padding: 0.75rem 1.5rem;
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modalButtonCancelEnhanced:hover {
+  background-color: #c82333;
 }
 
 .bgBlue500 { background-color: #3b82f6; }
