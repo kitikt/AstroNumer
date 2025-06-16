@@ -30,6 +30,8 @@ interface IChatBot {
   unreadCount: number;
 }
 
+
+
 interface IBotConversation {
   Id: number;
   User1CoreNumber: number;
@@ -45,6 +47,13 @@ interface IBotConversation {
     CreatedAt: string;
   };
 }
+export enum RelationshipType {
+  BanBe = 1,
+  NguoiYeu = 2,
+  DongNghiep = 3,
+  BoMe = 4,
+}
+
 
 interface Chat {
   botId: string;
@@ -70,7 +79,7 @@ const ChatBot = () => {
   });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const USER_ID = "bccf143e-55bc-4d08-b359-acc10acb30a9";
+  const USER_ID = localStorage.getItem("userId") || "";
   const API_URL = import.meta.env.VITE_API_URL;
   const TOKEN = localStorage.getItem("token");
 
@@ -162,7 +171,7 @@ function formatBotResponse(rawText: string): string {
           User1CoreNumber: 0,
           User2FullName: bot?.name || "Bot",
           User2DateOfBirth: new Date().toISOString(),
-          RelationshipType: 0,
+          RelationshipType: 2,
           RelationshipTypeDescription: "Chatbot",
           Title: `Trò chuyện với ${bot?.name || "Bot"}`,
         }),
@@ -174,6 +183,7 @@ function formatBotResponse(rawText: string): string {
           [botId]: { botId, messages: [], conversationId: botId },
         }));
         setActiveChatId(botId);
+        
         await fetchConversationHistory(botId);
       } else {
         console.error("Error creating conversation:", data.Errors);
@@ -247,6 +257,12 @@ function formatBotResponse(rawText: string): string {
   } catch (error) {
     console.error("Lỗi mạng:", error);
   }
+};
+const RelationshipTypeLabels: { [key: number]: string } = {
+  [RelationshipType.BanBe]: "Bạn Bè",
+  [RelationshipType.NguoiYeu]: "Người Yêu",
+  [RelationshipType.DongNghiep]: "Đồng Nghiệp",
+  [RelationshipType.BoMe]: "Bố Mẹ",
 };
 
 
@@ -602,7 +618,12 @@ function formatBotResponse(rawText: string): string {
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                  onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault(); // ✅ ngăn form submit hoặc gọi thêm lần khác
+          sendMessage();
+        }
+      }}
                   placeholder={`Nhắn tin cho ${activeBot.name}...`}
                   className={styles.messageInput}
                 />
@@ -688,18 +709,25 @@ function formatBotResponse(rawText: string): string {
                 <label className={styles.labelEnhanced}>
                   RelationshipType:
                 </label>
-                <input
-                  type="number"
-                  value={formData.RelationshipType}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      RelationshipType: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  className={styles.modalInputEnhanced}
-                  placeholder="Nhập RelationshipType"
-                />
+                <select
+  value={formData.RelationshipType}
+  onChange={(e) => {
+    const selectedValue = parseInt(e.target.value);
+    setFormData({
+      ...formData,
+      RelationshipType: selectedValue,
+      RelationshipTypeDescription: RelationshipTypeLabels[selectedValue],
+    });
+  }}
+  className={styles.modalInputEnhanced}
+>
+  <option value="">-- Chọn loại quan hệ --</option>
+  <option value={1}>Bạn Bè</option>
+  <option value={2}>Người Yêu</option>
+  <option value={3}>Đồng Nghiệp</option>
+  <option value={4}>Bố Mẹ</option>
+</select>
+
               </div>
               <div className={styles.formGroupEnhanced}>
                 <label className={styles.labelEnhanced}>
