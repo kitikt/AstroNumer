@@ -393,6 +393,10 @@ const DashboardPage = () => {
         year: selectedYear,
       });
 
+      console.log(
+        "Gọi API service-usage-by-month với params:",
+        params.toString()
+      );
       const response = await fetch(
         `${API_ENDPOINTS.serviceUsageByMonth}?${params.toString()}`,
         {
@@ -423,8 +427,20 @@ const DashboardPage = () => {
       }
 
       const data: ApiResponse<ServiceUsageData[]> = await response.json();
+      console.log("Phản hồi API service-usage-by-month:", data);
       if (data.Success) {
-        setServiceUsageData(data.Data);
+        const formattedData = data.Data.map((item) => ({
+          Label: item.Label,
+          Value: item.Value,
+        }));
+        console.log(
+          "Dữ liệu đã định dạng service-usage-by-month:",
+          formattedData
+        );
+        setServiceUsageData(formattedData);
+      } else {
+        setServiceUsageData([]);
+        console.warn("Thành công không đúng, Thông báo:", data.Message);
       }
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu sử dụng dịch vụ:", error);
@@ -436,11 +452,11 @@ const DashboardPage = () => {
         duration: 5000,
         isClosable: true,
       });
+      setServiceUsageData([]);
     } finally {
       setServiceUsageLoading(false);
     }
   };
-
   const applicationRefetch = () => {
     setApplicationLoading(true);
     setTimeout(() => {
@@ -838,11 +854,11 @@ const DashboardPage = () => {
                     margin={{ top: 5, right: 0, left: 50, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
+                    <XAxis dataKey="Label" />
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="usage" fill="#8884d8" name="Lượt sử dụng" />
+                    <Bar dataKey="Value" fill="#8884d8" name="Lượt sử dụng" />
                   </BarChart>
                 ) : (
                   <Stack h={300}>
