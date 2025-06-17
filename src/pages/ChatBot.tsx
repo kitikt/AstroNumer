@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import styles from "@/styles/ChatBot.module.css";
 import AddConversationButton from "@/components/AddConversationButton";
+import { set } from "zod/v4";
 
 interface Message {
   id: string;
@@ -65,10 +66,10 @@ const ChatBot = () => {
   const [chatBots, setChatBots] = useState<IChatBot[]>([]);
   const [chats, setChats] = useState<{ [key: string]: Chat }>({});
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
-  const [inputMessage, setInputMessage] = useState("");
-  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inputMessage, setInputMessage] = useState<string>("");
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState<false>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     User1CoreNumber: 10,
     User2FullName: "",
@@ -77,6 +78,7 @@ const ChatBot = () => {
     RelationshipTypeDescription: "",
     Title: "",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const USER_ID = localStorage.getItem("userId") || "";
@@ -116,7 +118,7 @@ const ChatBot = () => {
                   conv.Title && conv.Title !== "string"
                     ? conv.Title
                     : conv.RelationshipTypeDescription ||
-                      `Bot ${conv.User2CoreNumber}`,
+                    `Bot ${conv.User2CoreNumber}`,
                 avatar: "🤖",
                 description:
                   conv.RelationshipTypeDescription || "Trò chuyện với bot",
@@ -186,7 +188,7 @@ const ChatBot = () => {
           [botId]: { botId, messages: [], conversationId: botId },
         }));
         setActiveChatId(botId);
-        
+
         await fetchConversationHistory(botId);
       } else {
         console.error("Error creating conversation:", data.Errors);
@@ -203,7 +205,34 @@ const ChatBot = () => {
         console.error("Không tìm thấy conversationId.");
         return;
       }
+      // Set user message first
+      setChats((prev) => {
+        const currentChat = prev[activeChatId!] || {
+          botId: activeChatId!,
+          messages: [],
+          conversationId,
+        };
 
+        return {
+          ...prev,
+          [activeChatId!]: {
+            ...currentChat,
+            messages: [
+              ...currentChat.messages,
+              {
+                id: Date.now().toString(),
+                content: message,
+                sender: "user",
+                timestamp: new Date(),
+              }
+            ],
+          },
+        };
+      });
+      setInputMessage("");
+      scrollToBottom();
+
+      setIsLoading(true);
       const response = await fetch(
         `${API_URL}/api/Chat/analyze-relationship/${conversationId}`,
         {
@@ -213,7 +242,7 @@ const ChatBot = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${TOKEN}`,
           },
-          body: JSON.stringify(message), // ✅ Gửi message là chuỗi JSON
+          body: JSON.stringify(message),
         }
       );
 
@@ -230,12 +259,6 @@ const ChatBot = () => {
 
           const newMessages = [
             ...currentChat.messages,
-            {
-              id: Date.now().toString(),
-              content: message,
-              sender: "user",
-              timestamp: new Date(),
-            },
             {
               id: (Date.now() + 1).toString(),
               content: botResponse,
@@ -259,6 +282,9 @@ const ChatBot = () => {
       }
     } catch (error) {
       console.error("Lỗi mạng:", error);
+    } finally {
+      setIsLoading(false);
+      scrollToBottom();
     }
   };
 
@@ -351,7 +377,6 @@ const ChatBot = () => {
   const sendMessage = async () => {
     if (!inputMessage.trim() || !activeChatId) return;
     await sendMessageToBot(inputMessage);
-    setInputMessage("");
   };
 
   const handleCreateConversation = async () => {
@@ -442,13 +467,18 @@ const ChatBot = () => {
     : null;
   const activeChat = activeChatId ? chats[activeChatId] : null;
 
+  useEffect(() => {
+    if (activeChatId && activeChat && activeChat.conversationId) {
+      fetchConversationHistory(activeChat.conversationId);
+    }
+  }, [activeChat?.conversationId]);
+
   return (
     <div className={styles.container}>
       {/* Left Sidebar */}
       <div
-        className={`${styles.leftSidebar} ${
-          isLeftPanelCollapsed ? styles.leftSidebarCollapsed : ""
-        }`}
+        className={`${styles.leftSidebar} ${isLeftPanelCollapsed ? styles.leftSidebarCollapsed : ""
+          }`}
       >
         <div className={styles.header}>
           {!isLeftPanelCollapsed && (
@@ -467,9 +497,8 @@ const ChatBot = () => {
             className={styles.headerButton}
           >
             <Minimize2
-              className={`${styles.headerIcon} ${
-                isLeftPanelCollapsed ? styles.headerIconRotate : ""
-              }`}
+              className={`${styles.headerIcon} ${isLeftPanelCollapsed ? styles.headerIconRotate : ""
+                }`}
             />
           </button>
         </div>
@@ -494,9 +523,8 @@ const ChatBot = () => {
             <div
               key={bot.id}
               onClick={() => startNewChat(bot.id)}
-              className={`${styles.botItem} ${
-                activeChatId === bot.id ? styles.botItemActive : ""
-              }`}
+              className={`${styles.botItem} ${activeChatId === bot.id ? styles.botItemActive : ""
+                }`}
             >
               <div className="flex items-center gap-3">
                 <div className={styles.botAvatarContainer}>
@@ -554,23 +582,20 @@ const ChatBot = () => {
               {activeChat.messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`${styles.messageWrapper} ${
-                    message.sender === "user" ? styles.messageWrapperUser : ""
-                  }`}
+                  className={`${styles.messageWrapper} ${message.sender === "user" ? styles.messageWrapperUser : ""
+                    }`}
                 >
                   <div
-                    className={`${styles.messageContentWrapper} ${
-                      message.sender === "user"
-                        ? styles.messageContentWrapperUser
-                        : ""
-                    }`}
+                    className={`${styles.messageContentWrapper} ${message.sender === "user"
+                      ? styles.messageContentWrapperUser
+                      : ""
+                      }`}
                   >
                     <div
-                      className={`${styles.messageAvatar} ${
-                        message.sender === "user"
-                          ? styles.bgBlue100
-                          : activeBot.color
-                      }`}
+                      className={`${styles.messageAvatar} ${message.sender === "user"
+                        ? styles.bgBlue100
+                        : activeBot.color
+                        }`}
                     >
                       {message.sender === "user" ? (
                         <User className="w-4 h-4" />
@@ -579,11 +604,10 @@ const ChatBot = () => {
                       )}
                     </div>
                     <div
-                      className={`${styles.messageContent} ${
-                        message.sender === "user"
-                          ? styles.messageContentUser
-                          : styles.messageContentBot
-                      }`}
+                      className={`${styles.messageContent} ${message.sender === "user"
+                        ? styles.messageContentUser
+                        : styles.messageContentBot
+                        }`}
                     >
                       {message.sender === "bot" ? (
                         formatBotResponse(message.content)
@@ -592,13 +616,11 @@ const ChatBot = () => {
                       ) : (
                         <p>{message.content}</p>
                       )}
-
                       <p
-                        className={`${styles.messageTime} ${
-                          message.sender === "user"
-                            ? styles.messageTimeUser
-                            : styles.messageTimeBot
-                        }`}
+                        className={`${styles.messageTime} ${message.sender === "user"
+                          ? styles.messageTimeUser
+                          : styles.messageTimeBot
+                          }`}
                       >
                         {message.timestamp.toLocaleTimeString("vi-VN", {
                           hour: "2-digit",
@@ -610,6 +632,12 @@ const ChatBot = () => {
                 </div>
               ))}
               <div ref={messagesEndRef} />
+              {isLoading && (
+                <div className={styles.loadingIndicator}>
+                  <div className={styles.loadingSpinner}></div>
+                  <span>Đang xử lý...</span>
+                </div>
+              )}
             </div>
 
             <div className={styles.messageInputContainer}>
@@ -619,11 +647,11 @@ const ChatBot = () => {
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault(); // ✅ ngăn form submit hoặc gọi thêm lần khác
-          sendMessage();
-        }
-      }}
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // ✅ ngăn form submit hoặc gọi thêm lần khác
+                      sendMessage();
+                    }
+                  }}
                   placeholder={`Nhắn tin cho ${activeBot.name}...`}
                   className={styles.messageInput}
                 />
@@ -710,23 +738,23 @@ const ChatBot = () => {
                   RelationshipType:
                 </label>
                 <select
-  value={formData.RelationshipType}
-  onChange={(e) => {
-    const selectedValue = parseInt(e.target.value);
-    setFormData({
-      ...formData,
-      RelationshipType: selectedValue,
-      RelationshipTypeDescription: RelationshipTypeLabels[selectedValue],
-    });
-  }}
-  className={styles.modalInputEnhanced}
->
-  <option value="">-- Chọn loại quan hệ --</option>
-  <option value={1}>Bạn Bè</option>
-  <option value={2}>Người Yêu</option>
-  <option value={3}>Đồng Nghiệp</option>
-  <option value={4}>Bố Mẹ</option>
-</select>
+                  value={formData.RelationshipType}
+                  onChange={(e) => {
+                    const selectedValue = parseInt(e.target.value);
+                    setFormData({
+                      ...formData,
+                      RelationshipType: selectedValue,
+                      RelationshipTypeDescription: RelationshipTypeLabels[selectedValue],
+                    });
+                  }}
+                  className={styles.modalInputEnhanced}
+                >
+                  <option value="">-- Chọn loại quan hệ --</option>
+                  <option value={1}>Bạn Bè</option>
+                  <option value={2}>Người Yêu</option>
+                  <option value={3}>Đồng Nghiệp</option>
+                  <option value={4}>Bố Mẹ</option>
+                </select>
 
               </div>
               <div className={styles.formGroupEnhanced}>
