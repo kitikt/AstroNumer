@@ -113,7 +113,7 @@ const Header: React.FC = () => {
               <Link to="/lookup/forecast" className={styles.dropdownItem}>
                 Trắc Nghiệm DISC
               </Link>
-              <Link to="/lookup/forecast" className={styles.dropdownItem}>
+              <Link to="/mbti" className={styles.dropdownItem}>
                 Trắc Nghiệm MBTI
               </Link>
               <Link to="/lookup/forecast" className={styles.dropdownItem}>
