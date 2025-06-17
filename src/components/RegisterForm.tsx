@@ -68,15 +68,32 @@ export default function RegisterForm() {
       const data = await response.json();
 
       if (!response.ok) {
+        if (data.errors) {
+          const allErrors = Object.values(data.errors).flat().join("\n");
+          throw new Error(allErrors);
+        }
+
         throw new Error(data.message || "Đăng ký thất bại 😢");
       }
 
-      alert("✅ Đăng ký thành công, mời đăng nhập lại!");
-      navigate("/");
+      toaster.create({
+        title: " Đăng ký thành công",
+        description: "Mời đăng nhập lại!",
+        type: "success",
+        duration: 4000,
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
     } catch (error) {
       if (error instanceof Error) {
         console.error("Lỗi đăng ký:", error);
-        alert("❌ Lỗi đăng ký: " + error.message);
+        toaster.create({
+          title: " Lỗi đăng ký",
+          description: error.message,
+          type: "error",
+          duration: 4000,
+        });
       }
     } finally {
       setLoading(false);
