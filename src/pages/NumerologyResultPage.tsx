@@ -91,15 +91,15 @@ const NumerologyResultPage = () => {
             parsedData.MaturityNumber || 0
           }`,
         },
-        {
-          title: "Số Thử Thách (Challenge Numbers)",
-          value: parsedData.ChallengeNumbers || "N/A",
-          keyword: "",
-          apiEndpoint:
-            parsedData.ChallengeNumbers && parsedData.ChallengeNumbers !== "N/A"
-              ? `/api/v1/numerology/destiny-numbers/${parsedData.ChallengeNumbers}`
-              : "",
-        },
+        // {
+        //   title: "Số Thử Thách (Challenge Numbers)",
+        //   value: parsedData.ChallengeNumbers || "N/A",
+        //   keyword: "",
+        //   apiEndpoint:
+        //     parsedData.ChallengeNumbers && parsedData.ChallengeNumbers !== "N/A"
+        //       ? `/api/v1/numerology/destiny-numbers/${parsedData.ChallengeNumbers}`
+        //       : "",
+        // },
       ];
 
       const fetchKeywords = async () => {
@@ -185,25 +185,67 @@ const NumerologyResultPage = () => {
         if (result.StatusCode === 200 && result.Success) {
           let fullDescription = "";
 
-          if (item.title === "Số Định Mệnh (Destiny Number)") {
-            const { Mission, Traits, Lesson, Challenges } = result.Data;
-            fullDescription = `Nhiệm vụ: ${Mission}\n\nĐặc điểm: ${Traits}\n\nBài học: ${Lesson}\n\nThách thức: ${Challenges}`;
-          } else if (item.title === "Số Linh Hồn (Soul Urge Number)") {
-            const { Description, inner_motivation, Challenges, deep_analysis } =
-              result.Data;
-            fullDescription = `${Description}\n\nĐộng lực bên trong: ${inner_motivation}\n\nThách thức: ${Challenges}\n\nPhân tích sâu: ${deep_analysis}`;
-          } else if (item.title === "Số Ngày Sinh (Birthday Number)") {
-            const { Description, Challenge } = result.Data;
-            fullDescription = `${Description}\n\nThách thức: ${Challenge}`;
-          } else if (item.title === "Số Trưởng Thành (Maturity Number)") {
-            const { Description } = result.Data;
-            fullDescription = Description;
-          } else {
-            const summary =
-              result.Data?.free_version?.summary || "Không có tóm tắt";
-            const highlight =
-              result.Data?.free_version?.highlight || "Không có điểm nổi bật";
-            fullDescription = `${summary}\n\nĐiểm nổi bật: ${highlight}`;
+         if (item.title === "Số Định Mệnh (Destiny Number)") {
+  const { Mission, Traits, Lesson, Challenges, Career } = result.Data;
+
+  fullDescription = `
+🎯 Sứ mệnh: ${Mission}
+
+🧬 Đặc điểm tính cách: ${Traits}
+
+📚 Bài học cuộc sống: ${Lesson}
+
+⚠️ Thử thách cá nhân: ${Challenges}
+
+💼 Nghề nghiệp phù hợp: ${Career}
+  `.trim();
+}
+else if (item.title === "Số Linh Hồn (Soul Urge Number)") {
+  const { Description, inner_motivation, Challenges, deep_analysis } = result.Data;
+
+  fullDescription = `
+📝 Mô tả tổng quan: ${Description}
+
+💓 Động lực bên trong: ${inner_motivation}
+
+⚠️ Thử thách nội tâm: ${Challenges}
+
+🔍 Phân tích chuyên sâu: ${deep_analysis}
+  `.trim();
+}
+else if (item.title === "Số Ngày Sinh (Birthday Number)") {
+  const { Description, Challenge } = result.Data;
+
+  fullDescription = `
+📆 Ý nghĩa ngày sinh: ${Description}
+
+⚠️ Thử thách cuộc đời: ${Challenge}
+  `.trim();
+}
+else if (item.title === "Số Trưởng Thành (Maturity Number)") {
+  const { Description } = result.Data;
+
+  fullDescription = `
+🌟 Ý nghĩa số trưởng thành: ${Description}
+  `.trim();
+}
+ else {
+             const description = result.Data?.description || "Không có mô tả";
+           const summary = result.Data?.free_version?.summary || "Không có mô tả";
+const highlight = result.Data?.free_version?.highlight || "Không có điểm nổi bật";
+const strength = result.Data?.strength || "Không có dữ liệu";
+const weakness = result.Data?.weakness || "Không có dữ liệu";
+
+fullDescription = `📘 Mô tả: ${description}
+
+🔹 Tóm tắt: ${summary}
+
+✨ Điểm nổi bật: ${highlight}
+
+💪 Điểm mạnh: ${strength}
+
+⚠️ Điểm yếu: ${weakness}
+  `;
           }
 
           const updatedItem = { ...item, fullDescription };

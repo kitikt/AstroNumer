@@ -107,20 +107,23 @@ const Header: React.FC = () => {
               <Link to="/form/numerology" className={styles.dropdownItem}>
                 Thần Số Học
               </Link>
-              <Link to="/lookup/numerology" className={styles.dropdownItem}>
+              {/* <Link to="/lookup/numerology" className={styles.dropdownItem}>
                 Thần Số Học Cho Con
-              </Link>
-              <Link to="/lookup/forecast" className={styles.dropdownItem}>
+              </Link> */}
+              {/* <Link to="/lookup/forecast" className={styles.dropdownItem}>
                 Trắc Nghiệm DISC
               </Link>
               <Link to="/mbti" className={styles.dropdownItem}>
                 Trắc Nghiệm MBTI
-              </Link>
-              <Link to="/lookup/forecast" className={styles.dropdownItem}>
+              </Link> */}
+              {/* <Link to="/lookup/forecast" className={styles.dropdownItem}>
                 Tra Cứu Tử Vi
-              </Link>
+              </Link> */}
               <Link to="/form/starmap" className={styles.dropdownItem}>
                 Tra Cứu Bản Đồ Sao
+              </Link>
+              <Link to="/chat" className={styles.dropdownItem}>
+                Chat với AI
               </Link>
             </div>
           )}

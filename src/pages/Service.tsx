@@ -50,9 +50,10 @@ const Service = () => {
 
   const handleBuy = async (serviceId: number, quantity: number) => {
     try {
-      const Id = JSON.parse(localStorage.getItem("user") || "null");
+     // const Id = JSON.parse(localStorage.getItem("userId") || "null");
+          const Id = localStorage.getItem("userId") ?? null;
 
-      console.log(Id);
+            console.log(Id);
 
       if (!Id) {
         toaster.create({
