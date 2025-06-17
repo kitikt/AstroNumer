@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Divider from "@/components/Divider";
+import { Toaster, toaster } from "@/components/ui/toaster";
 
 interface ServicePackage {
   Id: number;
@@ -54,7 +55,12 @@ const Service = () => {
       console.log(Id);
 
       if (!Id) {
-        alert("Vui lòng đăng nhập để tiếp tục.");
+        toaster.create({
+          title: "Chưa đăng nhập",
+          description: "Vui lòng đăng nhập để tiếp tục.",
+          type: "warning",
+          duration: 4000,
+        });
         return;
       }
       console.log(serviceId, quantity);
@@ -91,6 +97,7 @@ const Service = () => {
 
   return (
     <div className="!w-full !px-6 !py-10 !text-center">
+      <Toaster />
       <div className="!mb-12">
         <h2 className="!text-4xl !font-bold !text-indigo-700">DỊCH VỤ VIP</h2>
         <p className="!mt-6 !text-white !max-w-2xl !mx-auto">
