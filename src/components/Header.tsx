@@ -113,9 +113,7 @@ const Header: React.FC = () => {
               {/* <Link to="/lookup/forecast" className={styles.dropdownItem}>
                 Trắc Nghiệm DISC
               </Link>
-              <Link to="/mbti" className={styles.dropdownItem}>
-                Trắc Nghiệm MBTI
-              </Link> */}
+            
               {/* <Link to="/lookup/forecast" className={styles.dropdownItem}>
                 Tra Cứu Tử Vi
               </Link> */}
@@ -124,6 +122,9 @@ const Header: React.FC = () => {
               </Link>
               <Link to="/chat" className={styles.dropdownItem}>
                 Chat với AI
+              </Link>
+              <Link to="/mbti" className={styles.dropdownItem}>
+                Trắc Nghiệm MBTI
               </Link>
             </div>
           )}

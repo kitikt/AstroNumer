@@ -30,8 +30,6 @@ interface IChatBot {
   unreadCount: number;
 }
 
-
-
 interface IBotConversation {
   Id: number;
   User1CoreNumber: number;
@@ -53,7 +51,6 @@ export enum RelationshipType {
   DongNghiep = 3,
   BoMe = 4,
 }
-
 
 interface Chat {
   botId: string;
@@ -186,7 +183,7 @@ const ChatBot = () => {
           [botId]: { botId, messages: [], conversationId: botId },
         }));
         setActiveChatId(botId);
-        
+
         await fetchConversationHistory(botId);
       } else {
         console.error("Error creating conversation:", data.Errors);
@@ -619,11 +616,11 @@ const ChatBot = () => {
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault(); // ✅ ngăn form submit hoặc gọi thêm lần khác
-          sendMessage();
-        }
-      }}
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // ✅ ngăn form submit hoặc gọi thêm lần khác
+                      sendMessage();
+                    }
+                  }}
                   placeholder={`Nhắn tin cho ${activeBot.name}...`}
                   className={styles.messageInput}
                 />
@@ -710,24 +707,24 @@ const ChatBot = () => {
                   RelationshipType:
                 </label>
                 <select
-  value={formData.RelationshipType}
-  onChange={(e) => {
-    const selectedValue = parseInt(e.target.value);
-    setFormData({
-      ...formData,
-      RelationshipType: selectedValue,
-      RelationshipTypeDescription: RelationshipTypeLabels[selectedValue],
-    });
-  }}
-  className={styles.modalInputEnhanced}
->
-  <option value="">-- Chọn loại quan hệ --</option>
-  <option value={1}>Bạn Bè</option>
-  <option value={2}>Người Yêu</option>
-  <option value={3}>Đồng Nghiệp</option>
-  <option value={4}>Bố Mẹ</option>
-</select>
-
+                  value={formData.RelationshipType}
+                  onChange={(e) => {
+                    const selectedValue = parseInt(e.target.value);
+                    setFormData({
+                      ...formData,
+                      RelationshipType: selectedValue,
+                      RelationshipTypeDescription:
+                        RelationshipTypeLabels[selectedValue],
+                    });
+                  }}
+                  className={styles.modalInputEnhanced}
+                >
+                  <option value="">-- Chọn loại quan hệ --</option>
+                  <option value={1}>Bạn Bè</option>
+                  <option value={2}>Người Yêu</option>
+                  <option value={3}>Đồng Nghiệp</option>
+                  <option value={4}>Bố Mẹ</option>
+                </select>
               </div>
               <div className={styles.formGroupEnhanced}>
                 <label className={styles.labelEnhanced}>
