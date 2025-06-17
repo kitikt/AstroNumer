@@ -54,6 +54,13 @@ export enum RelationshipType {
   BoMe = 4,
 }
 
+const RelationshipTypeLabels: { [key: number]: string } = {
+  [RelationshipType.BanBe]: "Bạn Bè",
+  [RelationshipType.NguoiYeu]: "Người Yêu",
+  [RelationshipType.DongNghiep]: "Đồng Nghiệp",
+  [RelationshipType.BoMe]: "Bố Mẹ",
+};
+
 
 interface Chat {
   botId: string;
