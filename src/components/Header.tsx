@@ -132,8 +132,10 @@ const Header: React.FC = () => {
         <Link to="#" className={styles.link}>
           Liên hệ
         </Link>
-        <div> <NotificationBell /></div>
-
+         
+          {isLoggedIn && (<div>
+            <NotificationBell />
+          </div>)}
         {isLoggedIn ? (
           <div className={styles.dropdown} ref={profileDropdownRef}>
             <button onClick={toggleProfileDropdown} className={styles.link}>
@@ -150,7 +152,7 @@ const Header: React.FC = () => {
                 ▲
               </span>
             </button>
-           
+            
             {isProfileDropdownOpen && (
               <div className={styles.profileDropdownMenu}>
                 <Link to="/profile/transaction" className={styles.dropdownItem}>
@@ -159,7 +161,6 @@ const Header: React.FC = () => {
                 <Link to="/profile/edit" className={styles.dropdownItem}>
                   Đổi thông tin
                 </Link>
-                
                  
 
                 <button
