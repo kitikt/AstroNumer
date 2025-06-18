@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import styles from "@/styles/ChatBot.module.css";
 import AddConversationButton from "@/components/AddConversationButton";
+import { set } from "zod/v4";
 
 interface Message {
   id: string;
@@ -52,6 +53,13 @@ export enum RelationshipType {
   BoMe = 4,
 }
 
+const RelationshipTypeLabels: { [key: number]: string } = {
+  [RelationshipType.BanBe]: "Bạn Bè",
+  [RelationshipType.NguoiYeu]: "Người Yêu",
+  [RelationshipType.DongNghiep]: "Đồng Nghiệp",
+  [RelationshipType.BoMe]: "Bố Mẹ",
+};
+
 interface Chat {
   botId: string;
   messages: Message[];
@@ -62,10 +70,11 @@ const ChatBot = () => {
   const [chatBots, setChatBots] = useState<IChatBot[]>([]);
   const [chats, setChats] = useState<{ [key: string]: Chat }>({});
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
-  const [inputMessage, setInputMessage] = useState("");
-  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [inputMessage, setInputMessage] = useState<string>("");
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] =
+    useState<false>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     User1CoreNumber: 10,
     User2FullName: "",
@@ -74,6 +83,7 @@ const ChatBot = () => {
     RelationshipTypeDescription: "",
     Title: "",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const USER_ID = localStorage.getItem("userId") || "";
@@ -200,7 +210,34 @@ const ChatBot = () => {
         console.error("Không tìm thấy conversationId.");
         return;
       }
+      // Set user message first
+      setChats((prev) => {
+        const currentChat = prev[activeChatId!] || {
+          botId: activeChatId!,
+          messages: [],
+          conversationId,
+        };
 
+        return {
+          ...prev,
+          [activeChatId!]: {
+            ...currentChat,
+            messages: [
+              ...currentChat.messages,
+              {
+                id: Date.now().toString(),
+                content: message,
+                sender: "user",
+                timestamp: new Date(),
+              },
+            ],
+          },
+        };
+      });
+      setInputMessage("");
+      scrollToBottom();
+
+      setIsLoading(true);
       const response = await fetch(
         `${API_URL}/api/Chat/analyze-relationship/${conversationId}`,
         {
@@ -210,7 +247,7 @@ const ChatBot = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${TOKEN}`,
           },
-          body: JSON.stringify(message), // ✅ Gửi message là chuỗi JSON
+          body: JSON.stringify(message),
         }
       );
 
@@ -227,12 +264,6 @@ const ChatBot = () => {
 
           const newMessages = [
             ...currentChat.messages,
-            {
-              id: Date.now().toString(),
-              content: message,
-              sender: "user",
-              timestamp: new Date(),
-            },
             {
               id: (Date.now() + 1).toString(),
               content: botResponse,
@@ -256,6 +287,9 @@ const ChatBot = () => {
       }
     } catch (error) {
       console.error("Lỗi mạng:", error);
+    } finally {
+      setIsLoading(false);
+      scrollToBottom();
     }
   };
 
@@ -348,7 +382,6 @@ const ChatBot = () => {
   const sendMessage = async () => {
     if (!inputMessage.trim() || !activeChatId) return;
     await sendMessageToBot(inputMessage);
-    setInputMessage("");
   };
 
   const handleCreateConversation = async () => {
@@ -438,6 +471,12 @@ const ChatBot = () => {
     ? chatBots.find((bot) => bot.id === activeChatId)
     : null;
   const activeChat = activeChatId ? chats[activeChatId] : null;
+
+  useEffect(() => {
+    if (activeChatId && activeChat && activeChat.conversationId) {
+      fetchConversationHistory(activeChat.conversationId);
+    }
+  }, [activeChat?.conversationId]);
 
   return (
     <div className={styles.container}>
@@ -589,7 +628,6 @@ const ChatBot = () => {
                       ) : (
                         <p>{message.content}</p>
                       )}
-
                       <p
                         className={`${styles.messageTime} ${
                           message.sender === "user"
@@ -607,6 +645,12 @@ const ChatBot = () => {
                 </div>
               ))}
               <div ref={messagesEndRef} />
+              {isLoading && (
+                <div className={styles.loadingIndicator}>
+                  <div className={styles.loadingSpinner}></div>
+                  <span>Đang xử lý...</span>
+                </div>
+              )}
             </div>
 
             <div className={styles.messageInputContainer}>

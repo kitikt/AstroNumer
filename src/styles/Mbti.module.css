@@ -292,3 +292,56 @@
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
+.section {
+  margin-bottom: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sectionTitle {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.highlightedTitle {
+  color: #ebe8df; /* Màu vàng sáng */
+  text-shadow: 0 0 5px #d5d3cd, 0 0 10px #211f14, 0 0 15px #61593d; /* Hiệu ứng phát sáng */
+  font-weight: 700; /* Tăng độ đậm */
+}
+
+.sectionText {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.characteristic {
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: rgba(255,255,255,0.05);
+  border-radius: 10px;
+}
+
+.characteristicTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #4CAF50;
+}
+
+.list {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin-bottom: 5px;
+}
+
+.listItem {
+  font-size: 1rem;
+  line-height: 1.4;
+  opacity: 0.9;
+  margin-bottom: 3px;
+}
