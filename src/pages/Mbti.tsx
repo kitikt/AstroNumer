@@ -65,7 +65,6 @@ const MBTIQuiz = () => {
         "https://astronumer.info.vn/api/v1/mbti/questions"
       );
       const data = await response.json();
-
       if (data.Success) {
         setQuestions(data.Data);
       } else {
@@ -95,7 +94,6 @@ const MBTIQuiz = () => {
   const handleNext = () => {
     const nextPage = currentPage + 1;
     const totalPages = Math.ceil(questions.length / questionsPerPage);
-
     if (nextPage < totalPages) {
       setCurrentPage(nextPage);
     } else {
@@ -150,14 +148,9 @@ const MBTIQuiz = () => {
     }
   };
 
-  const getAnsweredCount = () => {
-    return Object.keys(answers).length;
-  };
+  const getAnsweredCount = () => Object.keys(answers).length;
 
-  const canProceed = () => {
-    const currentQuestions = getCurrentQuestions();
-    return currentQuestions.every((q) => answers[q.id]);
-  };
+  const canProceed = () => getCurrentQuestions().every((q) => answers[q.id]);
 
   const totalPages = Math.ceil(questions.length / questionsPerPage);
   const isLastPage = currentPage === totalPages - 1;
@@ -428,9 +421,7 @@ const MBTIQuiz = () => {
         <div className={styles.progressBar}>
           <div
             className={styles.progressFill}
-            style={{
-              width: `${((currentPage + 1) / totalPages) * 100}%`,
-            }}
+            style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
           ></div>
         </div>
         <p className={styles.progressText}>
@@ -475,7 +466,6 @@ const MBTIQuiz = () => {
         >
           ← Quay lại
         </button>
-
         <button
           className={`${styles.navButton} ${styles.nextButton} ${
             !canProceed() ? styles.disabledButton : ""
