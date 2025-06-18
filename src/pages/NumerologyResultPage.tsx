@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Text, Grid, Button } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Divider from "@/components/Divider";
 import "@/styles/NumerologyResultPage.css";
 
@@ -36,6 +37,7 @@ const NumerologyResultPage = () => {
     null
   );
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const storedData = localStorage.getItem("numerologyData");
@@ -91,15 +93,6 @@ const NumerologyResultPage = () => {
             parsedData.MaturityNumber || 0
           }`,
         },
-        // {
-        //   title: "Số Thử Thách (Challenge Numbers)",
-        //   value: parsedData.ChallengeNumbers || "N/A",
-        //   keyword: "",
-        //   apiEndpoint:
-        //     parsedData.ChallengeNumbers && parsedData.ChallengeNumbers !== "N/A"
-        //       ? `/api/v1/numerology/destiny-numbers/${parsedData.ChallengeNumbers}`
-        //       : "",
-        // },
       ];
 
       const fetchKeywords = async () => {
@@ -185,10 +178,10 @@ const NumerologyResultPage = () => {
         if (result.StatusCode === 200 && result.Success) {
           let fullDescription = "";
 
-         if (item.title === "Số Định Mệnh (Destiny Number)") {
-  const { Mission, Traits, Lesson, Challenges, Career } = result.Data;
+          if (item.title === "Số Định Mệnh (Destiny Number)") {
+            const { Mission, Traits, Lesson, Challenges, Career } = result.Data;
 
-  fullDescription = `
+            fullDescription = `
 🎯 Sứ mệnh: ${Mission}
 
 🧬 Đặc điểm tính cách: ${Traits}
@@ -199,11 +192,11 @@ const NumerologyResultPage = () => {
 
 💼 Nghề nghiệp phù hợp: ${Career}
   `.trim();
-}
-else if (item.title === "Số Linh Hồn (Soul Urge Number)") {
-  const { Description, inner_motivation, Challenges, deep_analysis } = result.Data;
+          } else if (item.title === "Số Linh Hồn (Soul Urge Number)") {
+            const { Description, inner_motivation, Challenges, deep_analysis } =
+              result.Data;
 
-  fullDescription = `
+            fullDescription = `
 📝 Mô tả tổng quan: ${Description}
 
 💓 Động lực bên trong: ${inner_motivation}
@@ -212,31 +205,30 @@ else if (item.title === "Số Linh Hồn (Soul Urge Number)") {
 
 🔍 Phân tích chuyên sâu: ${deep_analysis}
   `.trim();
-}
-else if (item.title === "Số Ngày Sinh (Birthday Number)") {
-  const { Description, Challenge } = result.Data;
+          } else if (item.title === "Số Ngày Sinh (Birthday Number)") {
+            const { Description, Challenge } = result.Data;
 
-  fullDescription = `
+            fullDescription = `
 📆 Ý nghĩa ngày sinh: ${Description}
 
 ⚠️ Thử thách cuộc đời: ${Challenge}
   `.trim();
-}
-else if (item.title === "Số Trưởng Thành (Maturity Number)") {
-  const { Description } = result.Data;
+          } else if (item.title === "Số Trưởng Thành (Maturity Number)") {
+            const { Description } = result.Data;
 
-  fullDescription = `
+            fullDescription = `
 🌟 Ý nghĩa số trưởng thành: ${Description}
   `.trim();
-}
- else {
-             const description = result.Data?.description || "Không có mô tả";
-           const summary = result.Data?.free_version?.summary || "Không có mô tả";
-const highlight = result.Data?.free_version?.highlight || "Không có điểm nổi bật";
-const strength = result.Data?.strength || "Không có dữ liệu";
-const weakness = result.Data?.weakness || "Không có dữ liệu";
+          } else {
+            const description = result.Data?.description || "Không có mô tả";
+            const summary =
+              result.Data?.free_version?.summary || "Không có mô tả";
+            const highlight =
+              result.Data?.free_version?.highlight || "Không có điểm nổi bật";
+            const strength = result.Data?.strength || "Không có dữ liệu";
+            const weakness = result.Data?.weakness || "Không có dữ liệu";
 
-fullDescription = `📘 Mô tả: ${description}
+            fullDescription = `📘 Mô tả: ${description}
 
 🔹 Tóm tắt: ${summary}
 
@@ -271,6 +263,13 @@ fullDescription = `📘 Mô tả: ${description}
     } else {
       setSelectedItem(item);
     }
+  };
+
+  // Function to clear localStorage and navigate to form
+  const handleRecalculate = () => {
+    localStorage.removeItem("numerologyData"); // Clear numerology data
+    localStorage.removeItem("userInfo"); // Clear user info
+    navigate("/form/numerology"); // Navigate to the form page
   };
 
   return (
@@ -338,6 +337,13 @@ fullDescription = `📘 Mô tả: ${description}
           </Box>
         ))}
       </Grid>
+
+      {/* Add Recalculate Button */}
+      <Box mt={8}>
+        <Button colorScheme="teal" size="lg" onClick={handleRecalculate}>
+          Tra Cứu Lại
+        </Button>
+      </Box>
 
       {selectedItem && (
         <div className="modal-overlay">

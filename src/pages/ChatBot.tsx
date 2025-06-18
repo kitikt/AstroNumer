@@ -31,8 +31,6 @@ interface IChatBot {
   unreadCount: number;
 }
 
-
-
 interface IBotConversation {
   Id: number;
   User1CoreNumber: number;
@@ -62,7 +60,6 @@ const RelationshipTypeLabels: { [key: number]: string } = {
   [RelationshipType.BoMe]: "Bố Mẹ",
 };
 
-
 interface Chat {
   botId: string;
   messages: Message[];
@@ -74,7 +71,8 @@ const ChatBot = () => {
   const [chats, setChats] = useState<{ [key: string]: Chat }>({});
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [inputMessage, setInputMessage] = useState<string>("");
-  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState<false>(false);
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] =
+    useState<false>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState({
@@ -125,7 +123,7 @@ const ChatBot = () => {
                   conv.Title && conv.Title !== "string"
                     ? conv.Title
                     : conv.RelationshipTypeDescription ||
-                    `Bot ${conv.User2CoreNumber}`,
+                      `Bot ${conv.User2CoreNumber}`,
                 avatar: "🤖",
                 description:
                   conv.RelationshipTypeDescription || "Trò chuyện với bot",
@@ -231,7 +229,7 @@ const ChatBot = () => {
                 content: message,
                 sender: "user",
                 timestamp: new Date(),
-              }
+              },
             ],
           },
         };
@@ -484,8 +482,9 @@ const ChatBot = () => {
     <div className={styles.container}>
       {/* Left Sidebar */}
       <div
-        className={`${styles.leftSidebar} ${isLeftPanelCollapsed ? styles.leftSidebarCollapsed : ""
-          }`}
+        className={`${styles.leftSidebar} ${
+          isLeftPanelCollapsed ? styles.leftSidebarCollapsed : ""
+        }`}
       >
         <div className={styles.header}>
           {!isLeftPanelCollapsed && (
@@ -504,8 +503,9 @@ const ChatBot = () => {
             className={styles.headerButton}
           >
             <Minimize2
-              className={`${styles.headerIcon} ${isLeftPanelCollapsed ? styles.headerIconRotate : ""
-                }`}
+              className={`${styles.headerIcon} ${
+                isLeftPanelCollapsed ? styles.headerIconRotate : ""
+              }`}
             />
           </button>
         </div>
@@ -530,8 +530,9 @@ const ChatBot = () => {
             <div
               key={bot.id}
               onClick={() => startNewChat(bot.id)}
-              className={`${styles.botItem} ${activeChatId === bot.id ? styles.botItemActive : ""
-                }`}
+              className={`${styles.botItem} ${
+                activeChatId === bot.id ? styles.botItemActive : ""
+              }`}
             >
               <div className="flex items-center gap-3">
                 <div className={styles.botAvatarContainer}>
@@ -589,20 +590,23 @@ const ChatBot = () => {
               {activeChat.messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`${styles.messageWrapper} ${message.sender === "user" ? styles.messageWrapperUser : ""
-                    }`}
+                  className={`${styles.messageWrapper} ${
+                    message.sender === "user" ? styles.messageWrapperUser : ""
+                  }`}
                 >
                   <div
-                    className={`${styles.messageContentWrapper} ${message.sender === "user"
-                      ? styles.messageContentWrapperUser
-                      : ""
-                      }`}
+                    className={`${styles.messageContentWrapper} ${
+                      message.sender === "user"
+                        ? styles.messageContentWrapperUser
+                        : ""
+                    }`}
                   >
                     <div
-                      className={`${styles.messageAvatar} ${message.sender === "user"
-                        ? styles.bgBlue100
-                        : activeBot.color
-                        }`}
+                      className={`${styles.messageAvatar} ${
+                        message.sender === "user"
+                          ? styles.bgBlue100
+                          : activeBot.color
+                      }`}
                     >
                       {message.sender === "user" ? (
                         <User className="w-4 h-4" />
@@ -611,10 +615,11 @@ const ChatBot = () => {
                       )}
                     </div>
                     <div
-                      className={`${styles.messageContent} ${message.sender === "user"
-                        ? styles.messageContentUser
-                        : styles.messageContentBot
-                        }`}
+                      className={`${styles.messageContent} ${
+                        message.sender === "user"
+                          ? styles.messageContentUser
+                          : styles.messageContentBot
+                      }`}
                     >
                       {message.sender === "bot" ? (
                         formatBotResponse(message.content)
@@ -624,10 +629,11 @@ const ChatBot = () => {
                         <p>{message.content}</p>
                       )}
                       <p
-                        className={`${styles.messageTime} ${message.sender === "user"
-                          ? styles.messageTimeUser
-                          : styles.messageTimeBot
-                          }`}
+                        className={`${styles.messageTime} ${
+                          message.sender === "user"
+                            ? styles.messageTimeUser
+                            : styles.messageTimeBot
+                        }`}
                       >
                         {message.timestamp.toLocaleTimeString("vi-VN", {
                           hour: "2-digit",
@@ -751,7 +757,8 @@ const ChatBot = () => {
                     setFormData({
                       ...formData,
                       RelationshipType: selectedValue,
-                      RelationshipTypeDescription: RelationshipTypeLabels[selectedValue],
+                      RelationshipTypeDescription:
+                        RelationshipTypeLabels[selectedValue],
                     });
                   }}
                   className={styles.modalInputEnhanced}
@@ -762,7 +769,6 @@ const ChatBot = () => {
                   <option value={3}>Đồng Nghiệp</option>
                   <option value={4}>Bố Mẹ</option>
                 </select>
-
               </div>
               <div className={styles.formGroupEnhanced}>
                 <label className={styles.labelEnhanced}>
