@@ -18,6 +18,7 @@ export interface NotificationDTO {
 
 
 
+
 export const useSignalR = (
   onReceive: (notification: NotificationDTO) => void
 ) => {
@@ -25,7 +26,7 @@ export const useSignalR = (
     const accessToken = localStorage.getItem('token'); // ⚠️ Đảm bảo token đã được lưu ở đây
 
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7079/hub/notification', {
+      .withUrl(`${import.meta.env.VITE_API_URL}/hub/notification`, {
         accessTokenFactory: () => accessToken || ''
       })
       .withAutomaticReconnect()
@@ -34,9 +35,9 @@ export const useSignalR = (
     connection
       .start()
       .then(() => {
-        console.log('✅ SignalR Connected');
+      
       })
-      .catch(err => console.error('❌ SignalR Connection Error:', err));
+      .catch();
 
     connection.on('ReceiveNotification', (data: NotificationDTO) => {
       const notification: NotificationDTO = {
@@ -50,7 +51,7 @@ export const useSignalR = (
         isRead: data.isRead,
       };
 
-      console.log('📩 New notification received:', notification);
+     
       onReceive(notification);
     });
 
