@@ -61,9 +61,9 @@ const API_ENDPOINTS = {
   totalUsers:
     "https://astronumer.info.vn/api/v1/dashboard/statistics/total-users",
   totalServices:
-    "https://astronumer.info.vn/api/v1/dashboard/statistics/total-services",
+    "https://astronumer.info.vn/api/v1/dashboard/statistics/total-purchased-service",
   remainingUsage:
-    "https://astronumer.info.vn/api/v1/dashboard/statistics/remaining-usage",
+    "https://astronumer.info.vn/api/v1/dashboard/statistics/total-user-used-service",
   serviceUsageByMonth:
     "https://astronumer.info.vn/api/v1/dashboard/statistics/service-usage-by-month",
 };
@@ -557,7 +557,7 @@ const DashboardPage = () => {
           flex={1}
         >
           <HStack justify="space-between">
-            <Stat.Label>Tổng dịch vụ</Stat.Label>
+            <Stat.Label>Tổng dịch vụ đã mua</Stat.Label>
             <Icon as={FiPackage} />
           </HStack>
           <Stat.ValueText>
@@ -581,7 +581,7 @@ const DashboardPage = () => {
           flex={1}
         >
           <HStack justify="space-between">
-            <Stat.Label>Lượt sử dụng còn lại</Stat.Label>
+            <Stat.Label>Số lượng người dùng mua</Stat.Label>
             <Icon as={FiCheckCircle} />
           </HStack>
           <Stat.ValueText>
