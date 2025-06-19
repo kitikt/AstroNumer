@@ -648,7 +648,7 @@ const ChatBot = () => {
               {isLoading && (
                 <div className={styles.loadingIndicator}>
                   <div className={styles.loadingSpinner}></div>
-                  <span>Đang xử lý...</span>
+                  <span className={styles.loadingText}>Đang xử lý...</span>
                 </div>
               )}
             </div>
