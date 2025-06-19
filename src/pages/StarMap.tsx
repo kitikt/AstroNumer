@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import StarMapReply from "./StarMapReply"; // Giả sử component này nằm cùng thư mục
 
 interface StarMapData {
   Ascendant: number;
@@ -11,6 +12,7 @@ interface StarMapData {
 const StarMapPage: React.FC = () => {
   const navigate = useNavigate();
   const [astroData, setAstroData] = useState<Partial<StarMapData> | null>(null);
+  const [chatBotData, setChatBotData] = useState<string | null>(null); // Chỉ lưu tReply
   const [error, setError] = useState<string | null>(null);
 
   const planetSymbols = {
@@ -111,7 +113,7 @@ const StarMapPage: React.FC = () => {
             y={symbolPosition.y}
             style={{
               fill: "#e91e63",
-              fontSize: "14px", // Giảm từ 18px xuống 14px để tránh chồng lấn
+              fontSize: "14px",
               fontWeight: "bold",
               textAnchor: "middle",
               dominantBaseline: "middle",
@@ -298,23 +300,33 @@ const StarMapPage: React.FC = () => {
   };
 
   useEffect(() => {
-    const storedData = localStorage.getItem("starMapData");
-    if (!storedData) {
-      setError("Không tìm thấy dữ liệu. Vui lòng điền form trước!");
+    const storedStarMapData = localStorage.getItem("starMapData");
+    const storedChatBotData = localStorage.getItem("chatBotData");
+
+    if (!storedStarMapData) {
+      setError("Không tìm thấy dữ liệu bản đồ sao. Vui lòng điền form trước!");
       return;
     }
 
-    const data: StarMapData = JSON.parse(storedData);
+    const starMapData: StarMapData = JSON.parse(storedStarMapData);
     setAstroData({
-      Ascendant: data.Ascendant,
-      AscendantSign: data.AscendantSign,
-      PlanetInSigns: data.PlanetInSigns,
-      PlanetInHouses: data.PlanetInHouses,
+      Ascendant: starMapData.Ascendant,
+      AscendantSign: starMapData.AscendantSign,
+      PlanetInSigns: starMapData.PlanetInSigns,
+      PlanetInHouses: starMapData.PlanetInHouses,
     });
 
-    if (!data.AscendantSign || !data.PlanetInSigns || !data.PlanetInHouses) {
-      setError("Dữ liệu không đầy đủ!");
+    if (
+      !starMapData.AscendantSign ||
+      !starMapData.PlanetInSigns ||
+      !starMapData.PlanetInHouses
+    ) {
+      setError("Dữ liệu bản đồ sao không đầy đủ!");
       return;
+    }
+
+    if (storedChatBotData) {
+      setChatBotData(storedChatBotData);
     }
   }, []);
 
@@ -332,6 +344,7 @@ const StarMapPage: React.FC = () => {
         <button
           onClick={() => {
             localStorage.removeItem("starMapData");
+            localStorage.removeItem("chatBotData");
             navigate("/form/starmap");
           }}
           style={{
@@ -650,9 +663,42 @@ const StarMapPage: React.FC = () => {
             )}
           </div>
 
+          <div style={{ marginBottom: "25px" }}>
+            <h3
+              style={{
+                background: "transparent !important",
+
+                fontSize: "18px",
+                fontWeight: "700",
+                marginBottom: "15px",
+                borderBottom: "2px solid rgba(233, 30, 99, 0.4)",
+                paddingBottom: "8px",
+              }}
+            >
+              Phân Tích Từ ChatBot
+            </h3>
+            {chatBotData ? (
+              <StarMapReply tReply={chatBotData} />
+            ) : (
+              <div
+                style={{
+                  padding: "24px",
+
+                  borderRadius: "12px",
+                  background: "transparent",
+                  color: "#333",
+                  textAlign: "center",
+                }}
+              >
+                Chưa có dữ liệu phân tích từ ChatBot.
+              </div>
+            )}
+          </div>
+
           <button
             onClick={() => {
               localStorage.removeItem("starMapData");
+              localStorage.removeItem("chatBotData");
               navigate("/form/starmap");
             }}
             style={{

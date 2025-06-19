@@ -212,12 +212,13 @@ const StarMapForm: React.FC = () => {
 
         const birthTimeUtc = birthDateTime.toISOString();
 
-        console.log("Request body:", {
+        console.log("Request body for birth-chart:", {
           BirthTimeUtc: birthTimeUtc,
           PlaceOfBirth: formData.placeOfBirth,
         });
 
-        const response = await fetch(
+        // Gọi API hiện tại
+        const chartResponse = await fetch(
           `${import.meta.env.VITE_API_URL}/api/v1/birth-chart/chart`,
           {
             method: "POST",
@@ -231,19 +232,18 @@ const StarMapForm: React.FC = () => {
           }
         );
 
-        if (!response.ok) {
-          const errorText = await response.text();
+        if (!chartResponse.ok) {
+          const errorText = await chartResponse.text();
           throw new Error(
-            `Yêu cầu API thất bại với mã trạng thái ${response.status}: ${errorText}`
+            `Yêu cầu API birth-chart thất bại với mã trạng thái ${chartResponse.status}: ${errorText}`
           );
         }
 
-        const result = await response.json();
-        console.log("API response:", result);
+        const chartResult = await chartResponse.json();
+        console.log("Birth-chart API response:", chartResult);
 
-        // Kiểm tra cấu trúc API mới với Data
-        if (result.Success && result.Data) {
-          const starMapData = result.Data;
+        if (chartResult.Success && chartResult.Data) {
+          const starMapData = chartResult.Data;
           const isValidStarMapData =
             typeof starMapData === "object" &&
             starMapData !== null &&
@@ -257,7 +257,7 @@ const StarMapForm: React.FC = () => {
             Object.keys(starMapData.PlanetInHouses).length > 0;
 
           if (isValidStarMapData) {
-            // Lưu toàn bộ dữ liệu (formData + API response) vào localStorage
+            // Lưu dữ liệu starMap vào localStorage
             const combinedData = {
               day: formData.day,
               month: formData.month,
@@ -273,14 +273,64 @@ const StarMapForm: React.FC = () => {
               PlanetInHouses: starMapData.PlanetInHouses,
             };
             localStorage.setItem("starMapData", JSON.stringify(combinedData));
+
+            // Gọi API ChatBot mới
+            const chatBotParams = new URLSearchParams({
+              FullName: formData.fullName,
+              Day: formData.day,
+              Month: formData.month,
+              Year: formData.year,
+              Hour: formData.hour,
+              Minute: formData.minute,
+              PlaceOfBirth: formData.placeOfBirth,
+              Package: "default",
+            });
+
+            console.log(
+              "Request params for ChatBot:",
+              chatBotParams.toString()
+            );
+
+            const chatBotResponse = await fetch(
+              `${
+                import.meta.env.VITE_API_URL
+              }/api/ChatBot/ask-birthchart?${chatBotParams.toString()}`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (!chatBotResponse.ok) {
+              const errorText = await chatBotResponse.text();
+              console.warn(
+                `Yêu cầu API ChatBot thất bại với mã trạng thái ${chatBotResponse.status}: ${errorText}`
+              );
+            } else {
+              const chatBotResult = await chatBotResponse.json();
+              console.log("ChatBot API response:", chatBotResult);
+              if (chatBotResult.Success && chatBotResult.Data?.tReply) {
+                localStorage.setItem(
+                  "chatBotData",
+                  JSON.stringify(chatBotResult.Data.tReply)
+                );
+              }
+            }
+
             navigate("/starmap-result");
           } else {
             setError(
-              `Dữ liệu từ API không hợp lệ. Vui lòng kiểm tra lại thông tin!`
+              `Dữ liệu từ API birth-chart không hợp lệ. Vui lòng kiểm tra lại thông tin!`
             );
           }
         } else {
-          setError(`Lỗi từ API: ${result.Message || "Dữ liệu không hợp lệ"}`);
+          setError(
+            `Lỗi từ API birth-chart: ${
+              chartResult.Message || "Dữ liệu không hợp lệ"
+            }`
+          );
         }
       } catch (error) {
         const errorMessage = (error as Error).message || "Lỗi không xác định";
