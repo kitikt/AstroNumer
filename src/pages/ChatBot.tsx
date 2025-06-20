@@ -407,7 +407,6 @@ const ChatBot = () => {
         const newConversationId =
           data.Data?.ConversationId?.toString() || Date.now().toString();
         setChatBots((prev) => [
-          ...prev,
           {
             id: newConversationId,
             name:
@@ -422,6 +421,7 @@ const ChatBot = () => {
             isOnline: true,
             unreadCount: 0,
           },
+          ...prev,
         ]);
         setChats((prev) => ({
           ...prev,
@@ -661,7 +661,7 @@ const ChatBot = () => {
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      e.preventDefault(); // ✅ ngăn form submit hoặc gọi thêm lần khác
+                      e.preventDefault();
                       sendMessage();
                     }
                   }}
