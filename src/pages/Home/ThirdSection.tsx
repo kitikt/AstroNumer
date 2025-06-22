@@ -1,6 +1,13 @@
 import { Heading, HStack, Image, Stack, Text } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const ThirdSection = () => {
+  const navigate = useNavigate();
+
+  const handleCardClick = (path) => {
+    navigate(path);
+  };
+
   return (
     <Stack gap={20} align={"center"} mt={20}>
       <HStack gap={20} mx={64} bg="transparent">
@@ -9,11 +16,30 @@ const ThirdSection = () => {
           <Stack
             align="center"
             border="2px solid gray"
-            // bg="rgba(0, 0, 0, 0.5)"
-
             padding={4}
             borderRadius="md"
             minH="300px"
+            _hover={{
+              transform: "translateY(-10px)",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+              borderColor: "blue.400",
+            }}
+            transition="all 0.3s ease-in-out"
+            animation="fadeInLeft 0.8s ease-out"
+            cursor="pointer"
+            onClick={() => handleCardClick("/form/numerology")}
+            sx={{
+              "@keyframes fadeInLeft": {
+                "0%": {
+                  opacity: 0,
+                  transform: "translateX(-50px)",
+                },
+                "100%": {
+                  opacity: 1,
+                  transform: "translateX(0)",
+                },
+              },
+            }}
           >
             <Image
               src="/images/thansohoc.png"
@@ -21,8 +47,16 @@ const ThirdSection = () => {
               height="150px"
               objectFit="cover"
               borderRadius="md"
+              _hover={{ transform: "scale(1.05)" }}
+              transition="transform 0.3s ease"
             />
-            <Heading fontSize="2xl" color="white" textTransform="uppercase">
+            <Heading
+              fontSize="2xl"
+              color="white"
+              textTransform="uppercase"
+              _hover={{ color: "blue.300" }}
+              transition="color 0.3s ease"
+            >
               THẦN SỐ HỌC
             </Heading>
             <Text fontSize="sm" color="gray.400" textAlign="center">
@@ -36,6 +70,27 @@ const ThirdSection = () => {
             padding={4}
             borderRadius="md"
             minH="300px"
+            _hover={{
+              transform: "translateY(-10px)",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+              borderColor: "purple.400",
+            }}
+            transition="all 0.3s ease-in-out"
+            animation="fadeInLeft 1s ease-out"
+            cursor="pointer"
+            onClick={() => handleCardClick("/form/starmap")}
+            sx={{
+              "@keyframes fadeInLeft": {
+                "0%": {
+                  opacity: 0,
+                  transform: "translateX(-50px)",
+                },
+                "100%": {
+                  opacity: 1,
+                  transform: "translateX(0)",
+                },
+              },
+            }}
           >
             <Image
               src="/images/thansohoc.png"
@@ -43,8 +98,16 @@ const ThirdSection = () => {
               height="150px"
               objectFit="cover"
               borderRadius="md"
+              _hover={{ transform: "scale(1.05)" }}
+              transition="transform 0.3s ease"
             />
-            <Heading fontSize="2xl" color="white" textTransform="uppercase">
+            <Heading
+              fontSize="2xl"
+              color="white"
+              textTransform="uppercase"
+              _hover={{ color: "purple.300" }}
+              transition="color 0.3s ease"
+            >
               BẢN ĐỒ SAO
             </Heading>
             <Text fontSize="sm" color="gray.400" textAlign="center">
@@ -61,6 +124,27 @@ const ThirdSection = () => {
             padding={4}
             borderRadius="md"
             minH="300px"
+            _hover={{
+              transform: "translateY(-10px)",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+              borderColor: "green.400",
+            }}
+            transition="all 0.3s ease-in-out"
+            animation="fadeInRight 0.8s ease-out"
+            cursor="pointer"
+            onClick={() => handleCardClick("/mbti")}
+            sx={{
+              "@keyframes fadeInRight": {
+                "0%": {
+                  opacity: 0,
+                  transform: "translateX(50px)",
+                },
+                "100%": {
+                  opacity: 1,
+                  transform: "translateX(0)",
+                },
+              },
+            }}
           >
             <Image
               src="/images/thansohoc.png"
@@ -68,8 +152,16 @@ const ThirdSection = () => {
               height="150px"
               objectFit="cover"
               borderRadius="md"
+              _hover={{ transform: "scale(1.05)" }}
+              transition="transform 0.3s ease"
             />
-            <Heading fontSize="2xl" color="white" textTransform="uppercase">
+            <Heading
+              fontSize="2xl"
+              color="white"
+              textTransform="uppercase"
+              _hover={{ color: "green.300" }}
+              transition="color 0.3s ease"
+            >
               MBTI
             </Heading>
             <Text fontSize="sm" color="gray.400" textAlign="center">
@@ -83,6 +175,27 @@ const ThirdSection = () => {
             padding={4}
             borderRadius="md"
             minH="300px"
+            _hover={{
+              transform: "translateY(-10px)",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+              borderColor: "orange.400",
+            }}
+            transition="all 0.3s ease-in-out"
+            animation="fadeInRight 1s ease-out"
+            cursor="pointer"
+            onClick={() => handleCardClick("/ban-ket-hop")}
+            sx={{
+              "@keyframes fadeInRight": {
+                "0%": {
+                  opacity: 0,
+                  transform: "translateX(50px)",
+                },
+                "100%": {
+                  opacity: 1,
+                  transform: "translateX(0)",
+                },
+              },
+            }}
           >
             <Image
               src="/images/thansohoc.png"
@@ -90,8 +203,16 @@ const ThirdSection = () => {
               height="150px"
               objectFit="cover"
               borderRadius="md"
+              _hover={{ transform: "scale(1.05)" }}
+              transition="transform 0.3s ease"
             />
-            <Heading fontSize="2xl" color="white" textTransform="uppercase">
+            <Heading
+              fontSize="2xl"
+              color="white"
+              textTransform="uppercase"
+              _hover={{ color: "orange.300" }}
+              transition="color 0.3s ease"
+            >
               BẢN KẾT HỢP
             </Heading>
             <Text fontSize="sm" color="gray.400" textAlign="center">
@@ -102,31 +223,117 @@ const ThirdSection = () => {
         </Stack>
       </HStack>
 
-      <Stack>
-        <Heading fontSize={40} lineHeight={1.6}>
+      <Stack
+        animation="fadeInUp 1.2s ease-out"
+        sx={{
+          "@keyframes fadeInUp": {
+            "0%": {
+              opacity: 0,
+              transform: "translateY(30px)",
+            },
+            "100%": {
+              opacity: 1,
+              transform: "translateY(0)",
+            },
+          },
+        }}
+      >
+        <Heading
+          fontSize={40}
+          lineHeight={1.6}
+          _hover={{
+            transform: "scale(1.02)",
+            color: "blue.300",
+          }}
+          transition="all 0.3s ease"
+        >
           TẠI SAO BẠN NÊN CHỌN ASTRONUMER?
         </Heading>
       </Stack>
-      <HStack gap={40} textAlign={"center"}>
-        <Stack align={"center"}>
-          <Image src="/images/arrow.png" width={"30%"} />
-          <Heading>TRẢI NGHIỆM TRỌN VẸN</Heading>
+      <HStack
+        gap={40}
+        textAlign={"center"}
+        animation="fadeInUp 1.4s ease-out"
+        sx={{
+          "@keyframes fadeInUp": {
+            "0%": {
+              opacity: 0,
+              transform: "translateY(30px)",
+            },
+            "100%": {
+              opacity: 1,
+              transform: "translateY(0)",
+            },
+          },
+        }}
+      >
+        <Stack
+          align={"center"}
+          _hover={{
+            transform: "translateY(-10px) scale(1.05)",
+            filter: "brightness(1.1)",
+          }}
+          transition="all 0.3s ease-in-out"
+          cursor="pointer"
+        >
+          <Image
+            src="/images/arrow.png"
+            width={"30%"}
+            _hover={{ transform: "rotate(10deg)" }}
+            transition="transform 0.3s ease"
+          />
+          <Heading _hover={{ color: "blue.300" }} transition="color 0.3s ease">
+            TRẢI NGHIỆM TRỌN VẸN
+          </Heading>
           <Text>
             CHÚ TRỌNG VÀO SỰ TRẢI NGHIỆM, CHÚNG MÌNH CUNG CẤP TRỌN VẸN CÁC DỊCH
             VỤ
           </Text>
         </Stack>
-        <Stack align={"center"}>
-          <Image src="/images/eyehand.png" width={"30%"} />
-          <Heading>TRẢI NGHIỆM TRỌN VẸN</Heading>
+        <Stack
+          align={"center"}
+          _hover={{
+            transform: "translateY(-10px) scale(1.05)",
+            filter: "brightness(1.1)",
+          }}
+          transition="all 0.3s ease-in-out"
+          cursor="pointer"
+        >
+          <Image
+            src="/images/eyehand.png"
+            width={"30%"}
+            _hover={{ transform: "rotate(-10deg)" }}
+            transition="transform 0.3s ease"
+          />
+          <Heading
+            _hover={{ color: "purple.300" }}
+            transition="color 0.3s ease"
+          >
+            BẢO MẬT THÔNG TIN
+          </Heading>
           <Text>
             CHÚ TRỌNG VÀO SỰ RIÊNG TƯ, CHÚNG MÌNH LUÔN ĐẶT QUYỀN LỢI KHÁCH HÀNG
             LÊN ĐẦU
           </Text>
         </Stack>
-        <Stack align={"center"}>
-          <Image src="/images/head.png" width={"30%"} />
-          <Heading>BÊN BẠN MỌI LÚC MỌI NƠI</Heading>
+        <Stack
+          align={"center"}
+          _hover={{
+            transform: "translateY(-10px) scale(1.05)",
+            filter: "brightness(1.1)",
+          }}
+          transition="all 0.3s ease-in-out"
+          cursor="pointer"
+        >
+          <Image
+            src="/images/head.png"
+            width={"30%"}
+            _hover={{ transform: "scale(1.1)" }}
+            transition="transform 0.3s ease"
+          />
+          <Heading _hover={{ color: "green.300" }} transition="color 0.3s ease">
+            BÊN BẠN MỌI LÚC MỌI NƠI
+          </Heading>
           <Text>
             CHÚ TRỌNG VÀO KHÁCH HÀNG, CHÚNG MÌNH LUÔN CÓ MẶT Ở MỌI THỜI ĐIỂM MÀ
             BẠN CẦN
