@@ -509,7 +509,16 @@ const DashboardPage = () => {
           flex={1}
         >
           <HStack justify="space-between">
-            <Stat.Label>Doanh thu</Stat.Label>
+            <Stat.Label
+              style={{
+                color: "#FFD600",
+                textShadow: "0 0 8px rgba(255,214,0,0.7)",
+                fontWeight: 700,
+                letterSpacing: "0.5px",
+              }}
+            >
+              Doanh thu
+            </Stat.Label>
             <Icon as={FiDollarSign} />
           </HStack>
           <Stat.ValueText>
@@ -533,7 +542,16 @@ const DashboardPage = () => {
           flex={1}
         >
           <HStack justify="space-between">
-            <Stat.Label>Tổng người dùng</Stat.Label>
+            <Stat.Label
+              style={{
+                color: "#FFD600",
+                textShadow: "0 0 8px rgba(255,214,0,0.7)",
+                fontWeight: 700,
+                letterSpacing: "0.5px",
+              }}
+            >
+              Tổng người dùng
+            </Stat.Label>
             <Icon as={FiUsers} />
           </HStack>
           <Stat.ValueText>
@@ -557,7 +575,16 @@ const DashboardPage = () => {
           flex={1}
         >
           <HStack justify="space-between">
-            <Stat.Label>Tổng dịch vụ đã mua</Stat.Label>
+            <Stat.Label
+              style={{
+                color: "#FFD600",
+                textShadow: "0 0 8px rgba(255,214,0,0.7)",
+                fontWeight: 700,
+                letterSpacing: "0.5px",
+              }}
+            >
+              Tổng dịch vụ đã mua
+            </Stat.Label>
             <Icon as={FiPackage} />
           </HStack>
           <Stat.ValueText>
@@ -581,7 +608,16 @@ const DashboardPage = () => {
           flex={1}
         >
           <HStack justify="space-between">
-            <Stat.Label>Số lượng người dùng mua</Stat.Label>
+            <Stat.Label
+              style={{
+                color: "#FFD600",
+                textShadow: "0 0 8px rgba(255,214,0,0.7)",
+                fontWeight: 700,
+                letterSpacing: "0.5px",
+              }}
+            >
+              Số lượng người dùng mua
+            </Stat.Label>
             <Icon as={FiCheckCircle} />
           </HStack>
           <Stat.ValueText>
