@@ -26,9 +26,9 @@ export const useSignalR = (
 ) => {
   useEffect(() => {
     const accessToken = localStorage.getItem('token'); // ⚠️ Đảm bảo token đã được lưu ở đây
-
+//${import.meta.env.VITE_API_URL}
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl(`${import.meta.env.VITE_API_URL}/hub/notification`, {
+      .withUrl(`https://localhost:7079/hub/notification`, {
         accessTokenFactory: () => accessToken || ''
       })
       .withAutomaticReconnect()
