@@ -7,6 +7,7 @@ import SixSection from "@/pages/Home/SixSection";
 import FifthSection from "@/pages/Home/FifthSection";
 import SevenSection from "@/pages/Home/SevenSection";
 import EightSection from "@/pages/Home/EightSection";
+import FeedbackSection from "@/pages/Home/FeedbackSection";
 
 const HomePage = () => {
   return (
@@ -35,6 +36,9 @@ const HomePage = () => {
         </section>
         <section className={`${styles.eightSection}`}>
           <EightSection />
+        </section>
+        <section className={`${styles.feedbackSection}`}>
+          <FeedbackSection />
         </section>
       </main>
 
