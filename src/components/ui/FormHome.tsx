@@ -68,6 +68,35 @@ const FormHome: React.FC = () => {
     if (currentPage === 1 && canContinueFromPage1) {
       setCurrentPage(2);
     } else if (currentPage === 2 && canContinueFromPage2) {
+      // Luôn luôn gọi và lưu dữ liệu thường trước
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/v1/numerology/calculate`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              day: formData.day,
+              month: formData.month,
+              year: formData.year,
+              fullName: formData.fullName,
+            }),
+          }
+        );
+        const result = await response.json();
+        if (result.StatusCode === 200 && result.Success) {
+          localStorage.setItem("numerologyData", JSON.stringify(result.Data));
+        } else {
+          alert("Có lỗi xảy ra khi tính toán số học. Vui lòng thử lại!");
+          return;
+        }
+      } catch {
+        alert("Đã có lỗi xảy ra. Vui lòng kiểm tra kết nối và thử lại!");
+        return;
+      }
+      // Nếu chọn VIP thì tiếp tục gọi VIP, xong mới navigate
       if (useVip) {
         setLoadingVip(true);
         try {
@@ -106,8 +135,40 @@ const FormHome: React.FC = () => {
               "numerologyVipData",
               JSON.stringify(result.Data)
             );
+            // Gọi tiếp 7 lần API lấy text VIP
+            const vipId = result.Data.Id;
+            const vipTexts = {};
+            for (let type = 0; type <= 6; type++) {
+              try {
+                const res = await fetch(
+                  `https://astronumer.info.vn/api/v1/numerology/analyze?TypeName=${type}&UserNumerologyAnalysisId=${vipId}`,
+                  {
+                    method: "GET",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                );
+                if (res.ok) {
+                  const data = await res.json();
+                  if (data.StatusCode === 200 && data.Success) {
+                    vipTexts[type] = data.Data;
+                  } else {
+                    vipTexts[type] = "Không có dữ liệu VIP";
+                  }
+                } else {
+                  vipTexts[type] = `Lỗi HTTP: ${res.status}`;
+                }
+              } catch {
+                vipTexts[type] = "Lỗi khi gọi API VIP";
+              }
+            }
+            localStorage.setItem(
+              "numerologyVipAnalysis",
+              JSON.stringify(vipTexts)
+            );
             alert("Phân tích VIP thành công! Kết quả đã được lưu.");
-            navigate("/numerology");
           } else {
             console.error("API VIP call failed:", result.Message);
             alert("Có lỗi xảy ra khi phân tích VIP. Vui lòng thử lại!");
@@ -118,38 +179,10 @@ const FormHome: React.FC = () => {
           alert(
             "Đã có lỗi xảy ra khi gọi VIP. Vui lòng kiểm tra kết nối và thử lại!"
           );
-        }
-      } else {
-        try {
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/v1/numerology/calculate`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                day: formData.day,
-                month: formData.month,
-                year: formData.year,
-                fullName: formData.fullName,
-              }),
-            }
-          );
-          const result = await response.json();
-          if (result.StatusCode === 200 && result.Success) {
-            localStorage.setItem("numerologyData", JSON.stringify(result.Data));
-            console.log("Numerology data saved successfully!", result.Data);
-            navigate("/numerology");
-          } else {
-            console.error("API call failed:", result.Message);
-            alert("Có lỗi xảy ra khi tính toán số học. Vui lòng thử lại!");
-          }
-        } catch (error) {
-          console.error("Error calling API:", error);
-          alert("Đã có lỗi xảy ra. Vui lòng kiểm tra kết nối và thử lại!");
+          return;
         }
       }
+      navigate("/numerology");
     }
   };
 
