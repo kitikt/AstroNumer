@@ -27,6 +27,7 @@ import PurchasedServices from "@/pages/User/PurchasedServices";
 import ProfilePage from "@/pages/User/Profile";
 import ChatBot from "@/pages/ChatBot";
 import MBTIQuiz from "@/pages/Mbti";
+import FeedbackPage from "@/pages/FeedbackPage";
 
 // Cấu hình các form
 const formConfigs = [
@@ -97,6 +98,7 @@ export const router = createBrowserRouter([
       { path: "daily-destiny", element: <DailyDestiny /> },
       { path: "result", element: <Result /> },
       { path: "mbti", element: <MBTIQuiz /> },
+      { path: "feedback", element: <FeedbackPage /> },
 
       // Thêm route cho StarMapForm trực tiếp, không bọc ProtectedFormRoute
       {
