@@ -18,7 +18,7 @@
 }
 
 .feedbackForm {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #775ea2 30%, #c2bbc8 100%);
   border-radius: 20px;
   padding: 2rem;
   width: 90%;
@@ -290,14 +290,14 @@
 }
 
 .submitButton {
-  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  background: linear-gradient(45deg, #aaa1a1, #7d6b9f);
   color: #333;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(132, 156, 190, 0.3);
 }
 
 .submitButton:hover:not(:disabled) {
   transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+  box-shadow: 0 8px 25px rgba(17, 17, 18, 0.5);
 }
 
 .cancelButton:disabled,
