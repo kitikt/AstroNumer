@@ -38,6 +38,7 @@ const NumerologyResultPage = () => {
   );
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate(); // Initialize useNavigate
+  const [vipAnalysis, setVipAnalysis] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const storedData = localStorage.getItem("numerologyData");
@@ -144,6 +145,11 @@ const NumerologyResultPage = () => {
       };
 
       fetchKeywords();
+    }
+
+    const vip = localStorage.getItem("numerologyVipAnalysis");
+    if (vip) {
+      setVipAnalysis(JSON.parse(vip));
     }
   }, []);
 
@@ -272,6 +278,16 @@ const NumerologyResultPage = () => {
     navigate("/form/numerology"); // Navigate to the form page
   };
 
+  const typeNameMap: Record<string, number> = {
+    "Số Đường Đời (Life Path Number)": 0,
+    "Số Định Mệnh (Destiny Number)": 1,
+    "Số Linh Hồn (Soul Urge Number)": 2,
+    "Số Nhân Cách (Personality Number)": 3,
+    "Số Ngày Sinh (Birthday Number)": 4,
+    "Số Trưởng Thành (Maturity Number)": 5,
+    Summary: 6,
+  };
+
   return (
     <Box w="full" px={6} py={10} textAlign="center">
       {error && (
@@ -352,9 +368,34 @@ const NumerologyResultPage = () => {
             <div className="modal-value-container">
               <p className="modal-value">{selectedItem.value}</p>
             </div>
-            <p className="modal-description">
-              {selectedItem.fullDescription || "Đang tải..."}
-            </p>
+            <div style={{ display: "flex", gap: 24, justifyContent: "center" }}>
+              <div
+                style={{
+                  flex: 1,
+                  borderRight: "1px solid #eee",
+                  paddingRight: 16,
+                }}
+              >
+                <h4 style={{ color: "#6366f1", marginBottom: 8 }}>
+                  Phân tích thường
+                </h4>
+                <p className="modal-description">
+                  {selectedItem.fullDescription || "Đang tải..."}
+                </p>
+              </div>
+              {vipAnalysis &&
+                typeof typeNameMap[selectedItem.title] !== "undefined" &&
+                vipAnalysis[typeNameMap[selectedItem.title]] && (
+                  <div style={{ flex: 1, paddingLeft: 16 }}>
+                    <h4 style={{ color: "#f59e42", marginBottom: 8 }}>
+                      Phân tích VIP
+                    </h4>
+                    <p className="modal-description">
+                      {vipAnalysis[typeNameMap[selectedItem.title]]}
+                    </p>
+                  </div>
+                )}
+            </div>
             <button
               className="modal-close-button"
               onClick={() => setSelectedItem(null)}

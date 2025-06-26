@@ -10,6 +10,8 @@ const FormHome: React.FC = () => {
     year: "YYYY",
     fullName: "",
   });
+  const [useVip, setUseVip] = useState(false);
+  const [loadingVip, setLoadingVip] = useState(false);
 
   const months = [
     "Tháng",
@@ -66,6 +68,7 @@ const FormHome: React.FC = () => {
     if (currentPage === 1 && canContinueFromPage1) {
       setCurrentPage(2);
     } else if (currentPage === 2 && canContinueFromPage2) {
+      // Luôn luôn gọi và lưu dữ liệu thường trước
       try {
         const response = await fetch(
           `${import.meta.env.VITE_API_URL}/api/v1/numerology/calculate`,
@@ -82,22 +85,104 @@ const FormHome: React.FC = () => {
             }),
           }
         );
-
         const result = await response.json();
-
         if (result.StatusCode === 200 && result.Success) {
           localStorage.setItem("numerologyData", JSON.stringify(result.Data));
-          console.log("Numerology data saved successfully!", result.Data);
-
-          navigate("/numerology");
         } else {
-          console.error("API call failed:", result.Message);
           alert("Có lỗi xảy ra khi tính toán số học. Vui lòng thử lại!");
+          return;
         }
-      } catch (error) {
-        console.error("Error calling API:", error);
+      } catch {
         alert("Đã có lỗi xảy ra. Vui lòng kiểm tra kết nối và thử lại!");
+        return;
       }
+      // Nếu chọn VIP thì tiếp tục gọi VIP, xong mới navigate
+      if (useVip) {
+        setLoadingVip(true);
+        try {
+          const token = localStorage.getItem("token");
+          if (!token) {
+            setLoadingVip(false);
+            alert("Bạn cần đăng nhập để sử dụng tính năng VIP.");
+            return;
+          }
+          // Format date to ISO string (YYYY-MM-DDT00:00:00.000Z)
+          const dob = `${formData.year}-${formData.month}-${formData.day}T00:00:00.000Z`;
+          const response = await fetch(
+            `https://astronumer.info.vn/api/v1/numerology/analyze-core-numerology`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                FullName: formData.fullName,
+                DateOfBirth: dob,
+              }),
+            }
+          );
+          if (!response.ok) {
+            const errorText = await response.text();
+            setLoadingVip(false);
+            alert(`Lỗi VIP: ${response.status} - ${errorText}`);
+            return;
+          }
+          const result = await response.json();
+          setLoadingVip(false);
+          if (result.StatusCode === 200 && result.Success) {
+            localStorage.setItem(
+              "numerologyVipData",
+              JSON.stringify(result.Data)
+            );
+            // Gọi tiếp 7 lần API lấy text VIP
+            const vipId = result.Data.Id;
+            const vipTexts = {};
+            for (let type = 0; type <= 6; type++) {
+              try {
+                const res = await fetch(
+                  `https://astronumer.info.vn/api/v1/numerology/analyze?TypeName=${type}&UserNumerologyAnalysisId=${vipId}`,
+                  {
+                    method: "GET",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                );
+                if (res.ok) {
+                  const data = await res.json();
+                  if (data.StatusCode === 200 && data.Success) {
+                    vipTexts[type] = data.Data;
+                  } else {
+                    vipTexts[type] = "Không có dữ liệu VIP";
+                  }
+                } else {
+                  vipTexts[type] = `Lỗi HTTP: ${res.status}`;
+                }
+              } catch {
+                vipTexts[type] = "Lỗi khi gọi API VIP";
+              }
+            }
+            localStorage.setItem(
+              "numerologyVipAnalysis",
+              JSON.stringify(vipTexts)
+            );
+            alert("Phân tích VIP thành công! Kết quả đã được lưu.");
+          } else {
+            console.error("API VIP call failed:", result.Message);
+            alert("Có lỗi xảy ra khi phân tích VIP. Vui lòng thử lại!");
+          }
+        } catch (error) {
+          setLoadingVip(false);
+          console.error("Error calling VIP API:", error);
+          alert(
+            "Đã có lỗi xảy ra khi gọi VIP. Vui lòng kiểm tra kết nối và thử lại!"
+          );
+          return;
+        }
+      }
+      navigate("/numerology");
     }
   };
 
@@ -283,13 +368,32 @@ const FormHome: React.FC = () => {
             style={inputStyle}
           />
 
+          <div
+            style={{ display: "flex", alignItems: "center", marginBottom: 16 }}
+          >
+            <input
+              type="checkbox"
+              id="vip-checkbox"
+              checked={useVip}
+              onChange={(e) => setUseVip(e.target.checked)}
+              style={{ marginRight: 8 }}
+            />
+            <label
+              htmlFor="vip-checkbox"
+              style={{ fontSize: 16, color: "#7c2d12", fontWeight: 600 }}
+            >
+              Sử dụng VIP (phân tích chuyên sâu)
+            </label>
+          </div>
+
           <button
             onClick={handleContinue}
-            disabled={!canContinueFromPage2}
+            disabled={!canContinueFromPage2 || loadingVip}
             style={{
               ...primaryButtonStyle,
               backgroundColor: canContinueFromPage2 ? "#18181B" : "#9ca3af",
               cursor: canContinueFromPage2 ? "pointer" : "not-allowed",
+              opacity: loadingVip ? 0.7 : 1,
             }}
             onMouseEnter={(e) => {
               if (canContinueFromPage2) {
@@ -304,10 +408,14 @@ const FormHome: React.FC = () => {
               }
             }}
           >
-            Tiếp Tục
+            {loadingVip ? "Đang xử lý..." : "Tiếp Tục"}
           </button>
 
-          <button onClick={handleBack} style={secondaryButtonStyle}>
+          <button
+            onClick={handleBack}
+            style={secondaryButtonStyle}
+            disabled={loadingVip}
+          >
             Quay Lại
           </button>
         </div>
