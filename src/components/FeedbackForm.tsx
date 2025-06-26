@@ -260,12 +260,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
           <h2 className={styles.title}>Gửi Feedback</h2>
 
           {/* Debug info */}
-          <div
-            style={{ color: "white", fontSize: "12px", marginBottom: "10px" }}
-          >
-            Debug: Content="{formData.Content}", ServiceId=
-            {formData.PurchasedServiceId}, Rating={formData.Rating}
-          </div>
 
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.serviceSection}>
