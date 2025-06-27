@@ -47,3 +47,11 @@
         opacity: 0.5;
     }
 }
+
+@media (max-width: 700px) {
+  .buttonWrapper button {
+    width: 100px;
+    height: 38px;
+    font-size: 0.9rem;
+  }
+}

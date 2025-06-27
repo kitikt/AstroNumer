@@ -368,8 +368,12 @@ const NumerologyResultPage = () => {
             <div className="modal-value-container">
               <p className="modal-value">{selectedItem.value}</p>
             </div>
-            <div style={{ display: "flex", gap: 24, justifyContent: "center" }}>
+            <div
+              className="modal-compare-row"
+              style={{ display: "flex", gap: 24, justifyContent: "center" }}
+            >
               <div
+                className="modal-compare-col"
                 style={{
                   flex: 1,
                   borderRight: "1px solid #eee",
@@ -386,7 +390,10 @@ const NumerologyResultPage = () => {
               {vipAnalysis &&
                 typeof typeNameMap[selectedItem.title] !== "undefined" &&
                 vipAnalysis[typeNameMap[selectedItem.title]] && (
-                  <div style={{ flex: 1, paddingLeft: 16 }}>
+                  <div
+                    className="modal-compare-col"
+                    style={{ flex: 1, paddingLeft: 16 }}
+                  >
                     <h4 style={{ color: "#f59e42", marginBottom: 8 }}>
                       Phân tích VIP
                     </h4>

@@ -55,3 +55,19 @@
 .buttonWrapper button:hover {
     background-color: #a64dff;
 }
+
+@media (max-width: 700px) {
+  .fifthSection {
+    gap: 32px;
+    min-height: 60vh;
+    padding: 8px;
+  }
+  .heading {
+    font-size: 1.6rem;
+  }
+  .buttonWrapper button {
+    width: 100px;
+    height: 38px;
+    font-size: 0.9rem;
+  }
+}
