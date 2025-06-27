@@ -115,3 +115,24 @@
         padding: 18px 8px;
     }
 }
+
+@media (max-width: 500px) {
+    .heading {
+        font-size: 1.2rem;
+    }
+    .sliderCard {
+        min-width: 98vw;
+        max-width: 99vw;
+        padding: 10px 2px;
+    }
+    .buttonWrapper {
+        gap: 0.5rem;
+        flex-direction: column;
+    }
+    .prevButton,
+    .nextButton {
+        width: 90vw;
+        font-size: 1rem;
+        margin: 0 0 8px 0;
+    }
+}

@@ -15,6 +15,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -77,7 +78,15 @@ const Header: React.FC = () => {
         <img src="/images/logo.png" alt="Logo" className={styles.logo} />
         <Heading className={styles.brandText}>ASTRONUMER</Heading>
       </div>
-     
+      {/* Hamburger menu icon for mobile */}
+      <button
+        className={styles.hamburger}
+        onClick={() => setShowMobileMenu((prev) => !prev)}
+        aria-label="Toggle menu"
+      >
+        <span style={{ fontSize: 28, color: "white" }}>&#9776;</span>
+      </button>
+      {/* Desktop nav */}
       <nav className={styles.nav}>
         <Link to="/" className={styles.link}>
           Trang chủ
@@ -136,10 +145,12 @@ const Header: React.FC = () => {
         <Link to="#" className={styles.link}>
           Liên hệ
         </Link>
-         
-          {isLoggedIn && (<div>
+
+        {isLoggedIn && (
+          <div>
             <NotificationBell />
-          </div>)}
+          </div>
+        )}
         {isLoggedIn ? (
           <div className={styles.dropdown} ref={profileDropdownRef}>
             <button onClick={toggleProfileDropdown} className={styles.link}>
@@ -156,7 +167,7 @@ const Header: React.FC = () => {
                 ▲
               </span>
             </button>
-            
+
             {isProfileDropdownOpen && (
               <div className={styles.profileDropdownMenu}>
                 <Link to="/profile/transaction" className={styles.dropdownItem}>
@@ -165,7 +176,6 @@ const Header: React.FC = () => {
                 <Link to="/profile/edit" className={styles.dropdownItem}>
                   Đổi thông tin
                 </Link>
-                 
 
                 <button
                   onClick={handleLogout}
@@ -191,6 +201,154 @@ const Header: React.FC = () => {
           </Link>
         )}
       </nav>
+      {/* Mobile nav */}
+      {showMobileMenu && (
+        <nav className={styles.nav + " " + styles.mobile}>
+          <Link
+            to="/"
+            className={styles.link}
+            onClick={() => setShowMobileMenu(false)}
+          >
+            Trang chủ
+          </Link>
+          <Link
+            to="/about"
+            className={styles.link}
+            onClick={() => setShowMobileMenu(false)}
+          >
+            Về chúng tôi
+          </Link>
+          <Link
+            to="/service"
+            className={styles.link}
+            onClick={() => setShowMobileMenu(false)}
+          >
+            Gói VIP
+          </Link>
+          <div className={styles.dropdown}>
+            <button onClick={toggleDropdown} className={styles.link}>
+              Tra cứu
+              <span
+                className={`${styles.arrow} ${
+                  isDropdownOpen ? styles.arrowOpen : ""
+                }`}
+              >
+                ▲
+              </span>
+            </button>
+            {isDropdownOpen && (
+              <div className={styles.dropdownMenu}>
+                <Link
+                  to="/form/numerology"
+                  className={styles.dropdownItem}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Thần Số Học
+                </Link>
+                <Link
+                  to="/form/starmap"
+                  className={styles.dropdownItem}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Tra Cứu Bản Đồ Sao
+                </Link>
+                <Link
+                  to="/chat"
+                  className={styles.dropdownItem}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Chat với AI
+                </Link>
+                <Link
+                  to="/mbti"
+                  className={styles.dropdownItem}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Trắc Nghiệm MBTI
+                </Link>
+              </div>
+            )}
+          </div>
+          <Link
+            to="#"
+            className={styles.link}
+            onClick={() => setShowMobileMenu(false)}
+          >
+            Bài viết
+          </Link>
+          <Link
+            to="#"
+            className={styles.link}
+            onClick={() => setShowMobileMenu(false)}
+          >
+            Liên hệ
+          </Link>
+          {isLoggedIn && (
+            <div>
+              <NotificationBell />
+            </div>
+          )}
+          {isLoggedIn ? (
+            <div className={styles.dropdown}>
+              <button onClick={toggleProfileDropdown} className={styles.link}>
+                <img
+                  src="/images/avatar.png"
+                  alt="Avatar"
+                  className={styles.avatar}
+                />
+                <span
+                  className={`${styles.arrow} ${
+                    isProfileDropdownOpen ? styles.arrowOpen : ""
+                  }`}
+                >
+                  ▲
+                </span>
+              </button>
+              {isProfileDropdownOpen && (
+                <div className={styles.profileDropdownMenu}>
+                  <Link
+                    to="/profile/transaction"
+                    className={styles.dropdownItem}
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Tra cứu giao dịch tài khoản
+                  </Link>
+                  <Link
+                    to="/profile/edit"
+                    className={styles.dropdownItem}
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Đổi thông tin
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setShowMobileMenu(false);
+                    }}
+                    className={styles.dropdownItem}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className={styles.link}
+              style={{ marginLeft: "16px" }}
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Đăng nhập
+            </Link>
+          )}
+        </nav>
+      )}
     </header>
   );
 };

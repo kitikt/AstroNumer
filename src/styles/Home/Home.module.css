@@ -30,3 +30,37 @@
     width: 100%;
     min-height: 70vh;
 }
+
+@media (max-width: 700px) {
+  .main {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  .section,
+  .FirstSection,
+  .threeSection,
+  .fourthSection,
+  .fifthSection,
+  .sixSection,
+  .sevenSection,
+  .eightSection {
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  .secondSection {
+    background-size: cover;
+    min-height: 300px;
+    padding: 8px;
+  }
+  .sixSection {
+    flex-direction: column;
+    min-height: 40vh;
+    padding: 8px;
+  }
+  .feedbackSection {
+    min-height: 40vh;
+    padding: 8px;
+  }
+}

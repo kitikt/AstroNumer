@@ -60,3 +60,23 @@
 .buttonWrapper button:hover {
     background-color: #a64dff;
 }
+
+@media (max-width: 700px) {
+  .firstSection {
+    gap: 32px;
+    min-height: 60vh;
+    padding: 8px;
+  }
+  .heading {
+    font-size: 1.6rem;
+  }
+  .subheading {
+    font-size: 1rem;
+    max-width: 95vw;
+  }
+  .buttonWrapper button {
+    width: 100px;
+    height: 38px;
+    font-size: 1rem;
+  }
+}
