@@ -3,7 +3,9 @@ import { Box, Text, Grid, Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Divider from "@/components/Divider";
 import "@/styles/NumerologyResultPage.css";
-
+import FloatingAnalysisDropdown from "@/components/FloatingAnalysisDropdown";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 // Mock API response for Destiny Number 1
 const mockApiResponse = {
   StatusCode: 200,
@@ -39,6 +41,11 @@ const NumerologyResultPage = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate(); // Initialize useNavigate
   const [vipAnalysis, setVipAnalysis] = useState<Record<string, string>>({});
+const decodeEscaped = (text: string) =>
+  text
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "")
+    .replace(/\n{2,}/g, "\n");
 
   useEffect(() => {
     const storedData = localStorage.getItem("numerologyData");
@@ -307,7 +314,7 @@ const NumerologyResultPage = () => {
       </Box>
 
       <Divider />
-
+        <FloatingAnalysisDropdown/>
       <Grid
         mt={12}
         templateColumns={{
@@ -361,40 +368,73 @@ const NumerologyResultPage = () => {
         </Button>
       </Box>
 
-      {selectedItem && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3 className="modal-title">{selectedItem.title}</h3>
-            <div className="modal-value-container">
-              <p className="modal-value">{selectedItem.value}</p>
-            </div>
-            <div style={{ display: "flex", gap: 24, justifyContent: "center" }}>
-              <div
-                style={{
-                  flex: 1,
-                  borderRight: "1px solid #eee",
-                  paddingRight: 16,
-                }}
-              >
-                <h4 style={{ color: "#6366f1", marginBottom: 8 }}>
-                  Phân tích thường
-                </h4>
-                <p className="modal-description">
-                  {selectedItem.fullDescription || "Đang tải..."}
-                </p>
+     {selectedItem && (
+  <div className="modal-overlay" style={{ overflowY: "auto", maxHeight: "100vh" }}>
+    <div
+      className="modal-content"
+      style={{
+        maxWidth: "95vw",
+        width: "95vw",
+        padding: 24,
+        background: "white",
+        borderRadius: 12,
+        maxHeight: "90vh",
+        overflowY: "auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: 24,
+      }}
+    >
+      <h3 className="modal-title" style={{ marginBottom: 0 }}>{selectedItem.title}</h3>
+      <div className="modal-value-container" style={{ marginBottom: 0 }}>
+        <p className="modal-value">{selectedItem.value}</p>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          gap: 32,
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+        }}
+      >
+        <div
+          style={{
+            flex: 1,
+            minWidth: "45%",
+            paddingRight: 24,
+            borderRight: "1px solid #eee",
+          }}
+        >
+          <h4 style={{ color: "#6366f1", marginBottom: 8 }}>Phân tích thường</h4>
+          <p className="modal-description" style={{ marginBottom: 0 }}>
+            {selectedItem.fullDescription || "Đang tải..."}
+          </p>
+        </div>
+
+        {vipAnalysis &&
+          typeof typeNameMap[selectedItem.title] !== "undefined" &&
+          vipAnalysis[typeNameMap[selectedItem.title]] && (
+            <div
+              style={{
+                flex: 1,
+                minWidth: "45%",
+                paddingLeft: 24,
+              }}
+            >
+              <h4 style={{ color: "#f59e42", marginBottom: 8 }}>Phân tích VIP</h4>
+              <div className="modal-description" style={{ textAlign: "left", marginBottom: 0 }}>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    p: ({ node, ...props }) => <p style={{ margin: "4px 0" }} {...props} />,
+                  }}
+                >
+                  {decodeEscaped(vipAnalysis[typeNameMap[selectedItem.title]])}
+                </ReactMarkdown>
               </div>
-              {vipAnalysis &&
-                typeof typeNameMap[selectedItem.title] !== "undefined" &&
-                vipAnalysis[typeNameMap[selectedItem.title]] && (
-                  <div style={{ flex: 1, paddingLeft: 16 }}>
-                    <h4 style={{ color: "#f59e42", marginBottom: 8 }}>
-                      Phân tích VIP
-                    </h4>
-                    <p className="modal-description">
-                      {vipAnalysis[typeNameMap[selectedItem.title]]}
-                    </p>
-                  </div>
-                )}
+            </div>
+          )}
             </div>
             <button
               className="modal-close-button"
