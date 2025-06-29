@@ -345,3 +345,45 @@
   opacity: 0.9;
   margin-bottom: 3px;
 }
+
+@media (max-width: 700px) {
+  .title {
+    font-size: 2rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+  .questionCard {
+    padding: 20px;
+    margin-bottom: 15px;
+  }
+  .questionTitle {
+    font-size: 1.1rem;
+  }
+  .optionLabel {
+    padding: 12px 15px;
+  }
+  .optionText {
+    font-size: 0.9rem;
+  }
+  .navButton {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+  .resultCard {
+    padding: 30px 20px;
+    margin: 10px;
+  }
+  .resultTitle {
+    font-size: 2rem;
+  }
+  .mbtiType {
+    font-size: 3rem;
+  }
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+  .characteristicTitle {
+    font-size: 1.1rem;
+  }
+}

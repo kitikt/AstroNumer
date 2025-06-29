@@ -523,3 +523,39 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+@media (max-width: 700px) {
+  .container {
+    flex-direction: column;
+    height: 100vh;
+  }
+  .leftSidebar {
+    width: 100%;
+    height: auto;
+    max-height: 40vh;
+    border-right: none;
+    border-bottom: 1px solid #3a3a4a;
+  }
+  .leftSidebarCollapsed {
+    width: 100%;
+  }
+  .mainChat {
+    flex: 1;
+    height: 60vh;
+  }
+  .modalContentEnhanced {
+    width: 95%;
+    padding: 1rem;
+    margin: 1rem;
+  }
+  .modalTitleEnhanced {
+    font-size: 1.2rem;
+  }
+  .modalActionsEnhanced {
+    flex-direction: column;
+  }
+  .modalButtonEnhanced,
+  .modalButtonCancelEnhanced {
+    width: 100%;
+  }
+}

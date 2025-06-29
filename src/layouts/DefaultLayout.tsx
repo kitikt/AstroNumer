@@ -7,7 +7,7 @@ function DefaultLayout() {
     <div
       style={{
         backgroundImage: `url('./images/background.png')`,
-        minHeight: "100v",
+        minHeight: "100vh",
       }}
     >
       <Header />

@@ -142,3 +142,32 @@
 .nextButton:hover {
     background-color: #a64dff;
 }
+
+@media (max-width: 700px) {
+  .heading {
+    font-size: 1.2rem;
+  }
+  .slider {
+    min-height: 50vh;
+  }
+  .sliderItem {
+    width: 90%;
+    height: 30vh;
+  }
+  .overlayTitle {
+    font-size: 1rem;
+  }
+  .overlayDescription {
+    font-size: 0.8rem;
+  }
+  .buttonWrapper {
+    margin-top: 40vh;
+  }
+  .prevButton,
+  .nextButton {
+    width: 80px;
+    height: 35px;
+    margin: 0 10px;
+    font-size: 0.8rem;
+  }
+}

@@ -59,3 +59,36 @@
 .modal-close-button:hover {
   background-color: #4c1d95; 
 }
+
+@media (max-width: 600px) {
+  .modal-content {
+    max-width: 98vw;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+  }
+  .modal-title {
+    font-size: 1rem;
+  }
+  .modal-value {
+    font-size: 1.2rem;
+  }
+  .modal-description {
+    font-size: 0.8rem;
+  }
+  .modal-close-button {
+    width: 100%;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+  }
+  .modal-compare-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  .modal-compare-col {
+    border-right: none !important;
+    border-bottom: 1px solid #eee !important;
+    padding-right: 0 !important;
+    padding-bottom: 8px !important;
+    padding-left: 0 !important;
+  }
+}
