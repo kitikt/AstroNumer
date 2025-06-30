@@ -31,12 +31,12 @@ const HomePage = () => {
         <section className={`${styles.sixSection}`}>
           <SixSection />
         </section>
-        <section className={`${styles.sevenSection}`}>
+        {/* <section className={`${styles.sevenSection}`}>
           <SevenSection />
-        </section>
-        <section className={`${styles.eightSection}`}>
+        </section> */}
+        {/* <section className={`${styles.eightSection}`}>
           <EightSection />
-        </section>
+        </section> */}
         <section className={`${styles.feedbackSection}`}>
           <FeedbackSection />
         </section>

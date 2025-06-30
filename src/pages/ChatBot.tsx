@@ -3,14 +3,12 @@ import {
   Send,
   User,
   MessageCircle,
-  Plus,
   Search,
   Settings,
   Minimize2,
 } from "lucide-react";
 import styles from "@/styles/ChatBot.module.css";
 import AddConversationButton from "@/components/AddConversationButton";
-import { set } from "zod/v4";
 
 interface Message {
   id: string;
@@ -72,7 +70,7 @@ const ChatBot = () => {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [inputMessage, setInputMessage] = useState<string>("");
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] =
-    useState<false>(false);
+    useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState({
@@ -110,7 +108,6 @@ const ChatBot = () => {
           }
         );
         if (!response.ok) {
-          console.error(`API error: ${response.status} ${response.statusText}`);
           return;
         }
         const data = await response.json();
@@ -141,12 +138,16 @@ const ChatBot = () => {
             }
           );
 
-          setChatBots(bots);
-        } else {
-          console.error("Error fetching conversations:", data.Errors);
+          // Remove duplicates based on conversation ID
+          const uniqueBots = bots.filter(
+            (bot, index, self) =>
+              index === self.findIndex((b) => b.id === bot.id)
+          );
+
+          setChatBots(uniqueBots);
         }
-      } catch (error) {
-        console.error("Network error:", error);
+      } catch {
+        // Handle error silently
       }
     };
     fetchBotConversations();
@@ -189,13 +190,38 @@ const ChatBot = () => {
       });
       const data = await response.json();
       if (data.Success) {
-        setChats((prev) => ({
-          ...prev,
-          [botId]: { botId, messages: [], conversationId: botId },
-        }));
-        setActiveChatId(botId);
+        // Refresh the bot conversations list to get the new conversationId
+        const refreshResponse = await fetch(
+          `${API_URL}/api/Chat/bot-conversations/${USER_ID}`,
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${TOKEN}` },
+          }
+        );
 
-        await fetchConversationHistory(botId);
+        if (refreshResponse.ok) {
+          const refreshData = await refreshResponse.json();
+          if (refreshData.Success) {
+            // Find the newly created conversation by matching the title
+            const newConversation = refreshData.Data.find(
+              (conv: IBotConversation) =>
+                conv.Title === `Trò chuyện với ${bot?.name || "Bot"}` ||
+                conv.RelationshipTypeDescription === "Chatbot"
+            );
+
+            if (newConversation) {
+              const conversationId = newConversation.Id.toString();
+
+              setChats((prev) => ({
+                ...prev,
+                [botId]: { botId, messages: [], conversationId },
+              }));
+              setActiveChatId(botId);
+
+              await fetchConversationHistory(conversationId);
+            }
+          }
+        }
       } else {
         console.error("Error creating conversation:", data.Errors);
       }
@@ -239,6 +265,7 @@ const ChatBot = () => {
       scrollToBottom();
 
       setIsLoading(true);
+
       const response = await fetch(
         `${API_URL}/api/Chat/analyze-relationship/${conversationId}`,
         {
@@ -254,7 +281,7 @@ const ChatBot = () => {
 
       const data = await response.json();
       if (data.Success) {
-        const botResponse = formatBotResponse(data.Data); //
+        const botResponse = formatBotResponse(data.Data);
 
         setChats((prev) => {
           const currentChat = prev[activeChatId!] || {
@@ -268,7 +295,7 @@ const ChatBot = () => {
             {
               id: (Date.now() + 1).toString(),
               content: botResponse,
-              sender: "bot",
+              sender: "bot" as "user" | "bot",
               timestamp: new Date(),
             },
           ];
@@ -281,13 +308,9 @@ const ChatBot = () => {
             },
           };
         });
-
-        await fetchConversationHistory(conversationId);
-      } else {
-        console.error("Lỗi phản hồi từ bot:", data.Errors);
       }
-    } catch (error) {
-      console.error("Lỗi mạng:", error);
+    } catch {
+      // Handle error silently
     } finally {
       setIsLoading(false);
       scrollToBottom();
@@ -296,7 +319,6 @@ const ChatBot = () => {
 
   const fetchConversationHistory = async (conversationId: string) => {
     try {
-      console.log(`Fetching history for conversationId: ${conversationId}`);
       const response = await fetch(
         `${API_URL}/api/Chat/conversation/${conversationId}?page-index=1&page-size=10`,
         {
@@ -308,14 +330,9 @@ const ChatBot = () => {
         }
       );
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error(
-          `API error: ${response.status} ${response.statusText} for conversationId ${conversationId}, Details: ${errorText}`
-        );
         return;
       }
       const data = await response.json();
-      console.log("API Response:", data);
       if (data.Success) {
         const messages = data.Data.Data.map(
           (msg: {
@@ -330,7 +347,6 @@ const ChatBot = () => {
             timestamp: new Date(msg.CreatedAt),
           })
         );
-        console.log("Parsed Messages:", messages);
         setChats((prev) => {
           const currentChat = prev[activeChatId!] || {
             botId: activeChatId!,
@@ -351,30 +367,21 @@ const ChatBot = () => {
             },
           };
         });
-      } else {
-        console.error("Error fetching conversation history:", data.Errors);
       }
-    } catch (error) {
-      console.error("Network error:", error);
+    } catch {
+      // Handle error silently
     }
   };
 
   const startNewChat = async (botId: string) => {
-    console.log("Starting chat with botId:", botId);
     if (!chats[botId]) {
       await createConversation(botId);
     } else {
       setActiveChatId(botId);
-      console.log("Active Chat ID:", activeChatId);
       const chat = chats[botId];
       if (chat.conversationId) {
-        console.log(
-          `Fetching history for existing conversationId: ${chat.conversationId}`
-        );
-
         await fetchConversationHistory(chat.conversationId);
       } else {
-        console.warn(`No conversationId found for botId: ${botId}`);
         await createConversation(botId);
       }
     }
@@ -429,47 +436,81 @@ const ChatBot = () => {
       });
       const data = await response.json();
       if (data.Success) {
-        const newConversationId =
-          data.Data?.ConversationId?.toString() || Date.now().toString();
-        setChatBots((prev) => [
+        // Refresh the bot conversations list to get the new conversationId
+        const refreshResponse = await fetch(
+          `${API_URL}/api/Chat/bot-conversations/${USER_ID}`,
           {
-            id: newConversationId,
-            name:
-              formData.Title ||
-              formData.RelationshipTypeDescription ||
-              `Bot ${formData.User2FullName}`,
-            avatar: "🤖",
-            description:
-              formData.RelationshipTypeDescription || "Trò chuyện với bot",
-            color:
-              styles[`bgColor${(prev.length % 4) + 1}`] || styles.bgBlue500,
-            isOnline: true,
-            unreadCount: 0,
-          },
-          ...prev,
-        ]);
-        setChats((prev) => ({
-          ...prev,
-          [newConversationId]: {
-            botId: newConversationId,
-            messages: [],
-            conversationId: newConversationId,
-          },
-        }));
-        setIsModalOpen(false);
-        setFormData({
-          User1CoreNumber: 10,
-          User2FullName: "",
-          User2DateOfBirth: new Date().toISOString().slice(0, 16),
-          RelationshipType: 0,
-          RelationshipTypeDescription: "",
-          Title: "",
-        });
-      } else {
-        console.error("Error creating conversation:", data.Errors);
+            method: "GET",
+            headers: { Authorization: `Bearer ${TOKEN}` },
+          }
+        );
+
+        if (refreshResponse.ok) {
+          const refreshData = await refreshResponse.json();
+          if (refreshData.Success) {
+            // Find the newly created conversation by matching the title
+            const newConversation = refreshData.Data.find(
+              (conv: IBotConversation) =>
+                conv.Title === formData.Title ||
+                conv.RelationshipTypeDescription ===
+                  formData.RelationshipTypeDescription
+            );
+
+            if (newConversation) {
+              const conversationId = newConversation.Id.toString();
+
+              setChatBots((prev) => {
+                // Check if bot already exists to avoid duplicates
+                const existingBot = prev.find(
+                  (bot) => bot.id === conversationId
+                );
+                if (existingBot) {
+                  return prev;
+                }
+
+                return [
+                  {
+                    id: conversationId,
+                    name:
+                      formData.Title ||
+                      formData.RelationshipTypeDescription ||
+                      `Bot ${formData.User2FullName}`,
+                    avatar: "🤖",
+                    description:
+                      formData.RelationshipTypeDescription ||
+                      "Trò chuyện với bot",
+                    color:
+                      styles[`bgColor${(prev.length % 4) + 1}`] ||
+                      styles.bgBlue500,
+                    isOnline: true,
+                    unreadCount: 0,
+                  },
+                  ...prev,
+                ];
+              });
+              setChats((prev) => ({
+                ...prev,
+                [conversationId]: {
+                  botId: conversationId,
+                  messages: [],
+                  conversationId: conversationId,
+                },
+              }));
+              setIsModalOpen(false);
+              setFormData({
+                User1CoreNumber: 10,
+                User2FullName: "",
+                User2DateOfBirth: new Date().toISOString().slice(0, 16),
+                RelationshipType: 0,
+                RelationshipTypeDescription: "",
+                Title: "",
+              });
+            }
+          }
+        }
       }
-    } catch (error) {
-      console.error("Network error:", error);
+    } catch {
+      // Handle error silently
     }
   };
 
@@ -723,7 +764,9 @@ const ChatBot = () => {
             </h2>
             <div className={styles.modalFormEnhanced}>
               <div className={styles.formGroupEnhanced}>
-                <label className={styles.labelEnhanced}>User1CoreNumber:</label>
+                <label className={styles.labelEnhanced}>
+                  Chỉ số chủ đạo của bạn:
+                </label>
                 <input
                   type="number"
                   value={formData.User1CoreNumber}
@@ -734,11 +777,13 @@ const ChatBot = () => {
                     })
                   }
                   className={styles.modalInputEnhanced}
-                  placeholder="Nhập User1CoreNumber"
+                  placeholder="Nhập chỉ số chủ đạo"
                 />
               </div>
               <div className={styles.formGroupEnhanced}>
-                <label className={styles.labelEnhanced}>User2FullName:</label>
+                <label className={styles.labelEnhanced}>
+                  Họ tên người đối thoại:
+                </label>
                 <input
                   type="text"
                   value={formData.User2FullName}
@@ -746,12 +791,12 @@ const ChatBot = () => {
                     setFormData({ ...formData, User2FullName: e.target.value })
                   }
                   className={styles.modalInputEnhanced}
-                  placeholder="Nhập User2FullName"
+                  placeholder="Nhập họ tên"
                 />
               </div>
               <div className={styles.formGroupEnhanced}>
                 <label className={styles.labelEnhanced}>
-                  User2DateOfBirth:
+                  Ngày sinh người đối thoại:
                 </label>
                 <input
                   type="datetime-local"
@@ -767,9 +812,7 @@ const ChatBot = () => {
                 />
               </div>
               <div className={styles.formGroupEnhanced}>
-                <label className={styles.labelEnhanced}>
-                  RelationshipType:
-                </label>
+                <label className={styles.labelEnhanced}>Loại quan hệ:</label>
                 <select
                   value={formData.RelationshipType}
                   onChange={(e) => {
@@ -791,9 +834,7 @@ const ChatBot = () => {
                 </select>
               </div>
               <div className={styles.formGroupEnhanced}>
-                <label className={styles.labelEnhanced}>
-                  RelationshipTypeDescription:
-                </label>
+                <label className={styles.labelEnhanced}>Mô tả quan hệ:</label>
                 <input
                   type="text"
                   value={formData.RelationshipTypeDescription}
@@ -804,11 +845,11 @@ const ChatBot = () => {
                     })
                   }
                   className={styles.modalInputEnhanced}
-                  placeholder="Mô tả RelationshipType"
+                  placeholder="Nhập mô tả quan hệ"
                 />
               </div>
               <div className={styles.formGroupEnhanced}>
-                <label className={styles.labelEnhanced}>Title:</label>
+                <label className={styles.labelEnhanced}>Tiêu đề:</label>
                 <input
                   type="text"
                   value={formData.Title}
