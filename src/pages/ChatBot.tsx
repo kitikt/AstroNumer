@@ -85,6 +85,7 @@ const ChatBot = () => {
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isSendingRef = useRef<boolean>(false);
 
   const USER_ID = localStorage.getItem("userId") || "";
   const API_URL = import.meta.env.VITE_API_URL;
@@ -380,8 +381,32 @@ const ChatBot = () => {
   };
 
   const sendMessage = async () => {
-    if (!inputMessage.trim() || !activeChatId) return;
-    await sendMessageToBot(inputMessage);
+    if (
+      !inputMessage.trim() ||
+      !activeChatId ||
+      isLoading ||
+      isSendingRef.current
+    )
+      return;
+
+    isSendingRef.current = true;
+    try {
+      await sendMessageToBot(inputMessage);
+    } finally {
+      isSendingRef.current = false;
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  const handleSendClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    sendMessage();
   };
 
   const handleCreateConversation = async () => {
@@ -659,17 +684,12 @@ const ChatBot = () => {
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      sendMessage();
-                    }
-                  }}
+                  onKeyDown={handleKeyDown}
                   placeholder={`Nhắn tin cho ${activeBot.name}...`}
                   className={styles.messageInput}
                 />
                 <button
-                  onClick={sendMessage}
+                  onClick={handleSendClick}
                   disabled={!inputMessage.trim()}
                   className={styles.sendButton}
                 >
