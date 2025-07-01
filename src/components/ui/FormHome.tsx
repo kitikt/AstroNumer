@@ -89,11 +89,11 @@ const FormHome: React.FC = () => {
         if (result.StatusCode === 200 && result.Success) {
           localStorage.setItem("numerologyData", JSON.stringify(result.Data));
         } else {
-          alert("Có lỗi xảy ra khi tính toán số học. Vui lòng thử lại!");
+          console.log("Có lỗi xảy ra khi tính toán số học. Vui lòng thử lại!");
           return;
         }
       } catch {
-        alert("Đã có lỗi xảy ra. Vui lòng kiểm tra kết nối và thử lại!");
+        console.log("Đã có lỗi xảy ra. Vui lòng kiểm tra kết nối và thử lại!");
         return;
       }
       // Nếu chọn VIP thì tiếp tục gọi VIP, xong mới navigate
@@ -103,7 +103,7 @@ const FormHome: React.FC = () => {
           const token = localStorage.getItem("token");
           if (!token) {
             setLoadingVip(false);
-            alert("Bạn cần đăng nhập để sử dụng tính năng VIP.");
+            console.log("Bạn cần đăng nhập để sử dụng tính năng VIP.");
             return;
           }
           // Format date to ISO string (YYYY-MM-DDT00:00:00.000Z)
@@ -123,9 +123,7 @@ const FormHome: React.FC = () => {
             }
           );
           if (!response.ok) {
-            const errorText = await response.text();
             setLoadingVip(false);
-            alert(`Lỗi VIP: ${response.status} - ${errorText}`);
             return;
           }
           const result = await response.json();
@@ -135,12 +133,12 @@ const FormHome: React.FC = () => {
               "numerologyVipData",
               JSON.stringify(result.Data)
             );
-            // Gọi tiếp 7 lần API lấy text VIP
+            // Gọi tiếp 7 lần API lấy text VIP (tối ưu: chạy song song)
             const vipId = result.Data.Id;
-            const vipTexts = {};
+            const requests: Promise<{ type: number; value: string }>[] = [];
             for (let type = 0; type <= 6; type++) {
-              try {
-                const res = await fetch(
+              requests.push(
+                fetch(
                   `https://astronumer.info.vn/api/v1/numerology/analyze?TypeName=${type}&UserNumerologyAnalysisId=${vipId}`,
                   {
                     method: "GET",
@@ -149,36 +147,37 @@ const FormHome: React.FC = () => {
                       Authorization: `Bearer ${token}`,
                     },
                   }
-                );
-                if (res.ok) {
-                  const data = await res.json();
-                  if (data.StatusCode === 200 && data.Success) {
-                    vipTexts[type] = data.Data;
-                  } else {
-                    vipTexts[type] = "Không có dữ liệu VIP";
-                  }
-                } else {
-                  vipTexts[type] = `Lỗi HTTP: ${res.status}`;
-                }
-              } catch {
-                vipTexts[type] = "Lỗi khi gọi API VIP";
-              }
+                )
+                  .then(async (res) => {
+                    if (res.ok) {
+                      const data = await res.json();
+                      if (data.StatusCode === 200 && data.Success) {
+                        return { type, value: data.Data };
+                      } else {
+                        return { type, value: "Không có dữ liệu VIP" };
+                      }
+                    } else {
+                      return { type, value: `Lỗi HTTP: ${res.status}` };
+                    }
+                  })
+                  .catch(() => ({ type, value: "Lỗi khi gọi API VIP" }))
+              );
             }
+            const results = await Promise.all(requests);
+            const vipTexts = {};
+            results.forEach(({ type, value }) => {
+              vipTexts[type] = value;
+            });
             localStorage.setItem(
               "numerologyVipAnalysis",
               JSON.stringify(vipTexts)
             );
-            alert("Phân tích VIP thành công! Kết quả đã được lưu.");
           } else {
             console.error("API VIP call failed:", result.Message);
-            alert("Có lỗi xảy ra khi phân tích VIP. Vui lòng thử lại!");
           }
         } catch (error) {
           setLoadingVip(false);
           console.error("Error calling VIP API:", error);
-          alert(
-            "Đã có lỗi xảy ra khi gọi VIP. Vui lòng kiểm tra kết nối và thử lại!"
-          );
           return;
         }
       }
