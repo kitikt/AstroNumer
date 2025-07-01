@@ -16,7 +16,9 @@ const pageSize = 6
 
   const fetchNotifications = async () => {
     try {
-      const userId = JSON.parse(localStorage.getItem('user') || 'null')
+      const userId = localStorage.getItem('userId') ;
+      console.log('Fetching notifications for userId:', userId);
+      
       if (!userId) return
 
       const baseUrl = `${import.meta.env.VITE_API_URL}/api/v1/notifications/user/${userId}/all?page-index=${page}&page-size=${pageSize}`
@@ -27,6 +29,8 @@ const pageSize = 6
       if (!response.ok) throw new Error(resData.message || 'Lỗi khi lấy thông báo')
 
       const rawData = resData.Data?.Data ?? []
+      console.log('Raw notifications:', rawData);
+      
       type RawNotification = {
         Id?: string
         Title?: string
