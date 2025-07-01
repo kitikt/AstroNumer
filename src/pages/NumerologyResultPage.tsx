@@ -282,6 +282,8 @@ const NumerologyResultPage = () => {
   const handleRecalculate = () => {
     localStorage.removeItem("numerologyData"); // Clear numerology data
     localStorage.removeItem("userInfo"); // Clear user info
+    localStorage.removeItem("numerologyVipAnalysis"); // Clear VIP analysis
+    setVipAnalysis({}); // Clear VIP analysis state
     navigate("/form/numerology"); // Navigate to the form page
   };
 
@@ -439,7 +441,7 @@ const NumerologyResultPage = () => {
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                          p: ({ node, ...props }) => (
+                          p: (props) => (
                             <p
                               style={{ margin: "4px 0", color: "#333" }}
                               {...props}
