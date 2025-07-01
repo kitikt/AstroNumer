@@ -63,9 +63,11 @@ const API_ENDPOINTS = {
   totalServices:
     "https://astronumer.info.vn/api/v1/dashboard/statistics/total-purchased-service",
   remainingUsage:
-    "https://astronumer.info.vn/api/v1/dashboard/statistics/total-user-used-service",
-  serviceUsageByMonth:
     "https://astronumer.info.vn/api/Feedback/count",
+  serviceUsageByMonth:
+    "https://astronumer.info.vn/api/v1/dashboard/statistics/service-usage-by-month",
+  
+  
 };
 
 const type = createListCollection({
