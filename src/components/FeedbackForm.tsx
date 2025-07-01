@@ -208,7 +208,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({
       }
     } catch (err) {
       console.error("Failed to create feedback:", err);
-      setError("Có lỗi xảy ra khi gửi feedback. Vui lòng thử lại.");
+      setError("Dịch vụ này đã được gửi đánh giá trước đó.");
     } finally {
       setIsSubmitting(false);
     }
