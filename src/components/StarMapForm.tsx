@@ -275,9 +275,10 @@ const StarMapForm: React.FC = () => {
               PlanetInHouses: starMapData.PlanetInHouses,
             };
             localStorage.setItem("starMapData", JSON.stringify(combinedData));
-
+            const userId = localStorage.getItem("userId");
             // Gọi API ChatBot mới với Package parameter
             const chatBotParams = new URLSearchParams({
+              
               FullName: formData.fullName,
               Day: formData.day,
               Month: formData.month,
@@ -287,6 +288,9 @@ const StarMapForm: React.FC = () => {
               PlaceOfBirth: formData.placeOfBirth,
               Package: isVipSelected ? "vip" : "default",
             });
+            if (isVipSelected && userId) {
+              chatBotParams.append("UserId", userId);
+            }
 
             console.log(
               "Request params for ChatBot:",
