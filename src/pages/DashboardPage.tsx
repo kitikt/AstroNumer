@@ -65,7 +65,7 @@ const API_ENDPOINTS = {
   remainingUsage:
     "https://astronumer.info.vn/api/v1/dashboard/statistics/total-user-used-service",
   serviceUsageByMonth:
-    "https://astronumer.info.vn/api/v1/dashboard/statistics/service-usage-by-month",
+    "https://astronumer.info.vn/api/Feedback/count",
 };
 
 const type = createListCollection({
@@ -616,7 +616,7 @@ const DashboardPage = () => {
                 letterSpacing: "0.5px",
               }}
             >
-              Số lượng người dùng mua
+              Số lượng Feedback
             </Stat.Label>
             <Icon as={FiCheckCircle} />
           </HStack>
