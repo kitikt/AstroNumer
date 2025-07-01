@@ -74,7 +74,7 @@ const ChatBot = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState({
-    User1CoreNumber: 10,
+    User1CoreNumber: 1,
     User2FullName: "",
     User2DateOfBirth: new Date().toISOString().slice(0, 16),
     RelationshipType: 0,
@@ -168,67 +168,6 @@ const ChatBot = () => {
     // Xóa khoảng trắng đầu cuối và return
     return formatted.trim();
   }
-
-  const createConversation = async (botId: string) => {
-    const bot = chatBots.find((b) => b.id === botId);
-    try {
-      const response = await fetch(`${API_URL}/api/Chat/${USER_ID}`, {
-        method: "POST",
-        headers: {
-          accept: "text/plain",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${TOKEN}`,
-        },
-        body: JSON.stringify({
-          User1CoreNumber: 0,
-          User2FullName: bot?.name || "Bot",
-          User2DateOfBirth: new Date().toISOString(),
-          RelationshipType: 2,
-          RelationshipTypeDescription: "Chatbot",
-          Title: `Trò chuyện với ${bot?.name || "Bot"}`,
-        }),
-      });
-      const data = await response.json();
-      if (data.Success) {
-        // Refresh the bot conversations list to get the new conversationId
-        const refreshResponse = await fetch(
-          `${API_URL}/api/Chat/bot-conversations/${USER_ID}`,
-          {
-            method: "GET",
-            headers: { Authorization: `Bearer ${TOKEN}` },
-          }
-        );
-
-        if (refreshResponse.ok) {
-          const refreshData = await refreshResponse.json();
-          if (refreshData.Success) {
-            // Find the newly created conversation by matching the title
-            const newConversation = refreshData.Data.find(
-              (conv: IBotConversation) =>
-                conv.Title === `Trò chuyện với ${bot?.name || "Bot"}` ||
-                conv.RelationshipTypeDescription === "Chatbot"
-            );
-
-            if (newConversation) {
-              const conversationId = newConversation.Id.toString();
-
-              setChats((prev) => ({
-                ...prev,
-                [botId]: { botId, messages: [], conversationId },
-              }));
-              setActiveChatId(botId);
-
-              await fetchConversationHistory(conversationId);
-            }
-          }
-        }
-      } else {
-        console.error("Error creating conversation:", data.Errors);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-    }
-  };
 
   const sendMessageToBot = async (message: string) => {
     try {
@@ -347,26 +286,14 @@ const ChatBot = () => {
             timestamp: new Date(msg.CreatedAt),
           })
         );
-        setChats((prev) => {
-          const currentChat = prev[activeChatId!] || {
-            botId: activeChatId!,
-            messages: [],
+        setChats((prev) => ({
+          ...prev,
+          [conversationId]: {
+            botId: conversationId,
+            messages,
             conversationId,
-          };
-          const mergedMessages = [
-            ...currentChat.messages.filter(
-              (msg) => !messages.some((m) => m.id === msg.id)
-            ),
-            ...messages,
-          ].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-          return {
-            ...prev,
-            [activeChatId!]: {
-              ...currentChat,
-              messages: mergedMessages,
-            },
-          };
-        });
+          },
+        }));
       }
     } catch {
       // Handle error silently
@@ -374,16 +301,12 @@ const ChatBot = () => {
   };
 
   const startNewChat = async (botId: string) => {
-    if (!chats[botId]) {
-      await createConversation(botId);
-    } else {
-      setActiveChatId(botId);
-      const chat = chats[botId];
-      if (chat.conversationId) {
-        await fetchConversationHistory(chat.conversationId);
-      } else {
-        await createConversation(botId);
-      }
+    // Lấy conversationId từ chatBots (danh sách các cuộc trò chuyện)
+    const bot = chatBots.find((b) => b.id === botId);
+    const conversationId = bot?.id;
+    setActiveChatId(botId);
+    if (conversationId) {
+      await fetchConversationHistory(conversationId);
     }
   };
 
@@ -417,6 +340,22 @@ const ChatBot = () => {
   };
 
   const handleCreateConversation = async () => {
+    // Validate required fields
+    if (!formData.User1CoreNumber || formData.User1CoreNumber <= 0) {
+      alert("Vui lòng nhập chỉ số chủ đạo hợp lệ (phải lớn hơn 0)");
+      return;
+    }
+
+    if (!formData.User2FullName.trim()) {
+      alert("Vui lòng nhập họ tên người đối thoại");
+      return;
+    }
+
+    if (!formData.RelationshipType) {
+      alert("Vui lòng chọn loại quan hệ");
+      return;
+    }
+
     try {
       const response = await fetch(`${API_URL}/api/Chat/${USER_ID}`, {
         method: "POST",
@@ -498,7 +437,7 @@ const ChatBot = () => {
               }));
               setIsModalOpen(false);
               setFormData({
-                User1CoreNumber: 10,
+                User1CoreNumber: 1,
                 User2FullName: "",
                 User2DateOfBirth: new Date().toISOString().slice(0, 16),
                 RelationshipType: 0,
@@ -508,9 +447,16 @@ const ChatBot = () => {
             }
           }
         }
+      } else {
+        if (data.Errors && data.Errors.length > 0) {
+          alert(`Lỗi: ${data.Errors.join(", ")}`);
+        } else {
+          alert("Có lỗi xảy ra khi tạo cuộc trò chuyện");
+        }
       }
-    } catch {
-      // Handle error silently
+    } catch (error) {
+      console.error("Network error:", error);
+      alert("Lỗi kết nối mạng. Vui lòng thử lại.");
     }
   };
 
@@ -769,15 +715,18 @@ const ChatBot = () => {
                 </label>
                 <input
                   type="number"
+                  min="1"
+                  max="99"
                   value={formData.User1CoreNumber}
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value) || 1;
                     setFormData({
                       ...formData,
-                      User1CoreNumber: parseInt(e.target.value) || 0,
-                    })
-                  }
+                      User1CoreNumber: value > 0 ? value : 1,
+                    });
+                  }}
                   className={styles.modalInputEnhanced}
-                  placeholder="Nhập chỉ số chủ đạo"
+                  placeholder="Nhập chỉ số chủ đạo (1-99)"
                 />
               </div>
               <div className={styles.formGroupEnhanced}>

@@ -5,6 +5,7 @@ const StarMapForm: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isVipSelected, setIsVipSelected] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     day: "DD",
@@ -267,6 +268,7 @@ const StarMapForm: React.FC = () => {
               fullName: formData.fullName,
               placeOfBirth: formData.placeOfBirth,
               isCustomPlace: formData.isCustomPlace,
+              isVipSelected: isVipSelected,
               Ascendant: starMapData.Ascendant,
               AscendantSign: starMapData.AscendantSign,
               PlanetInSigns: starMapData.PlanetInSigns,
@@ -274,7 +276,7 @@ const StarMapForm: React.FC = () => {
             };
             localStorage.setItem("starMapData", JSON.stringify(combinedData));
 
-            // Gọi API ChatBot mới
+            // Gọi API ChatBot mới với Package parameter
             const chatBotParams = new URLSearchParams({
               FullName: formData.fullName,
               Day: formData.day,
@@ -283,7 +285,7 @@ const StarMapForm: React.FC = () => {
               Hour: formData.hour,
               Minute: formData.minute,
               PlaceOfBirth: formData.placeOfBirth,
-              Package: "default",
+              Package: isVipSelected ? "vip" : "default",
             });
 
             console.log(
@@ -346,6 +348,7 @@ const StarMapForm: React.FC = () => {
     if (currentPage === 2) {
       setCurrentPage(1);
       setError(null);
+      setIsVipSelected(false);
       setFormData((prev) => ({
         ...prev,
         fullName: "",
@@ -583,7 +586,7 @@ const StarMapForm: React.FC = () => {
               onChange={(e) =>
                 handleSelectChange("placeOfBirth", e.target.value)
               }
-              style={{ ...inputStyle, marginBottom: "32px" }}
+              style={{ ...inputStyle, marginBottom: "16px" }}
               disabled={loading}
             >
               {provinces.map((province) => (
@@ -593,6 +596,58 @@ const StarMapForm: React.FC = () => {
               ))}
             </select>
           )}
+
+          {/* VIP Selection */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "32px",
+              padding: "16px",
+              background:
+                "linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(156, 39, 176, 0.1))",
+              borderRadius: "12px",
+              border: "1px solid rgba(233, 30, 99, 0.3)",
+            }}
+          >
+            <input
+              type="checkbox"
+              id="vip-checkbox"
+              checked={isVipSelected}
+              onChange={(e) => setIsVipSelected(e.target.checked)}
+              style={{
+                width: "20px",
+                height: "20px",
+                marginRight: "12px",
+                accentColor: "#e91e63",
+              }}
+              disabled={loading}
+            />
+            <label
+              htmlFor="vip-checkbox"
+              style={{
+                color: "#ffffff",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+                flex: 1,
+              }}
+            >
+              <span style={{ color: "#e91e63", fontWeight: "bold" }}>
+                🌟 VIP Package
+              </span>
+              <br />
+              <span
+                style={{
+                  fontSize: "14px",
+                  color: "#d1d5db",
+                  fontWeight: "normal",
+                }}
+              >
+                Nhận phân tích chi tiết và chuyên sâu hơn từ AI
+              </span>
+            </label>
+          </div>
 
           <button
             onClick={handleContinue}

@@ -7,6 +7,8 @@ interface StarMapData {
   AscendantSign: string;
   PlanetInSigns: Record<string, string>;
   PlanetInHouses: Record<string, number>;
+  isVipSelected?: boolean;
+  coreNumber?: string;
 }
 
 const StarMapPage: React.FC = () => {
@@ -128,7 +130,7 @@ const StarMapPage: React.FC = () => {
   };
 
   const renderHouseLines = () => {
-    const lines: JSX.Element[] = [];
+    const lines: React.ReactElement[] = [];
     for (let i = 0; i < 12; i++) {
       const angle = i * 30;
       const innerPos = angleToCoordinates(angle, 250);
@@ -314,6 +316,8 @@ const StarMapPage: React.FC = () => {
       AscendantSign: starMapData.AscendantSign,
       PlanetInSigns: starMapData.PlanetInSigns,
       PlanetInHouses: starMapData.PlanetInHouses,
+      isVipSelected: starMapData.isVipSelected,
+      coreNumber: starMapData.coreNumber,
     });
 
     if (
@@ -533,8 +537,43 @@ const StarMapPage: React.FC = () => {
               textShadow: "0 0 20px rgba(233, 30, 99, 0.3)",
             }}
           >
-            Bản Đồ Sao
+            Bản Đồ Sao {astroData.isVipSelected && "🌟 VIP"}
           </div>
+
+          {astroData.isVipSelected && (
+            <div
+              style={{
+                textAlign: "center",
+                background:
+                  "linear-gradient(135deg, rgba(233, 30, 99, 0.2), rgba(156, 39, 176, 0.15))",
+                padding: "16px",
+                borderRadius: "15px",
+                border: "2px solid rgba(233, 30, 99, 0.4)",
+                marginBottom: "25px",
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  color: "#e91e63",
+                  marginBottom: "8px",
+                }}
+              >
+                🌟 VIP Package Activated
+              </div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  color: "#ffffff",
+                  fontWeight: "500",
+                }}
+              >
+                Phân tích chi tiết và chuyên sâu từ AI
+              </div>
+            </div>
+          )}
 
           <div
             style={{
@@ -667,27 +706,57 @@ const StarMapPage: React.FC = () => {
             <h3
               style={{
                 background: "transparent !important",
-
                 fontSize: "18px",
                 fontWeight: "700",
                 marginBottom: "15px",
                 borderBottom: "2px solid rgba(233, 30, 99, 0.4)",
                 paddingBottom: "8px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
               }}
             >
-              Phân Tích Từ ChatBot
+              <span style={{ color: "#ffffff" }}>Phân Tích Từ ChatBot</span>
+              {astroData.isVipSelected && (
+                <span
+                  style={{
+                    background: "linear-gradient(135deg, #e91e63, #9c27b0)",
+                    color: "white",
+                    padding: "4px 8px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  VIP
+                </span>
+              )}
             </h3>
             {chatBotData ? (
-              <StarMapReply tReply={chatBotData} />
+              <div
+                style={{
+                  background: astroData.isVipSelected
+                    ? "linear-gradient(135deg, rgba(233, 30, 99, 0.1), rgba(156, 39, 176, 0.05))"
+                    : "rgba(255, 255, 255, 0.03)",
+                  border: astroData.isVipSelected
+                    ? "1px solid rgba(233, 30, 99, 0.3)"
+                    : "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: "12px",
+                  padding: "20px",
+                  backdropFilter: "blur(10px)",
+                }}
+              >
+                <StarMapReply tReply={chatBotData} />
+              </div>
             ) : (
               <div
                 style={{
                   padding: "24px",
-
                   borderRadius: "12px",
-                  background: "transparent",
-                  color: "#333",
+                  background: "rgba(255, 255, 255, 0.03)",
+                  color: "#ffffff",
                   textAlign: "center",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
                 }}
               >
                 Chưa có dữ liệu phân tích từ ChatBot.
