@@ -63,7 +63,7 @@ const API_ENDPOINTS = {
   totalServices:
     "https://astronumer.info.vn/api/v1/dashboard/statistics/total-purchased-service",
   remainingUsage:
-    "https://astronumer.info.vn/api/Feedback/count",
+    "https://astronumer.info.vn/api/Feedback/statistics/feedback-count",
   serviceUsageByMonth:
     "https://astronumer.info.vn/api/v1/dashboard/statistics/service-usage-by-month",
   
