@@ -8,14 +8,45 @@ type CompatibilityResult = {
   Data?: any;
 };
 
+const days = [
+  "Ngày",
+  ...Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0")),
+];
+const months = [
+  "Tháng",
+  ...Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, "0")),
+];
+const currentYear = new Date().getFullYear();
+const years = [
+  "Năm",
+  ...Array.from({ length: 100 }, (_, i) => String(currentYear - i)),
+];
+
 const CompatibilityForm: React.FC = () => {
-  const [birthday1, setBirthday1] = useState("");
-  const [birthday2, setBirthday2] = useState("");
+  const [birthday1, setBirthday1] = useState({
+    day: "Ngày",
+    month: "Tháng",
+    year: "Năm",
+  });
+  const [birthday2, setBirthday2] = useState({
+    day: "Ngày",
+    month: "Tháng",
+    year: "Năm",
+  });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const canSubmit =
+    birthday1.day !== "Ngày" &&
+    birthday1.month !== "Tháng" &&
+    birthday1.year !== "Năm" &&
+    birthday2.day !== "Ngày" &&
+    birthday2.month !== "Tháng" &&
+    birthday2.year !== "Năm";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canSubmit) return;
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -24,9 +55,11 @@ const CompatibilityForm: React.FC = () => {
         setLoading(false);
         return;
       }
+      const b1 = `${birthday1.year}-${birthday1.month}-${birthday1.day}`;
+      const b2 = `${birthday2.year}-${birthday2.month}-${birthday2.day}`;
       const params = new URLSearchParams({
-        birthday1,
-        birthday2,
+        birthday1: b1,
+        birthday2: b2,
       });
       const response = await fetch(
         `https://astronumer.info.vn/api/v1/compatibility/analysis?${params.toString()}`,
@@ -41,15 +74,14 @@ const CompatibilityForm: React.FC = () => {
       const data: CompatibilityResult = await response.json();
       let parsedData = data;
       if (typeof data.Data === "string") {
-        // Xử lý trường hợp Data là JSON string
         try {
           parsedData = {
             ...data,
-            Data: JSON.parse(data.Data.replace(/^```json\\n|```$/g, "")),
+            Data: JSON.parse(
+              data.Data.replace(/^```json\s*|```\s*$/g, "").trim()
+            ),
           };
-        } catch {
-          // fallback nếu parse lỗi
-        }
+        } catch {}
       }
       localStorage.setItem("compatibilityResult", JSON.stringify(parsedData));
       navigate("/form/compatibility/result");
@@ -57,6 +89,17 @@ const CompatibilityForm: React.FC = () => {
       alert("Đã có lỗi xảy ra. Vui lòng thử lại!");
     }
     setLoading(false);
+  };
+
+  const selectStyle = {
+    flex: 1,
+    padding: "12px 16px",
+    border: "1px solid #d1d5db",
+    borderRadius: "8px",
+    fontSize: "16px",
+    backgroundColor: "white",
+    color: "#374151",
+    outline: "none",
   };
 
   return (
@@ -82,52 +125,114 @@ const CompatibilityForm: React.FC = () => {
       </h1>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: 16 }}>
-          <label>Ngày sinh người 1 (dd/mm/yyyy):</label>
-          <input
-            type="text"
-            value={birthday1}
-            onChange={(e) => setBirthday1(e.target.value)}
-            placeholder="10/02/2003"
-            style={{
-              width: "100%",
-              padding: 12,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginTop: 4,
-            }}
-            required
-          />
+          <label>Ngày sinh của bạn:</label>
+          <div style={{ display: "flex", gap: "12px", marginTop: 4 }}>
+            <select
+              value={birthday1.day}
+              onChange={(e) =>
+                setBirthday1({ ...birthday1, day: e.target.value })
+              }
+              style={selectStyle}
+            >
+              {days.map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
+            <select
+              value={birthday1.month}
+              onChange={(e) =>
+                setBirthday1({ ...birthday1, month: e.target.value })
+              }
+              style={selectStyle}
+            >
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+            <select
+              value={birthday1.year}
+              onChange={(e) =>
+                setBirthday1({ ...birthday1, year: e.target.value })
+              }
+              style={selectStyle}
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div style={{ marginBottom: 24 }}>
-          <label>Ngày sinh người 2 (dd/mm/yyyy):</label>
-          <input
-            type="text"
-            value={birthday2}
-            onChange={(e) => setBirthday2(e.target.value)}
-            placeholder="10/02/2003"
-            style={{
-              width: "100%",
-              padding: 12,
-              borderRadius: 8,
-              border: "1px solid #d1d5db",
-              marginTop: 4,
-            }}
-            required
-          />
+          <label>Ngày sinh của đối phương:</label>
+          <div style={{ display: "flex", gap: "12px", marginTop: 4 }}>
+            <select
+              value={birthday2.day}
+              onChange={(e) =>
+                setBirthday2({ ...birthday2, day: e.target.value })
+              }
+              style={selectStyle}
+            >
+              {days.map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
+            <select
+              value={birthday2.month}
+              onChange={(e) =>
+                setBirthday2({ ...birthday2, month: e.target.value })
+              }
+              style={selectStyle}
+            >
+              {months.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+            <select
+              value={birthday2.year}
+              onChange={(e) =>
+                setBirthday2({ ...birthday2, year: e.target.value })
+              }
+              style={selectStyle}
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <button
           type="submit"
-          disabled={loading}
+          disabled={!canSubmit || loading}
           style={{
             width: "100%",
             padding: 16,
-            background: loading ? "#9ca3af" : "#18181B",
+            background: canSubmit
+              ? loading
+                ? "#9ca3af"
+                : "#18181B"
+              : "#9ca3af",
             color: "white",
             border: "none",
             borderRadius: 8,
             fontWeight: 600,
             fontSize: 16,
-            cursor: loading ? "not-allowed" : "pointer",
+            cursor: canSubmit
+              ? loading
+                ? "not-allowed"
+                : "pointer"
+              : "not-allowed",
           }}
         >
           {loading ? "Đang phân tích..." : "Phân Tích"}
