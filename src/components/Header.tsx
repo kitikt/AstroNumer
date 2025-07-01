@@ -135,6 +135,9 @@ const Header: React.FC = () => {
               <Link to="/mbti" className={styles.dropdownItem}>
                 Trắc Nghiệm MBTI
               </Link>
+              <Link to="/form/compatibility" className={styles.dropdownItem}>
+                Phân Tích Tương Hợp
+              </Link>
             </div>
           )}
         </div>
@@ -265,6 +268,13 @@ const Header: React.FC = () => {
                   onClick={() => setShowMobileMenu(false)}
                 >
                   Trắc Nghiệm MBTI
+                </Link>
+                <Link
+                  to="/form/compatibility"
+                  className={styles.dropdownItem}
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Phân Tích Tương Hợp
                 </Link>
               </div>
             )}
