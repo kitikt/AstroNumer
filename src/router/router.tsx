@@ -28,6 +28,8 @@ import ProfilePage from "@/pages/User/Profile";
 import ChatBot from "@/pages/ChatBot";
 import MBTIQuiz from "@/pages/Mbti";
 import FeedbackPage from "@/pages/FeedbackPage";
+import CompatibilityPage from "../pages/Compatibility";
+import CompatibilityResultPage from "../pages/CompatibilityResult";
 
 // Cấu hình các form
 const formConfigs = [
@@ -104,6 +106,14 @@ export const router = createBrowserRouter([
       {
         path: "/form/starmap",
         element: <FormPage FormComponent={StarMapForm} />,
+      },
+      {
+        path: "/form/compatibility",
+        element: <CompatibilityPage />,
+      },
+      {
+        path: "/form/compatibility/result",
+        element: <CompatibilityResultPage />,
       },
       ...formConfigs.map(({ path, dataKey, redirectPath, component }) => ({
         path,
