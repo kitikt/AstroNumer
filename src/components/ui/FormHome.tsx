@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { checkVipStatus } from "@/services/vipService";
+import VipRequiredModal from "@/components/VipRequiredModal";
+import { isVipError } from "@/utils/vipUtils";
 
 const FormHome: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,6 +15,7 @@ const FormHome: React.FC = () => {
   });
   const [useVip, setUseVip] = useState(false);
   const [loadingVip, setLoadingVip] = useState(false);
+  const [showVipModal, setShowVipModal] = useState(false);
 
   const months = [
     "Tháng",
@@ -98,6 +102,13 @@ const FormHome: React.FC = () => {
       }
       // Nếu chọn VIP thì tiếp tục gọi VIP, xong mới navigate
       if (useVip) {
+        // Kiểm tra VIP status trước khi cho phép sử dụng
+        const vipStatus = await checkVipStatus();
+        if (!vipStatus.hasVipPackage) {
+          setShowVipModal(true);
+          return;
+        }
+
         setLoadingVip(true);
         try {
           const token = localStorage.getItem("token");
@@ -122,11 +133,15 @@ const FormHome: React.FC = () => {
               }),
             }
           );
-          if (!response.ok) {
+          const result = await response.json();
+
+          // Kiểm tra nếu API trả về lỗi về gói VIP
+          if (isVipError(response, result)) {
             setLoadingVip(false);
+            setShowVipModal(true);
             return;
           }
-          const result = await response.json();
+
           setLoadingVip(false);
           if (result.StatusCode === 200 && result.Success) {
             localStorage.setItem(
@@ -419,6 +434,13 @@ const FormHome: React.FC = () => {
           </button>
         </div>
       )}
+
+      <VipRequiredModal
+        isOpen={showVipModal}
+        onClose={() => setShowVipModal(false)}
+        title="Thần số học VIP"
+        message="Tính năng phân tích thần số học chuyên sâu chỉ dành cho thành viên VIP. Vui lòng nâng cấp tài khoản để sử dụng."
+      />
     </div>
   );
 };

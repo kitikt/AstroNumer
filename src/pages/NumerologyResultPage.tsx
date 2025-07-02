@@ -7,6 +7,7 @@ import FloatingAnalysisDropdown from "@/components/FloatingAnalysisDropdown";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import VipSummaryFull from "@/components/VipSummaryFull";
+import { useVip } from "@/hooks/useVip";
 
 // Mock API response for Destiny Number 1
 const mockApiResponse = {
@@ -43,6 +44,7 @@ const NumerologyResultPage = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate(); // Initialize useNavigate
   const [vipAnalysis, setVipAnalysis] = useState<Record<string, string>>({});
+  const { vipStatus } = useVip();
   const decodeEscaped = (text: string) =>
     text
       .replace(/\\n/g, "\n")
@@ -160,10 +162,9 @@ const NumerologyResultPage = () => {
     if (vip) {
       //console.log("VIP Analysis data found in localStorage:", vip);
       const parsedVip: Record<number, string> = JSON.parse(vip);
-    console.log("🔥 Raw VIP Summary (type 6):", parsedVip[6]);
+      console.log("🔥 Raw VIP Summary (type 6):", parsedVip[6]);
       setVipAnalysis(JSON.parse(vip));
       console.log(vipAnalysis);
-      
     }
   }, []);
 
@@ -369,15 +370,9 @@ const NumerologyResultPage = () => {
           </Box>
         ))}
       </Grid>
-      
+
       {/* —— Summary Section —— */}
-     {vipAnalysis[6] && (
-  <VipSummaryFull content={vipAnalysis[6]} />
-)}
-
-
-
-
+      {vipAnalysis[6] && <VipSummaryFull content={vipAnalysis[6]} />}
 
       <Box mt={8}>
         <Button colorScheme="teal" size="lg" onClick={handleRecalculate}>
