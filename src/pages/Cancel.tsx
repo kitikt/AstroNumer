@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   XCircle,
   ArrowLeft,
-  RefreshCw,
   AlertTriangle,
   Clock,
   ShoppingCart,
@@ -52,11 +51,17 @@ const PaymentCancelPage = () => {
         const cancel = urlParams.get("cancel");
         const orderCode = urlParams.get("orderCode");
 
-        const storedData = JSON.parse(localStorage.getItem("pendingOrder") || "{}");
+        const storedData = JSON.parse(
+          localStorage.getItem("pendingOrder") || "{}"
+        );
         const cartData = JSON.parse(localStorage.getItem("cartItems") || "[]");
 
         const finalOrderData = {
-          orderId: orderCode || storedData.orderId || urlParams.get("orderId") || "ORD-" + Date.now(),
+          orderId:
+            orderCode ||
+            storedData.orderId ||
+            urlParams.get("orderId") ||
+            "ORD-" + Date.now(),
           amount: storedData.amount || urlParams.get("amount") || "0",
           paymentMethod: storedData.paymentMethod || "PayOS",
           customerInfo: storedData.customerInfo || {
@@ -64,13 +69,14 @@ const PaymentCancelPage = () => {
             phone: urlParams.get("buyerPhone") || storedData.buyerPhone || "",
             email: urlParams.get("buyerEmail") || storedData.buyerEmail || "",
           },
-          items: storedData.items || cartData || [
-            {
-              name: "Sản phẩm mẫu",
-              quantity: 1,
-              price: storedData.amount || "0",
-            },
-          ],
+          items: storedData.items ||
+            cartData || [
+              {
+                name: "Sản phẩm mẫu",
+                quantity: 1,
+                price: storedData.amount || "0",
+              },
+            ],
           timestamp: new Date().toLocaleString("vi-VN"),
           cancelReason: cancel === "true" ? "Người dùng hủy" : "Lỗi hệ thống",
           expiryTime: storedData.expiryTime || Date.now() + 15 * 60 * 1000,
@@ -78,7 +84,10 @@ const PaymentCancelPage = () => {
 
         setOrderData(finalOrderData);
 
-        const remaining = Math.max(0, Math.floor((finalOrderData.expiryTime - Date.now()) / 1000));
+        const remaining = Math.max(
+          0,
+          Math.floor((finalOrderData.expiryTime - Date.now()) / 1000)
+        );
         setTimeRemaining(remaining);
       } catch (error) {
         console.error("Error loading order data:", error);
@@ -116,36 +125,9 @@ const PaymentCancelPage = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
-  const handleRetryPayment = () => {
-    const paymentData = {
-      ...orderData,
-      expiryTime: Date.now() + 15 * 60 * 1000,
-    };
-    localStorage.setItem("pendingOrder", JSON.stringify(paymentData));
-    window.location.href = `/payment/checkout?orderId=${orderData.orderId}&amount=${orderData.amount}`;
-  };
-
-  const handleBackToCart = () => {
-    if (orderData.items.length > 0) {
-      localStorage.setItem("cartItems", JSON.stringify(orderData.items));
-    }
-    window.location.href = "/cart";
-  };
-
   const handleBackToHome = () => {
     localStorage.removeItem("pendingOrder");
     window.location.href = "/";
-  };
-
-  const handleSaveForLater = () => {
-    const extendedOrder = {
-      ...orderData,
-      expiryTime: Date.now() + 24 * 60 * 60 * 1000,
-      savedForLater: true,
-    };
-    localStorage.setItem("savedOrder", JSON.stringify(extendedOrder));
-    localStorage.setItem("pendingOrder", JSON.stringify(extendedOrder));
-    alert("Đơn hàng đã được lưu trong 24 giờ. Bạn có thể hoàn thành thanh toán sau.");
   };
 
   return (
@@ -153,7 +135,9 @@ const PaymentCancelPage = () => {
       <div className="!bg-white !rounded-2xl !shadow-xl !p-8 !max-w-md !w-full">
         <div className="!text-center !mb-6">
           <XCircle className="!w-20 !h-20 !text-orange-500 !mx-auto !mb-4" />
-          <h1 className="!text-3xl !font-bold !text-gray-800 !mb-2">Thanh toán đã hủy</h1>
+          <h1 className="!text-3xl !font-bold !text-gray-800 !mb-2">
+            Thanh toán đã hủy
+          </h1>
           <p className="!text-gray-600">Bạn đã hủy giao dịch thanh toán</p>
         </div>
 
@@ -167,34 +151,36 @@ const PaymentCancelPage = () => {
               <span className="!text-gray-600">Mã đơn hàng:</span>
               <span className="!font-semibold">{orderData.orderId}</span>
             </div>
-            <div className="!flex !justify-between">
-              <span className="!text-gray-600">Tổng tiền:</span>
-              <span className="!font-semibold !text-orange-600">
-                {Number(orderData.amount).toLocaleString("vi-VN")} VNĐ
-              </span>
-            </div>
             {orderData.paymentMethod && (
               <div className="!flex !justify-between">
                 <span className="!text-gray-600">Phương thức:</span>
-                <span className="!font-semibold !text-blue-600">{orderData.paymentMethod}</span>
+                <span className="!font-semibold !text-blue-600">
+                  {orderData.paymentMethod}
+                </span>
               </div>
             )}
             {orderData.cancelReason && (
               <div className="!flex !justify-between">
                 <span className="!text-gray-600">Lý do hủy:</span>
-                <span className="!font-semibold !text-red-600">{orderData.cancelReason}</span>
+                <span className="!font-semibold !text-red-600">
+                  {orderData.cancelReason}
+                </span>
               </div>
             )}
             {orderData.customerInfo.name && (
               <div className="!pt-2 !border-t !border-gray-300">
                 <div className="!flex !justify-between">
                   <span className="!text-gray-600">Khách hàng:</span>
-                  <span className="!font-semibold">{orderData.customerInfo.name}</span>
+                  <span className="!font-semibold">
+                    {orderData.customerInfo.name}
+                  </span>
                 </div>
                 {orderData.customerInfo.phone && (
                   <div className="!flex !justify-between">
                     <span className="!text-gray-600">SĐT:</span>
-                    <span className="!font-semibold">{orderData.customerInfo.phone}</span>
+                    <span className="!font-semibold">
+                      {orderData.customerInfo.phone}
+                    </span>
                   </div>
                 )}
               </div>
@@ -203,9 +189,16 @@ const PaymentCancelPage = () => {
               <div className="!pt-2 !border-t !border-gray-300">
                 <span className="!text-gray-600 block !mb-1">Chi tiết:</span>
                 {orderData.items.map((item, index) => (
-                  <div key={index} className="!flex !justify-between !text-xs !text-gray-500">
-                    <span>{item.name} x{item.quantity}</span>
-                    <span>{Number(item.price).toLocaleString("vi-VN")} VNĐ</span>
+                  <div
+                    key={index}
+                    className="!flex !justify-between !text-xs !text-gray-500"
+                  >
+                    <span>
+                      {item.name} x{item.quantity}
+                    </span>
+                    <span>
+                      {Number(item.price).toLocaleString("vi-VN")} VNĐ
+                    </span>
                   </div>
                 ))}
               </div>
@@ -217,14 +210,20 @@ const PaymentCancelPage = () => {
           <div className="!bg-yellow-50 !border !border-yellow-200 !rounded-xl !p-4 !mb-6">
             <div className="!flex !items-center !gap-2 !mb-2">
               <AlertTriangle className="!w-5 !h-5 !text-yellow-600" />
-              <span className="!font-semibold !text-yellow-800">Đơn hàng sẽ hết hạn</span>
+              <span className="!font-semibold !text-yellow-800">
+                Đơn hàng sẽ hết hạn
+              </span>
             </div>
             <div className="!flex !items-center !gap-2 !text-sm !text-yellow-700">
               <Clock className="!w-4 !h-4" />
               <span>Thời gian còn lại: </span>
-              <span className="!font-mono !font-bold !text-yellow-800">{formatTime(timeRemaining)}</span>
+              <span className="!font-mono !font-bold !text-yellow-800">
+                {formatTime(timeRemaining)}
+              </span>
             </div>
-            <p className="!text-xs !text-yellow-600 !mt-2">Vui lòng hoàn thành thanh toán trước khi đơn hàng hết hạn</p>
+            <p className="!text-xs !text-yellow-600 !mt-2">
+              Vui lòng hoàn thành thanh toán trước khi đơn hàng hết hạn
+            </p>
           </div>
         )}
 
@@ -232,47 +231,17 @@ const PaymentCancelPage = () => {
           <div className="!bg-red-50 !border !border-red-200 !rounded-xl !p-4 !mb-6">
             <div className="!flex !items-center !gap-2 !mb-2">
               <XCircle className="!w-5 !h-5 !text-red-600" />
-              <span className="!font-semibold !text-red-800">Đơn hàng đã hết hạn</span>
+              <span className="!font-semibold !text-red-800">
+                Đơn hàng đã hết hạn
+              </span>
             </div>
-            <p className="text-sm !text-red-600">Đơn hàng của bạn đã hết thời gian giữ. Vui lòng tạo đơn hàng mới.</p>
+            <p className="text-sm !text-red-600">
+              Đơn hàng của bạn đã hết thời gian giữ. Vui lòng tạo đơn hàng mới.
+            </p>
           </div>
         )}
 
         <div className="!space-y-3">
-          {timeRemaining > 0 ? (
-            <>
-              <button
-                onClick={handleRetryPayment}
-                className="!w-full !bg-green-500 hover:!bg-green-600 !text-white !font-semibold !py-3 !px-4 !rounded-xl !transition-colors !flex !items-center !justify-center !gap-2"
-              >
-                <RefreshCw className="!w-5 !h-5" />
-                Thử thanh toán lại
-              </button>
-              <button
-                onClick={handleSaveForLater}
-                className="!w-full !bg-blue-500 hover:!bg-blue-600 !text-white !font-semibold !py-3 !px-4 !rounded-xl !transition-colors"
-              >
-                Lưu đơn hàng
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={handleBackToCart}
-              className="!w-full !bg-blue-500 hover:!bg-blue-600 !text-white !font-semibold !py-3 !px-4 !rounded-xl !transition-colors !flex !items-center !justify-center !gap-2"
-            >
-              <ShoppingCart className="!w-5 !h-5" />
-              Tạo đơn hàng mới
-            </button>
-          )}
-
-          <button
-            onClick={handleBackToCart}
-            className="!w-full !bg-gray-100 hover:!bg-gray-200 !text-gray-700 !font-semibold !py-3 !px-4 !rounded-xl !transition-colors !flex !items-center !justify-center !gap-2"
-          >
-            <ShoppingCart className="!w-5 !h-5" />
-            Về giỏ hàng
-          </button>
-
           <button
             onClick={handleBackToHome}
             className="!w-full !bg-gray-50 hover:!bg-gray-100 !text-gray-600 !font-semibold !py-3 !px-4 !rounded-xl !transition-colors !flex !items-center !justify-center !gap-2"
