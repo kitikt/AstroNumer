@@ -6,6 +6,8 @@ import "@/styles/NumerologyResultPage.css";
 import FloatingAnalysisDropdown from "@/components/FloatingAnalysisDropdown";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import VipSummaryFull from "@/components/VipSummaryFull";
+
 // Mock API response for Destiny Number 1
 const mockApiResponse = {
   StatusCode: 200,
@@ -156,7 +158,12 @@ const NumerologyResultPage = () => {
 
     const vip = localStorage.getItem("numerologyVipAnalysis");
     if (vip) {
+      //console.log("VIP Analysis data found in localStorage:", vip);
+      const parsedVip: Record<number, string> = JSON.parse(vip);
+    console.log("🔥 Raw VIP Summary (type 6):", parsedVip[6]);
       setVipAnalysis(JSON.parse(vip));
+      console.log(vipAnalysis);
+      
     }
   }, []);
 
@@ -362,8 +369,16 @@ const NumerologyResultPage = () => {
           </Box>
         ))}
       </Grid>
+      
+      {/* —— Summary Section —— */}
+     {vipAnalysis[6] && (
+  <VipSummaryFull content={vipAnalysis[6]} />
+)}
 
-      {/* Add Recalculate Button */}
+
+
+
+
       <Box mt={8}>
         <Button colorScheme="teal" size="lg" onClick={handleRecalculate}>
           Tra Cứu Lại

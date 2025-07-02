@@ -76,7 +76,7 @@ const FloatingAnalysisDropdown: React.FC = () => {
       );
 
       await Promise.all(
-        [...Array(6).keys()].map(async (idx) => {
+        [...Array(7).keys()].map(async (idx) => {
           const res = await fetch(
             `${import.meta.env.VITE_API_URL}/api/v1/numerology/analyze?TypeName=${idx}&UserNumerologyAnalysisId=${item.Id}`,
             { headers: { Authorization: `Bearer ${token}` } }
