@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { checkVipStatus } from "@/services/vipService";
+import VipRequiredModal from "@/components/VipRequiredModal";
+import { isVipError } from "@/utils/vipUtils";
 
 type CompatibilityResult = {
   StatusCode: number;
   Success: boolean;
   Message?: string;
-  Data?: any;
+  Data?: string | Record<string, unknown>;
 };
 
 const days = [
@@ -34,6 +37,7 @@ const CompatibilityForm: React.FC = () => {
     year: "Năm",
   });
   const [loading, setLoading] = useState(false);
+  const [showVipModal, setShowVipModal] = useState(false);
   const navigate = useNavigate();
 
   const canSubmit =
@@ -55,6 +59,14 @@ const CompatibilityForm: React.FC = () => {
         setLoading(false);
         return;
       }
+
+      // Kiểm tra VIP status trước khi cho phép sử dụng
+      const vipStatus = await checkVipStatus();
+      if (!vipStatus.hasVipPackage) {
+        setLoading(false);
+        setShowVipModal(true);
+        return;
+      }
       const b1 = `${birthday1.year}-${birthday1.month}-${birthday1.day}`;
       const b2 = `${birthday2.year}-${birthday2.month}-${birthday2.day}`;
       const params = new URLSearchParams({
@@ -72,6 +84,14 @@ const CompatibilityForm: React.FC = () => {
         }
       );
       const data: CompatibilityResult = await response.json();
+
+      // Kiểm tra nếu API trả về lỗi về gói VIP
+      if (isVipError(response, data)) {
+        setLoading(false);
+        setShowVipModal(true);
+        return;
+      }
+
       let parsedData = data;
       if (typeof data.Data === "string") {
         try {
@@ -81,7 +101,9 @@ const CompatibilityForm: React.FC = () => {
               data.Data.replace(/^```json\s*|```\s*$/g, "").trim()
             ),
           };
-        } catch {}
+        } catch {
+          console.error("Error parsing compatibility data");
+        }
       }
       localStorage.setItem("compatibilityResult", JSON.stringify(parsedData));
       navigate("/form/compatibility/result");
@@ -238,6 +260,13 @@ const CompatibilityForm: React.FC = () => {
           {loading ? "Đang phân tích..." : "Phân Tích"}
         </button>
       </form>
+
+      <VipRequiredModal
+        isOpen={showVipModal}
+        onClose={() => setShowVipModal(false)}
+        title="Phân tích tương hợp VIP"
+        message="Tính năng phân tích tương hợp chi tiết chỉ dành cho thành viên VIP. Vui lòng nâng cấp tài khoản để sử dụng."
+      />
     </div>
   );
 };

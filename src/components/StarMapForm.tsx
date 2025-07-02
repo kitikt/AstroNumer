@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { checkVipStatus } from "@/services/vipService";
+import VipRequiredModal from "@/components/VipRequiredModal";
 
 const StarMapForm: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isVipSelected, setIsVipSelected] = useState(false);
+  const [showVipModal, setShowVipModal] = useState(false);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     day: "DD",
@@ -191,6 +194,15 @@ const StarMapForm: React.FC = () => {
     if (currentPage === 1 && canContinueFromPage1) {
       setCurrentPage(2);
     } else if (currentPage === 2 && canContinueFromPage2) {
+      // Kiểm tra VIP status nếu người dùng chọn VIP
+      if (isVipSelected) {
+        const vipStatus = await checkVipStatus();
+        if (!vipStatus.hasVipPackage) {
+          setShowVipModal(true);
+          return;
+        }
+      }
+
       setLoading(true);
       setError(null);
 
@@ -278,7 +290,6 @@ const StarMapForm: React.FC = () => {
             const userId = localStorage.getItem("userId");
             // Gọi API ChatBot mới với Package parameter
             const chatBotParams = new URLSearchParams({
-              
               FullName: formData.fullName,
               Day: formData.day,
               Month: formData.month,
@@ -688,6 +699,13 @@ const StarMapForm: React.FC = () => {
           </button>
         </div>
       )}
+
+      <VipRequiredModal
+        isOpen={showVipModal}
+        onClose={() => setShowVipModal(false)}
+        title="Bản đồ sao VIP"
+        message="Tính năng phân tích bản đồ sao chi tiết chỉ dành cho thành viên VIP. Vui lòng nâng cấp tài khoản để sử dụng."
+      />
     </div>
   );
 };
