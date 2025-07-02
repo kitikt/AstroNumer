@@ -11,7 +11,7 @@ import {
 type CustomerInfo = {
   name?: string;
   phone?: string;
-  [key:string]: any;
+  [key: string]: any;
 };
 
 type TransactionData = {
@@ -151,12 +151,6 @@ const PaymentReturnPage = () => {
                 <span className="!text-gray-600">Mã đơn hàng:</span>
                 <span className="!font-semibold !text-gray-800">
                   {transactionData.orderId}
-                </span>
-              </div>
-              <div className="!flex !justify-between !items-center">
-                <span className="!text-gray-600">Số tiền:</span>
-                <span className="!font-semibold !text-green-600">
-                  {Number(transactionData.amount).toLocaleString("vi-VN")} VNĐ
                 </span>
               </div>
               <div className="!flex !justify-between !items-center">
