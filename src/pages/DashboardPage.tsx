@@ -529,7 +529,7 @@ const DashboardPage = () => {
             ) : isNaN(netRevenue) ? (
               "Lỗi tải dữ liệu"
             ) : (
-              `$${netRevenue.toLocaleString()}`
+              `${netRevenue.toLocaleString()} VND`
             )}
           </Stat.ValueText>
           <Badge colorPalette="red" variant="plain" px="0">
