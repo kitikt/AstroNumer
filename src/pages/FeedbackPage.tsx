@@ -7,6 +7,16 @@ interface FeedbackStats {
   totalFeedback: number;
 }
 
+interface FeedbackCountResponse {
+  StatusCode: number;
+  Success: boolean;
+  Message: string;
+  Data: number;
+  Errors: unknown[];
+  TraceId?: string;
+  Meta?: unknown;
+}
+
 const FeedbackPage: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [stats, setStats] = useState<FeedbackStats>({ totalFeedback: 0 });
@@ -18,19 +28,21 @@ const FeedbackPage: React.FC = () => {
 
   const fetchFeedbackStats = async () => {
     try {
-      const baseURL = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${baseURL}/api/Feedback/count`);
-
+      const response = await fetch(
+        "https://astronumer.info.vn/api/Feedback/statistics/feedback-count"
+      );
       if (response.ok) {
-        const data = await response.json();
-        setStats(data);
+        const data: FeedbackCountResponse = await response.json();
+        if (data.Success && typeof data.Data === "number") {
+          setStats({ totalFeedback: data.Data });
+        } else {
+          setStats({ totalFeedback: 500 }); // fallback
+        }
       } else {
-        console.warn("Failed to fetch feedback count, using default values");
-        setStats({ totalFeedback: 500 }); // Fallback value
+        setStats({ totalFeedback: 500 }); // fallback
       }
-    } catch (error) {
-      console.warn("Error fetching feedback stats:", error);
-      setStats({ totalFeedback: 500 }); // Fallback value
+    } catch {
+      setStats({ totalFeedback: 500 }); // fallback
     } finally {
       setLoading(false);
     }
