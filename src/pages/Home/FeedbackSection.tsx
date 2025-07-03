@@ -1,9 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FeedbackList from "@/components/FeedbackList";
 import styles from "@/styles/Home/FeedbackSection.module.css";
+import axios from "axios";
+
+interface FeedbackCountResponse {
+  StatusCode: number;
+  Success: boolean;
+  Message: string;
+  Data: number;
+  Errors: unknown[];
+  TraceId?: string;
+  Meta?: unknown;
+}
 
 const FeedbackSection: React.FC = () => {
+  const [customerCount, setCustomerCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchCustomerCount = async () => {
+      try {
+        const res = await axios.get<FeedbackCountResponse>(
+          "https://astronumer.info.vn/api/Feedback/statistics/feedback-count"
+        );
+        if (res.data && res.data.Success && typeof res.data.Data === "number") {
+          setCustomerCount(res.data.Data);
+        }
+      } catch {
+        // fallback: do nothing, keep null
+      }
+    };
+    fetchCustomerCount();
+  }, []);
+
   return (
     <section className={styles.feedbackSection}>
       <div className={styles.container}>
@@ -25,7 +54,9 @@ const FeedbackSection: React.FC = () => {
               <div className={styles.statLabel}>Điểm đánh giá</div>
             </div>
             <div className={styles.statItem}>
-              <div className={styles.statNumber}>500+</div>
+              <div className={styles.statNumber}>
+                {customerCount !== null ? customerCount : "500+"}
+              </div>
               <div className={styles.statLabel}>Khách hàng</div>
             </div>
             <div className={styles.statItem}>
